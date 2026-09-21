@@ -23,7 +23,7 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.10.0",
     "globals": "^17.12.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.8",
     "stylelint": "^17.15.0",
     "stylelint-config-recommended": "^18.0.0",
     "stylelint-declaration-strict-value": "^1.12.1"
