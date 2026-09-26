@@ -22,7 +22,13 @@ const IMPORTANT_BUDGET = {
 	// for the same reason — the shorthand resets `background-size`, and an
 	// important reset outranks a separate declaration after it.
 	"style.css": 42,
-	"stable.css": 2,
+	// Three, none of which a later rule at equal specificity could win. The
+	// dragged heading's border answers `.stable-active-header`, which upstream
+	// marks !important itself (`css/stable.css:132`). The detail tabs' numeric
+	// columns are right-aligned from JS, one inline style per cell. And below
+	// 5.2.0 the column resize mark carries a height the script computes into
+	// `style`, which no normal declaration outranks.
+	"stable.css": 3,
 	// Two. The second is check_port's hidden segments: the plugin empties one and
 	// calls jQuery's `.hide()`, writing a plain inline `display: none`, while the
 	// same elements carry Bootstrap's `d-lg-block` — `display: block !important`.

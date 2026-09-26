@@ -23,9 +23,37 @@
   /* Reaches selected rows only: the hover rule further down takes the filter
      off everything else. */
   --row-highlight-brightness: 1.15;
+
+  /* The containing block for everything drawn over the table. Upstream declares
+     it here in 5.0.0 and again from 5.2.0; 5.1.x carries it on `.stable-head`
+     alone, and the overlays then resolve against the page. The column resize
+     mark is built inside `.stable-body` in those releases, so it lands at the
+     top of the window instead of on the border, and the scroll badge, which is
+     `left: 10%` of its containing block, sits left of the table and below it.
+     Redundant wherever upstream sets it, so no release keys this. */
+  position: relative;
+
   /* Upstream leaves the container white. It is normally hidden behind
      .stable-body, but shows through wherever that does not reach. */
   background-color: var(--dracula-bg);
+}
+
+/* The mark that follows a column border during a resize, and the one part of
+   the table that keeps upstream's own look below 5.2.0.
+
+   Its height is computed there from an inline height on `.stable-body` that a
+   flex layout never sets, so it comes out the height of the heading rather than
+   of the list. !important because that figure is written inline, and `100%` is
+   what upstream's own sheet gives the mark from 5.2.0
+   (`css/stable.css:144`), where it sits in `.stable-gadgets` and needs no help.
+
+   Its colour is a literal grey in those releases rather than the custom
+   property `.stable` fills in, which leaves the mark the one grey line in the
+   table. Naming the property here is what 5.2.0 resolves to anyway, so this is
+   one value for every release and not a second one. */
+.stable-resize-header {
+  height: 100% !important;
+  background-color: var(--col-resize-sep-bg-color);
 }
 
 /* No rule may give this table a width. A column drag reads the width the
