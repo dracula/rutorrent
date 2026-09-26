@@ -28,7 +28,7 @@
      under a `?v=<its own version>` URL (`js/plugins.js:3`), so a theme update
      changes no character of the URL and a browser may keep yesterday's CSS;
      init.js cannot go stale the same way, being inlined into the PHP response
-     (`plugins/theme/init.php:22`). Each sheet stamps separately, so a set of
+     (`plugins/theme/init.php:27`). Each sheet stamps separately, so a set of
      files from two different releases is caught too. */
   --dracula-version:    "0.3.1"; /* x-release-please-version */
 }
@@ -1478,7 +1478,7 @@ div#gcont div.row.Header {
 
 /* This theme has one row height and it is the table's: a 22px line over 3.5px of
    block padding with a 1px rule under it — 30px — falling to 22 over 2px for 27
-   in compact (`stable.css:81`, where those four numbers are derived from the
+   in compact (`stable.css`, where those four numbers are derived from the
    body cell). A heading is exactly as tall as the rows under it and told apart
    by its paint alone, which is what makes the list read as one grid rather than
    as bands; the General tab takes the same four numbers so the panel continues
@@ -2183,7 +2183,7 @@ div#dlgHelp {
   }
 
   /* `!important`: upstream shows these three through jQuery's `.show()`
-     (`webui.js:2162`), which writes `display: block` as an inline style, and it
+     (`webui.js:2355`), which writes `display: block` as an inline style, and it
      rewrites them on every refresh. An inline declaration outranks any rule
      here that does not say this. */
   #st_fd > .stval {

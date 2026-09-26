@@ -1013,7 +1013,7 @@
 
 /* A torrent's General tab is 27 `Label | Value` rows in one white, so a row
    reads as a single string. The value takes Yellow and the label keeps the body
-   colour — the same split the desktop makes at `style.css:1433`, where every
+   colour — the same split the desktop makes in `style.css`, where every
    value is a `span.det`.
 
    Here there is no class to key on: the plugin writes each row as

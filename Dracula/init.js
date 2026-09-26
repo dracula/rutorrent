@@ -5,7 +5,7 @@
  *
  * Checks at startup that the stylesheets beside it carry the same version — see
  * draculaCheckVersions. This file cannot be served stale: ruTorrent inlines it
- * into a PHP response (`plugins/theme/init.php:22`) while the sheets sit behind
+ * into a PHP response (`plugins/theme/init.php:27`) while the sheets sit behind
  * a cached URL.
  *
  * Carries every behavioural change the theme makes: keyboard handling, the
@@ -89,7 +89,7 @@ function draculaCheckVersions()
 	   over by disabling every plugin outside its own keepEnabled list, `theme`
 	   included (`plugins/mobile/init.js:2138`), and this file keeps running
 	   regardless because ruTorrent splices it into the response
-	   (`plugins/theme/init.php:22`). What is left is two of the three sheets
+	   (`plugins/theme/init.php:27`). What is left is two of the three sheets
 	   gone, no version stamp to read, and a red banner on a page the theme was
 	   never painting. Counting the sheets does not separate the two cases:
 	   plugins.css is linked twice and one copy survives. */
@@ -98,7 +98,7 @@ function draculaCheckVersions()
 		var msg = "Dracula theme " + DRACULA_VERSION + ": stylesheet mismatch — " +
 			stale.join(", ") + ". Reload with Ctrl+Shift+R; if that does not " +
 			"fix it, the theme files are from different releases.";
-		// noty falls back to the Log tab when $.noty is absent (`common.js:947`),
+		// noty falls back to the Log tab when $.noty is absent (`common.js:996`),
 		// so the message lands somewhere either way.
 		if(typeof window.noty === "function")
 			window.noty(msg, "error");
@@ -399,9 +399,9 @@ function draculaPaletteBackground(name, fallback)
 
 /* Put the palette on the bars that were already drawn without it.
 
-   A progress cell is rewritten only when its value changed (`stable.js:1298`),
+   A progress cell is rewritten only when its value changed (`stable.js:1301`),
    and the colour goes in as an inline style from `progressStyle`
-   (`stable.js:1285`). So a bar drawn while palette.css was still in flight holds
+   (`stable.js:1286`). So a bar drawn while palette.css was still in flight holds
    upstream's pair until its torrent moves, which for a finished one is never.
 
    The width on screen carries the percentage, so a bar recolours from what it
@@ -2325,7 +2325,7 @@ function draculaTable(key)
 //
 // The menu is placed at the focused row's bottom-left, where a right click on
 // its name would land. `theContextMenu.show` already pulls a menu back inside
-// the window on both axes (`objects.js:451`), so a row at the bottom of the
+// the window on both axes (`objects.js:441`), so a row at the bottom of the
 // table needs nothing special here.
 function draculaRowMenu(container, table, id)
 {
@@ -2778,7 +2778,7 @@ function draculaTableKeys(containerId, key, options)
 // the animation there moves nothing. A turn under way always finishes; one that
 // has not begun never starts.
 //
-// What counts as "waiting" is upstream's judgement: `rtorrent.js:1346` reveals
+// What counts as "waiting" is upstream's judgement: `rtorrent.js:1598` reveals
 // `#ind` only once a request has been outstanding for 500ms, and that gate is
 // read here rather than reimplemented, so the timing has one source of truth.
 //
@@ -3421,7 +3421,7 @@ plugin.allDone = function()
 // Reannounce and Force recheck mouse-only.
 //
 // Bare letters, Ctrl not being the theme's to spend: Ctrl-P is Settings
-// (`webui.js:280`), Ctrl-O is Add Torrent, Ctrl-F is search, and Ctrl-S, Ctrl-R
+// (`webui.js:273`), Ctrl-O is Add Torrent, Ctrl-F is search, and Ctrl-S, Ctrl-R
 // and Ctrl-T are the browser's — the mnemonic letters are exactly the
 // unavailable ones. Unmodified they are free, every letter case in upstream's
 // global handler being guarded by `metaKey`.
@@ -3505,7 +3505,7 @@ function draculaTorrentActionKeys()
 	});
 }
 
-// `getStatusIcon` (`webui.js:1793`) returns [iconName, word] and is the only
+// `getStatusIcon` (`webui.js:1993`) returns [iconName, word] and is the only
 // place either is chosen, so both halves are corrected in one wrap.
 //
 // The icon name is only ever used as a CSS class — no caller across `js/` or
@@ -3665,7 +3665,7 @@ function draculaFixHiddenToolbarHeight()
 		return result;
 	};
 	// Upstream registers its own `resize` as a window listener at startup
-	// (`webui.js:240`), capturing the function rather than the property, so
+	// (`webui.js:242`), capturing the function rather than the property, so
 	// wrapping the property alone leaves every window resize wrong. This listener
 	// is added after upstream's and therefore runs after it.
 	window.addEventListener("resize", draculaMainContentHeight);
@@ -3839,8 +3839,8 @@ function draculaKeepDetailsToggleSafe()
    The strip is the handle's own height because that is the smallest gap in which
    it still reads as the edge of a block.
 
-   Top end: 1px rather than 0, because resizeTop opens with `if(!w && !h) return`
-   (`webui.js:2264`) and a zero height reads there as "no value given", which pins
+   Top end: 1px rather than 0, because resizeTop returns early on `if(!w && !h)`
+   (`webui.js:2457`) and a zero height reads there as "no value given", which pins
    the divider instead of letting the panel take the area. */
 function draculaListHeightFor(clientY, list)
 {
@@ -3857,7 +3857,7 @@ function draculaListHeightFor(clientY, list)
 
 /* One end of the range or the other: one of the two panes is down to a sliver.
 
-   Upstream saves the split on every release (`content.js:44`), so without this a
+   Upstream saves the split on every release (`content.js:46`), so without this a
    single drag to an end becomes the layout the interface opens with from then on
    — the panel gone, and nothing but the handle to say it ever existed. Covering
    one pane is a way of looking at the other, not a new default; the stored split
@@ -4056,7 +4056,7 @@ dxSTable.prototype.renameColumnById = function(id, name)
 // those plugins run after this file.
 //
 /* `config()` lays the saved profile over the column definitions
-   (`webui.js:381`) and the tables are created from that same array afterwards,
+   (`webui.js:382`) and the tables are created from that same array afterwards,
    so by the time the create hook runs a column's declared width is gone and a
    saved width has nothing left to be compared against.
 
@@ -4079,7 +4079,7 @@ var draculaDeclaredWidths = {};
    the attribute, and the section opens.
 
    The list is reached through `theWebUI.categoryList` — upstream's own binding
-   is a const inside the ready handler (`webui.js:2522`) and never global. It is
+   is a const in `createCategoryList` (`webui.js:2696`) and never global. It is
    assigned before `theWebUI.init()`, so it is already there when config runs. */
 var draculaPanelsKept = false;
 
@@ -4521,7 +4521,7 @@ function draculaColourMobileDiskMeter()
 
    `theConverter.speed` is `bytes()` with "/" and the localised second appended,
    and `bytes()` is the rounded number, one space, and the localised unit
-   (`js/common.js:429`, `:433`) — so the one space is the seam and everything
+   (`js/common.js:446`, `:442`) — so the one space is the seam and everything
    past it is the unit, "/s" included. Both halves are localised and neither is
    written here.
 
@@ -4844,7 +4844,7 @@ function draculaMarkMobileLines()
 	   from that pass stands empty until the next one, a poll away.
 
 	   This is also where a limit set by hand arrives: `setdlrate` and `setulrate`
-	   answer into it (`js/webui.js:2194`, `:2199`). */
+	   answer into it (`js/webui.js:2367`, `:2372`). */
 	if(typeof theWebUI.addTotal === "function")
 	{
 		var addTotal = theWebUI.addTotal;
@@ -5060,8 +5060,9 @@ if(typeof theWebUI !== "undefined" && typeof theWebUI.config === "function")
 }
 
 /* A saved width is no proof that anyone chose it. ruTorrent writes the whole
-   profile back whenever a column is dragged or moved (`webui.js:865`), so what
-   sits in it for an untouched column is upstream's own declaration, persisted.
+   profile back whenever a column is dragged or moved (`webui.js:393`, `:1024`),
+   so what sits in it for an untouched column is upstream's own declaration,
+   persisted.
    A width that differs from the declaration was chosen by hand and outranks
    anything here; one equal to it was never touched.
 
@@ -5149,7 +5150,7 @@ function draculaTorrentNote(name, msg)
    call both paths run through — a new row and a row already on the page — and
    the message is on the torrent object it is handed.
 
-   Written only when it changes. `setAttr` (`stable.js:1535`) marks the row dirty
+   Written only when it changes. `setAttr` (`stable.js:1555`) marks the row dirty
    for every attribute it is given, so passing the title every pass would rewrite
    every row on every poll to say what it already said.
 
@@ -5218,7 +5219,7 @@ function draculaFileIconClass(name, icon)
 // The Files tab replaces its rows on every directory change (`webui.js:55`) and
 // on the tree/list switch (`webui.js:1488`), so both the arrows here and a plain
 // Shift-click land on it. Dropping the anchor with the rows it named is what
-// upstream's own `clearSelection` does (`stable.js:1146`).
+// upstream's own `clearSelection` does (`stable.js:1147`).
 plugin.draculaClearRows = dxSTable.prototype.clearRows;
 dxSTable.prototype.clearRows = function()
 {
