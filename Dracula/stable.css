@@ -28,12 +28,14 @@
   background-color: var(--dracula-bg);
 }
 
-/* dxSTable sizes the table to the sum of its stored column widths, so the
-   detail tabs render a 550px table inside a 1600px pane and leave two thirds of
-   the row empty while the Name column truncates. min-width rather than width:
-   the torrent list is *wider* than its pane and has to keep scrolling
-   horizontally, which a fixed 100% would prevent. The extra space is handed out
-   in proportion to the stored widths, so Name gains the most.
+/* No rule may give this table a width. A column drag reads the width the
+   browser rendered and stores it as that column's declaration
+   (`js/stable.js:662`), which is only ever correct while the two are equal.
+   Sizing the table makes the rendered width a function of every declared width
+   — `table-layout: fixed` hands the slack out in proportion — so the drag then
+   feeds its own output back in: one mouse movement of a pixel widens a column
+   by 426, and once the row fills its pane the column cannot be narrowed at all.
+   Columns are sized in init.js instead, at what their content measures.
 
    `separate` with zero spacing, not the collapsed default: collapsing resolves
    the edge between head and body into one shared border and gives half of it to
@@ -41,7 +43,6 @@
    rows under it. Nothing doubles under the separate model here — body cells set
    only `border-bottom`, and no cell sets a left or right border. */
 .stable table {
-  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }

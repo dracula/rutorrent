@@ -1,8 +1,8 @@
-// Three places where a rule and the script have to agree, and nothing on screen
+// Four places where a rule and the script have to agree, and nothing on screen
 // would look broken if they stopped.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { read } from "./theme-files.mjs";
+import { read, SHEETS } from "./theme-files.mjs";
 
 // --- The two state rows whose `icon` name upstream reversed -----------------
 //
@@ -92,4 +92,35 @@ test("--font-mono names the bundled face only behind the desktop mark", () => {
 		/classList\.add\("dracula-desktop"\)/,
 		"init.js never puts the mark on, so the bundled face is unreachable",
 	);
+});
+
+// --- No sheet gives the list table a width ----------------------------------
+//
+// From 5.2.0 a column drag computes the new width from the width the browser
+// rendered and stores it as that column's declaration (`js/stable.js:662`), so
+// the two have to stay equal. `table-layout: fixed` hands any slack out in
+// proportion to the declared widths, which turns a table given a width of its
+// own into a feedback loop: the column jumps hundreds of pixels for a pixel of
+// mouse movement and refuses to narrow once the row fills its pane. Nothing on
+// screen looks wrong until someone drags a border.
+//
+// Media blocks are cut before the scan. The phone lays the table out from its
+// content and has no border to drag, and the correction in init.js covers the
+// drag wherever a rendered width and a declared one come apart anyway.
+
+test("no rule sizes .stable table", () => {
+	for (const sheet of SHEETS) {
+		const css = read(sheet)
+			.replace(/\/\*[\s\S]*?\*\//g, "")
+			.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
+
+		for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+			if (!/\.stable\s+table(?![\w-])/.test(selector)) continue;
+			assert.doesNotMatch(
+				body,
+				/(?:^|[;\s])(?:min-|max-)?width\s*:/,
+				`${sheet} gives .stable table a width, which breaks the column drag`,
+			);
+		}
+	}
 });

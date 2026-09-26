@@ -3930,8 +3930,85 @@ function draculaTouchDividers()
 // Widths are measured against real rows: at upstream's defaults "754.00 MiB"
 // overflows Size, "0 (667)" overflows Seeds by 11px, and a full
 // "01.03.2026 15:46:30" overflows Created On by 44px.
+// The detail tables carry a width of their own because nothing stretches them:
+// the rule at `.stable table` in stable.css says why a table given a width
+// cannot be resized. Upstream declares each of them for a table between 550px
+// and 1230px wide, so they sit in a fraction of the 1616px pane a 1920px window
+// leaves, and several truncate on top of that: Files measures 765px against the
+// 550 it declares, Trackers 979 against 805, Plugins 1562 against 950.
+//
+// Every table keeps the proportions upstream gives it, scaled to 1600 - a shade
+// under the pane, so no horizontal scrollbar appears at that width - and any
+// column its own rows measure wider than that share takes the larger figure
+// instead. History is where that matters: four of its twelve columns are held
+// up by their content, and the table comes to 1900 and scrolls, which is what
+// it does at upstream's 1230 as well.
+//
+// The Tasks tab is not here and cannot be. `_task` wraps `theWebUI.config` and
+// registers its table from inside that wrapper (`plugins/_task/init.js:346`),
+// which is after the wrap below has read what upstream declares, so there is
+// nothing to tell a chosen width from a default one. The same plugin never
+// reads `colwidth` back either, so a width dragged in that tab is already lost
+// on the next load.
 var draculaColumns = {
-	fls: { percent: { text: "Progress" } },
+	fls: {
+		name: { width: "580px" },
+		size: { width: "205px" },
+		done: { width: "290px" },
+		percent: { text: "Progress", width: "290px" },
+		priority: { width: "235px" }
+	},
+	trk: {
+		name: { width: "400px" },
+		type: { width: "120px" },
+		enabled: { width: "120px" },
+		group: { width: "120px" },
+		seeds: { width: "120px" },
+		peers: { width: "120px" },
+		downloaded: { width: "160px" },
+		last: { width: "170px" },
+		interval: { width: "160px" },
+		private: { width: "110px" }
+	},
+	prs: {
+		name: { width: "150px" },
+		version: { width: "250px" },
+		flags: { width: "90px" },
+		done: { width: "150px" },
+		downloaded: { width: "150px" },
+		uploaded: { width: "150px" },
+		dl: { width: "110px" },
+		ul: { width: "110px" },
+		peerdl: { width: "110px" },
+		peerdownloaded: { width: "150px" },
+		country: { width: "180px" }
+	},
+	plg: {
+		name: { width: "250px" },
+		version: { width: "100px" },
+		status: { width: "135px" },
+		launch: { width: "135px" },
+		// Author lists run to several names and measure 285px, against the 80
+		// upstream gives them and the 135 the scale would.
+		author: { width: "285px" },
+		descr: { width: "695px" }
+	},
+	hst: {
+		// Held up by their rows rather than by the scale: a torrent name
+		// measures 425px and a full timestamp 170.
+		name: { width: "425px" },
+		status: { width: "130px" },
+		time: { width: "170px" },
+		size: { width: "105px" },
+		downloaded: { width: "130px" },
+		uploaded: { width: "130px" },
+		ratio: { width: "80px" },
+		label: { width: "80px" },
+		created: { width: "170px" },
+		seedingtime: { width: "170px" },
+		addtime: { width: "170px" },
+		tracker: { width: "140px" }
+	},
 	trt: {
 		done:       { text: "Progress", width: "120px" },
 		size:       { width: "100px" },
@@ -5129,6 +5206,41 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	);
 
 	draculaRepaintProgress(ele, this);
+}
+
+/* A resize drag computes a column's new width from `clientWidth`, the width the
+   browser rendered, and stores it as that column's declaration
+   (`stable.js:662`). The two agree only while nothing gives the table a width of
+   its own. When something does, the rendered width becomes a function of every
+   declared width and the drag feeds its own output back in: the column jumps
+   hundreds of pixels for one pixel of mouse movement and, once the row fills its
+   pane, stops narrowing at all.
+
+   Correcting the movement leaves the declaration tracking the mouse one pixel
+   for one, which is what a drag does below 5.2.0 (`stable.js:888` in 5.0.0) and
+   what keeps it reversible whatever a later rule does to the layout. The event
+   is rebuilt rather than adjusted because `movementX` on a MouseEvent is
+   read-only; `colDragResize` reads nothing else from it.
+
+   Absent below 5.2.0, where the resize lives in `colDrag` and reads the
+   declaration already. */
+if(typeof dxSTable.prototype.colDragResize === "function")
+{
+	plugin.draculaColDragResize = dxSTable.prototype.colDragResize;
+	dxSTable.prototype.colDragResize = function(e)
+	{
+		var cell = this.tHeadCols[this.hotCell];
+		var column = cell && this.colsdata[this.hotCell];
+		var declared = column ? parseInt(column.width, 10) : 0;
+		if(declared > 0 && declared !== cell.clientWidth)
+			e = {
+				originalEvent: {
+					movementX:
+						declared - cell.clientWidth + e.originalEvent.movementX
+				}
+			};
+		return plugin.draculaColDragResize.call(this, e);
+	};
 }
 
 /* What a torrent row's tooltip says. The name alone unless the daemon has
