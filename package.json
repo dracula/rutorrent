@@ -1,6 +1,6 @@
 {
   "name": "rutorrent-dracula-theme",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "description": "Development tooling for the Dracula theme for ruTorrent. Nothing here ships — the theme is the Dracula/ folder, copied into ruTorrent as it is.",
   "license": "MIT",

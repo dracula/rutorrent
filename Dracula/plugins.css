@@ -1,5 +1,5 @@
 /* Dracula Theme for ruTorrent — plugin styles
- * Version 0.3.1 · built against ruTorrent 5.3   # x-release-please-version
+ * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
  * ruTorrent links this sheet twice, at indices 30 and 31, so every rule here
@@ -14,16 +14,16 @@
    for that interface have to enter. Imported rules take the position of the
    @import, which is above everything else here and below every sheet loaded
    before this one: still later than the plugin's own, which is what matters. */
-@import url("palette.css?v=0.3.1"); /* x-release-please-version */
-@import url("fonts.css?v=0.3.1"); /* x-release-please-version */
-@import url("icons.css?v=0.3.1"); /* x-release-please-version */
-@import url("mobile.css?v=0.3.1"); /* x-release-please-version */
-@import url("legacy.css?v=0.3.1"); /* x-release-please-version */
+@import url("palette.css?v=0.3.2"); /* x-release-please-version */
+@import url("fonts.css?v=0.3.2"); /* x-release-please-version */
+@import url("icons.css?v=0.3.2"); /* x-release-please-version */
+@import url("mobile.css?v=0.3.2"); /* x-release-please-version */
+@import url("legacy.css?v=0.3.2"); /* x-release-please-version */
 
 /* init.js reads this back at startup to catch a sheet the browser has cached
    from an older release. Declared per sheet, so a mixed set is caught too. */
 :root {
-  --dracula-version-plugins: "0.3.1"; /* x-release-please-version */
+  --dracula-version-plugins: "0.3.2"; /* x-release-please-version */
 }
 
 /* Only the background is here; colour and layout are in style.css. This half

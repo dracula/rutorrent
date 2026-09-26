@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.2](https://github.com/noctuum/rutorrent-dracula-theme/compare/v0.3.1...v0.3.2) (2026-09-26)
+
+
+### Bug Fixes
+
+* draw the resize mark as 5.2.0 and up do ([#69](https://github.com/noctuum/rutorrent-dracula-theme/issues/69)) ([9bd4dcf](https://github.com/noctuum/rutorrent-dracula-theme/commit/9bd4dcf9137b87b740088b795df0f8cc1607cb9b))
+* point every citation at the line it means ([#66](https://github.com/noctuum/rutorrent-dracula-theme/issues/66)) ([e134d2d](https://github.com/noctuum/rutorrent-dracula-theme/commit/e134d2d68614e26666e663f0fb207eb29b6cb7a3))
+* resize a column by dragging its border ([#68](https://github.com/noctuum/rutorrent-dracula-theme/issues/68)) ([da21307](https://github.com/noctuum/rutorrent-dracula-theme/commit/da213076123305504773cd3ac6b5d9c5343186e5))
+
 ## [0.3.1](https://github.com/noctuum/rutorrent-dracula-theme/compare/v0.3.0...v0.3.1) (2026-09-07)
 
 

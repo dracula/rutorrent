@@ -1,5 +1,5 @@
 /* Dracula Theme for ruTorrent — main styles
- * Version 0.3.1 · built against ruTorrent 5.3   # x-release-please-version
+ * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
  * Color Palette: Dracula Classic
@@ -17,9 +17,9 @@
    loaded at config time, some forty milliseconds after this sheet. Importing
    them here too is what keeps the desktop's colours, faces and icons from
    arriving late. Same URLs both times, so a browser fetches each once. */
-@import url("palette.css?v=0.3.1"); /* x-release-please-version */
-@import url("fonts.css?v=0.3.1"); /* x-release-please-version */
-@import url("icons.css?v=0.3.1"); /* x-release-please-version */
+@import url("palette.css?v=0.3.2"); /* x-release-please-version */
+@import url("fonts.css?v=0.3.2"); /* x-release-please-version */
+@import url("icons.css?v=0.3.2"); /* x-release-please-version */
 
 /* === Dracula Palette === */
 
@@ -30,7 +30,7 @@
      init.js cannot go stale the same way, being inlined into the PHP response
      (`plugins/theme/init.php:27`). Each sheet stamps separately, so a set of
      files from two different releases is caught too. */
-  --dracula-version:    "0.3.1"; /* x-release-please-version */
+  --dracula-version:    "0.3.2"; /* x-release-please-version */
 }
 
 /* === Global: kill all sharp corners === */
