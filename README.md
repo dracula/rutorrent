@@ -6,21 +6,19 @@
 
 ## Features
 
-Beyond the palette: full keyboard control, vector icons throughout, one row
-height across every list, bundled fonts. Full list in
-[FEATURES.md](./FEATURES.md).
+Beyond the palette, this theme adds full keyboard control, vector icons, consistent row heights across every list, and bundled fonts. See the complete list in [FEATURES.md](./FEATURES.md).
 
-## Requires
+## Requirements
 
 **ruTorrent 5.0.0 or newer.**
 
 ## Install
 
-All instructions can be found in [INSTALL.md](./INSTALL.md).
+All instructions can be found at [draculatheme.com/rutorrent](https://draculatheme.com/rutorrent).
 
 ## Team
 
-This theme is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/noctuum/rutorrent-dracula-theme/graphs/contributors).
+This theme is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/dracula/rutorrent/graphs/contributors).
 
 | [![noctuum](https://github.com/noctuum.png?size=100)](https://github.com/noctuum) |
 | --------------------------------------------------------------------------------- |
@@ -28,9 +26,11 @@ This theme is maintained by the following person(s) and a bunch of [awesome cont
 
 ## Community
 
-- [Twitter](https://twitter.com/draculatheme) - Best for getting updates about themes and new stuff.
-- [GitHub](https://github.com/dracula/dracula-theme/discussions) - Best for asking questions and discussing issues.
-- [Discord](https://draculatheme.com/discord-invite) - Best for hanging out with the community.
+Join thousands of vampires using Dracula Theme around the world 🦇
+
+- [X (Twitter)](https://x.com/draculatheme) and [Instagram](https://www.instagram.com/draculatheme) - Follow for tips, news, and fun.
+- [Discord](https://draculatheme.com/discord-invite) - Hang out and chat with the rest of the clan.
+- [GitHub Discussions](https://github.com/dracula/dracula-theme/discussions) - Ask questions and discuss issues.
 
 ## Dracula PRO
 
