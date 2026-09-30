@@ -4,7 +4,7 @@ contact_links:
     url: https://github.com/Novik/ruTorrent/issues
     about: Anything that is not about how the interface is drawn or driven.
   - name: Installing the theme
-    url: https://github.com/noctuum/rutorrent-dracula-theme/blob/main/INSTALL.md
+    url: https://github.com/dracula/rutorrent/blob/main/INSTALL.md
     about: Where the folder goes and how to select it.
   - name: The Dracula palette itself
     url: https://draculatheme.com/contribute

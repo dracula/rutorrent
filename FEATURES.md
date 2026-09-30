@@ -65,10 +65,7 @@ of its text, and a dropdown does not change its value as you pass it.
 
 ## No image files
 
-**The theme ships no images at all.** Every glyph is an inline SVG in the
-stylesheet — 56 of them, defined once as custom properties and reused wherever
-they appear, so one glyph is one definition rather than a copy per site. They
-come from [Phosphor Icons](https://phosphoricons.com) (Duotone, MIT).
+**The theme ships no images at all.** Every glyph is an inline SVG in the stylesheet: 80 of them, defined once as custom properties and reused wherever they appear, so one glyph is one definition rather than a copy per site. They come from [Phosphor Icons](https://phosphoricons.com) (Duotone, MIT).
 
 Upstream draws its interface from GIF and PNG sprites, fixed in size and blurred
 on a HiDPI screen. Here everything is vector: the toolbar, the sidebar, torrent
