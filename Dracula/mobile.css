@@ -86,6 +86,38 @@
   --bs-info: var(--variant-cyan);
   --bs-info-rgb: var(--variant-rgb-cyan);
 
+  /* An alert paints from these three per type, which Bootstrap writes as
+     literals for each mode. The desktop's notifications have the same shape:
+     the type's color as the border, over a 15% tint of it. */
+  --bs-success-text-emphasis: var(--variant-fg);
+  --bs-success-bg-subtle: color-mix(
+    in srgb,
+    var(--variant-green) 15%,
+    var(--variant-alert-base)
+  );
+  --bs-success-border-subtle: var(--variant-green);
+  --bs-info-text-emphasis: var(--variant-fg);
+  --bs-info-bg-subtle: color-mix(
+    in srgb,
+    var(--variant-cyan) 15%,
+    var(--variant-alert-base)
+  );
+  --bs-info-border-subtle: var(--variant-cyan);
+  --bs-warning-text-emphasis: var(--variant-fg);
+  --bs-warning-bg-subtle: color-mix(
+    in srgb,
+    var(--variant-orange) 15%,
+    var(--variant-alert-base)
+  );
+  --bs-warning-border-subtle: var(--variant-orange);
+  --bs-danger-text-emphasis: var(--variant-fg);
+  --bs-danger-bg-subtle: color-mix(
+    in srgb,
+    var(--variant-red) 15%,
+    var(--variant-alert-base)
+  );
+  --bs-danger-border-subtle: var(--variant-red);
+
   --mobile-progress-label: var(--variant-progress-label);
   --mobile-progress-halo: var(--variant-progress-halo);
   --mobile-accent-contrast: var(--variant-accent-contrast);
@@ -152,6 +184,7 @@
   --variant-progress-label: var(--dracula-cyan);
   --variant-progress-halo: var(--dracula-bg);
   --variant-accent-contrast: var(--dracula-bg);
+  --variant-alert-base: var(--dracula-bg-dark);
 }
 
 :root:not([data-bs-theme="dark"]):has(#mainNavbar) {
@@ -180,6 +213,7 @@
   --variant-progress-label: var(--alucard-fg);
   --variant-progress-halo: var(--alucard-bg);
   --variant-accent-contrast: var(--alucard-bg);
+  --variant-alert-base: var(--alucard-bg);
 }
 
 /* Bootstrap compiles its variants with literal hex rather than through
