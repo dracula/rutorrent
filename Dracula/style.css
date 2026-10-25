@@ -206,6 +206,8 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
   --footer-bg-color: var(--dracula-bg-dark);
   --footer-bg-image: none;
   --footer-border-color: var(--dracula-selection);
+  --status-tip-color: var(--dracula-fg);
+  --status-tip-background-color: var(--dracula-bg-dark);
   --dialog-bg-color: var(--dracula-bg);
   --dialog-border-color: var(--dracula-comment);
   --navbar-height: 48px;
@@ -2169,7 +2171,8 @@ div#dlgHelp {
    340 and 844px down to 721. A tap opens what they were holding: each already
    carries a full reading in `title`, written by draculaConnectionsTooltip and
    its four siblings, and a title is a hover state no touch screen ever enters.
-   draculaStatusCellPopovers binds the tap.
+   The tap is upstream's `theStatusTip` from 5.3.17, draculaStatusCellPopovers
+   below it.
 
    The speeds keep their numbers. They are what the bar is watched for, and they
    are the two cells a tap already owns — it opens the throttle menu.
@@ -2198,29 +2201,29 @@ div#dlgHelp {
   }
 }
 
-/* Below theDialogManager's 2000 floor (`objects.js:92`): a dialog is modal over
-   the whole page and has no business behind a reading from the bar.
-
-   Fixed rather than absolute because the bar is the last row of a flex column
-   and scrolls its own overflow — a child positioned inside it cannot rise above
-   it. init.js sets `left` and `bottom` from the cell it belongs to.
-
-   `pre-line` because the text arrives as the newline-separated string the
-   tooltips already build; splitting it into elements here would mean writing the
-   same reading twice. */
-#dracula-status-popover {
-  position: fixed;
-  z-index: 1900;
-  max-width: 80vw;
+/* A tapped pane's reading. From ruTorrent 5.3.17 upstream's `theStatusTip` draws
+   `.status-tip`; below it the theme draws its own. `pre-line` keeps the lines of
+   the string the tooltips build. */
+#dracula-status-popover,
+.status-tip {
   padding: 6px 10px;
   border: 1px solid var(--dracula-selection);
   border-radius: 4px;
-  background-color: var(--dracula-bg-dark);
-  color: var(--dracula-fg);
+  background-color: var(--status-tip-background-color);
+  color: var(--status-tip-color);
   font-size: 13px;
   line-height: 1.45;
   white-space: pre-line;
   box-shadow: 0 4px 12px var(--dracula-shadow);
+}
+
+/* Below `theDialogManager`'s 2000 floor, so a dialog stays over it. Fixed because
+   the bar scrolls its own overflow and a child cannot rise above it; init.js sets
+   `left` and `bottom`. */
+#dracula-status-popover {
+  position: fixed;
+  z-index: 1900;
+  max-width: 80vw;
 }
 
 /* === Preload (disabled — no images) === */
