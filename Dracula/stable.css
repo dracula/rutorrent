@@ -213,11 +213,17 @@ body.compact .stable thead td div {
   filter: none;
 }
 
-/* Selected rows keep the brightness step: their background carries !important
-   upstream, so it cannot take a colour here, and on a colour that light the
-   multiply reads clearly anyway. */
 .stable tbody tr.selected td {
   color: var(--dracula-bg);
+}
+
+/* A hovered selected row takes the brightness step, which upstream gives only
+   from 5.2.0 to 5.3.15. `hover: hover` keeps a tapped row from holding it on a
+   touch screen, as upstream does. */
+@media (hover: hover) {
+  .stable tbody tr.selected:hover td {
+    filter: brightness(var(--row-highlight-brightness));
+  }
 }
 
 /* ruTorrent 5.3.7 renders the release-group prefix of a normalized torrent
