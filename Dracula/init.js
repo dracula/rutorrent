@@ -2248,11 +2248,13 @@ function draculaSyncTabRoles()
 // region to a single tab stop and the button reachable.
 function draculaLabelActivate(label, ev)
 {
+	// Ctrl goes as `metaKey`: on macOS upstream holds a ctrl press for the
+	// mouseup that tells a right click, and a key sends none. The label reads
+	// either key as the same flag.
 	label.dispatchEvent(new MouseEvent("mousedown", {
 		bubbles: true,
 		button: 0,
-		ctrlKey: ev.ctrlKey,
-		metaKey: ev.metaKey,
+		metaKey: ev.ctrlKey || ev.metaKey,
 		shiftKey: ev.shiftKey
 	}));
 }
