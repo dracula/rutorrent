@@ -759,6 +759,10 @@ var DRACULA_HOLD = 350;
 
 function draculaStatusCellPopovers()
 {
+	// From ruTorrent 5.3.17 upstream's `theStatusTip` answers the same tap.
+	if(typeof theStatusTip !== "undefined")
+		return;
+
 	// A touch settles the panel by itself, and the click the browser sends
 	// afterwards would toggle it a second time. The stamp expires on its own, so
 	// a touch that never produces a click cannot leave the mouse path blocked.
