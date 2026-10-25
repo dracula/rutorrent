@@ -65,16 +65,10 @@
 }
 
 /* A selected row is a pale blue written straight into the upstream sheet, with
-   none of the machinery 5.2.0 introduced: no `--row-active-bg-color` to fill in
-   and no brightness step on the row. Both come from the theme's own values here,
-   which is what 5.3.12 ends up painting. The cell's text needs nothing — the
-   selected colour in stable.css reaches this shape already.
-
-   After the striping rule, which it shares a specificity with and has to
-   outrank. Upstream writes no !important on this one, so neither does this. */
+   no `--row-active-bg-color` to fill in. After the striping rule, which it shares
+   a specificity with and has to outrank; upstream writes no !important here. */
 .stable-head ~ .stable-body tr.selected td {
   background: var(--row-active-bg-color);
-  filter: brightness(var(--row-highlight-brightness));
 }
 
 /* `.stable td` carries `font: menu` — a system font, 16px Arial in practice.
