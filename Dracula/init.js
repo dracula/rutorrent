@@ -1,6 +1,6 @@
 /*
  * Dracula Theme for ruTorrent — behaviour
- * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
+ * Version 0.3.3 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
  * ruTorrent inlines this file into its PHP response, so it cannot go stale, and
@@ -12,7 +12,7 @@
 /* global document, setTimeout, clearTimeout, requestAnimationFrame, MutationObserver, MouseEvent, Intl, $, window, getComputedStyle, Image, console */
 
 // Compared against the :root stamp in each sheet at startup.
-var DRACULA_VERSION = "0.3.2"; // x-release-please-version
+var DRACULA_VERSION = "0.3.3"; // x-release-please-version
 // The oldest ruTorrent the theme supports.
 var DRACULA_RUTORRENT_MIN = "5.0.0";
 

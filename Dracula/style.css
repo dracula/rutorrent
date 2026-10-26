@@ -1,5 +1,5 @@
 /* Dracula Theme for ruTorrent — main styles
- * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
+ * Version 0.3.3 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
  * Color Palette: Dracula Classic
@@ -8,14 +8,14 @@
 
 /* Imported here as well as from plugins.css, which loads later, so the
    desktop has them with the first sheet. */
-@import url("palette.css?v=0.3.2"); /* x-release-please-version */
-@import url("fonts.css?v=0.3.2"); /* x-release-please-version */
-@import url("icons.css?v=0.3.2"); /* x-release-please-version */
+@import url("palette.css?v=0.3.3"); /* x-release-please-version */
+@import url("fonts.css?v=0.3.3"); /* x-release-please-version */
+@import url("icons.css?v=0.3.3"); /* x-release-please-version */
 
 :root {
   /* init.js reads these back to catch a stale cached sheet: ruTorrent serves
      every sheet under its own version, which a theme update does not change. */
-  --dracula-version:    "0.3.2"; /* x-release-please-version */
+  --dracula-version:    "0.3.3"; /* x-release-please-version */
 }
 
 /* === Global: kill all sharp corners === */

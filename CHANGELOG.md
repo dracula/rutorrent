@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.3](https://github.com/dracula/rutorrent/compare/v0.3.2...v0.3.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* add a sidebar filter with Ctrl-Enter on macOS ([#8](https://github.com/dracula/rutorrent/issues/8)) ([0f4e239](https://github.com/dracula/rutorrent/commit/0f4e239eb73b7e5330b0aed286514b5287e584fc))
+* brighten the hovered selected row ([#10](https://github.com/dracula/rutorrent/issues/10)) ([f679f50](https://github.com/dracula/rutorrent/commit/f679f502d7ff8f2e3898f40b1d80c7a25b0d83af))
+* clean up the comments ([#12](https://github.com/dracula/rutorrent/issues/12)) ([fd51e39](https://github.com/dracula/rutorrent/commit/fd51e3958f9378bd306593f7a5e36e954b9edfff))
+* draw the seedingtime highlight in the palette ([#11](https://github.com/dracula/rutorrent/issues/11)) ([f7b4398](https://github.com/dracula/rutorrent/commit/f7b4398e65ca016040e38cb1e05c6acd5686b299))
+* **mobile:** draw alerts in the palette ([#9](https://github.com/dracula/rutorrent/issues/9)) ([a3e55ca](https://github.com/dracula/rutorrent/commit/a3e55ca0b9e0821ce74716a62da40b2f3ef785bd))
+* show one themed bubble per status bar tap ([#7](https://github.com/dracula/rutorrent/issues/7)) ([76ed40d](https://github.com/dracula/rutorrent/commit/76ed40d1f769b777714808fab5aa3efb9219cfe7))
+
 ## [0.3.2](https://github.com/noctuum/rutorrent-dracula-theme/compare/v0.3.1...v0.3.2) (2026-09-26)
 
 
