@@ -1,13 +1,4 @@
-// Reading and parsing shared by the structural checks. Not tests: the suites
-// beside this file assert things the theme's own rules require but nothing else
-// enforces, and each of them needs the shipped text and the same few parsers.
-//
-// The parsers are deliberately narrow. A general "dead code" sweep over CSS
-// custom properties cannot be done by pattern alone: `var(NAME)` with a closing
-// paren misses `var(NAME, fallback)`, which is how upstream writes it; a grep
-// pattern beginning with `--` is read as an option and reports a confident zero;
-// and upstream splits one var() across four lines, which no single-line pattern
-// sees.
+// Reading and parsing shared by the structural checks.
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -15,11 +6,9 @@ import { dirname, join } from "node:path";
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const THEME = join(ROOT, "Dracula");
 
-// Read from the directory rather than listed by hand: a sheet named in no list
-// is checked by nothing. It also guards the one list that cannot be read this
-// way — `extra-files` in release-please-config.json. A sheet missing from that
-// keeps the version it was added under, and the header comparison in
-// version.test.mjs fails at the next release rather than shipping.
+// Read from the directory, so no sheet goes unchecked. A sheet missing from
+// `extra-files` in release-please-config.json keeps an old version, which
+// version.test.mjs catches.
 export const SHEETS = readdirSync(THEME)
 	.filter((name) => name.endsWith(".css"))
 	.sort();
@@ -30,17 +19,15 @@ export const css = SHEETS.map((name) => ({ name, text: read(name) }));
 
 export const VERSION_HEADER = /^\s*\*\s*Version\s+(\d+\.\d+\.\d+)\b/m;
 
-// The prose in these sheets quotes @import statements and colours, so a match
-// inside a comment would be checked as though it were code.
+// A match inside a comment is not code.
 export const withoutComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, "");
 
-// Scoped to the three namespaces the theme both defines and consumes. Names
-// outside them (--row-odd-bg-color, --status-image, --menu-*, every --bs-*) are
-// somebody else's contract: the theme supplies values and upstream's own sheets
-// read them, so "unused here" says nothing about them.
+// The namespaces the theme both defines and reads; other names are
+// upstream's contract.
 export const OWNED = /^--(?:dracula|alucard|functional|variant|font|icon)-/;
 
 export function definitions(text) {
+	text = withoutComments(text);
 	const found = new Set();
 	// A definition follows the start of a line, a `{` or a `;`.
 	for (const m of text.matchAll(/(?:^|[{;])\s*(--[a-zA-Z0-9-]+)\s*:/gm))
@@ -53,6 +40,7 @@ export function definitions(text) {
 }
 
 export function references(text) {
+	text = withoutComments(text);
 	const found = new Set();
 	// `\s*` after `var(` is load-bearing: upstream and this theme both wrap
 	// long var() calls across lines, and the name can start on the next one.
@@ -60,9 +48,7 @@ export function references(text) {
 	return found;
 }
 
-// Follows the @import URLs from a set of entry sheets, so a sheet added to one
-// interface's entry point and forgotten at the other is found by a test rather
-// than by a reader's phone.
+// Follows the @import URLs from a set of entry sheets.
 export function reachableFrom(entries) {
 	const seen = new Set();
 	for (const queue = [...entries]; queue.length;) {

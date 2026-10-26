@@ -1,18 +1,7 @@
-// Unit tests for the pure functions in Dracula/init.js.
-//
-// The shipped file cannot be a module: ruTorrent reads it off disk and splices
-// it into a PHP response (`plugins/theme/init.php:22`), so an `export` would be
-// a syntax error in the page. Top-level `function` declarations do become
-// properties of the global object, which is the trick here — node:vm evaluates
-// the real file in a sandbox and the functions are read back off it. Nothing in
-// Dracula/ changes to make this work.
-//
-// Zero dependencies: node:test, node:assert and node:vm are all stdlib. Run
-// with `node --test` from the repo root.
-//
-// Only the pure functions are tested. The DOM-wrapping ones are left alone
-// deliberately: their interesting failures are wrap ordering against other
-// plugins and position in the cascade, and a mock reproduces neither.
+// Unit tests for the pure functions in Dracula/init.js. ruTorrent splices the
+// file into a PHP response, so it cannot be a module: node:vm evaluates the
+// real file and reads the top-level functions off the sandbox. The
+// DOM-wrapping functions are not tested.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -27,10 +16,8 @@ const SRC = join(
 	"init.js",
 );
 
-// The ruTorrent and browser surface init.js touches while it is being
-// evaluated. When the theme reaches for a new global at module scope this
-// throws and a line has to be added here — the price of testing the shipped
-// file unmodified.
+// The globals init.js touches at module scope; a new one has to be added
+// here.
 function loadTheme() {
 	const noop = () => {};
 	const sandbox = {
@@ -45,9 +32,7 @@ function loadTheme() {
 		$: undefined,
 		console: { warn: noop, log: noop },
 		document: {
-			// A palette colour is read by applying the name to a throwaway element
-			// and reading it back, so the root has to accept one and the element has
-			// to know where it was put.
+			// A palette color is read through a throwaway element.
 			documentElement: { appendChild: noop, removeChild: noop },
 			addEventListener: noop,
 			querySelectorAll: () => [],
@@ -65,8 +50,7 @@ function loadTheme() {
 		MutationObserver: function () {
 			return { observe: noop, disconnect: noop };
 		},
-		// `color` empty is a palette that has not loaded, which is what every
-		// caller's fallback is for.
+		// An empty `color` is a palette that has not loaded.
 		getComputedStyle: () => ({ getPropertyValue: () => "", color: "" }),
 		Image: function () {},
 		matchMedia: () => ({
@@ -83,9 +67,7 @@ function loadTheme() {
 
 const theme = loadTheme();
 
-// Evaluating the file at all is a smoke test: a syntax error or a module-scope
-// crash fails the run here rather than on every page the theme is installed
-// on.
+// Evaluating the file is a smoke test.
 test("init.js evaluates against a stub ruTorrent and exposes its helpers", () => {
 	for (const fn of [
 		"draculaRatioLimit",
@@ -111,8 +93,7 @@ test("the theme version is a plain semver string", () => {
 	assert.match(theme.DRACULA_RUTORRENT_MIN, /^\d+\.\d+\.\d+$/);
 });
 
-// The trap this guards is "5.10" against "5.9": below it as text, above it as a
-// version, and ruTorrent is already past 5.9.
+// "5.10" sorts below "5.9" as text.
 test("draculaOlderThan compares versions as numbers, not as text", () => {
 	assert.equal(theme.draculaOlderThan("5.1.12", "5.2.0"), true);
 	assert.equal(theme.draculaOlderThan("5.2.0", "5.2.0"), false);
@@ -124,11 +105,8 @@ test("draculaOlderThan compares versions as numbers, not as text", () => {
 	assert.equal(theme.draculaOlderThan("5.2", "5.2.0"), false);
 });
 
-// The pairs are `mnu_add` against `mnu_create` as ruTorrent 5.3.12 and its
-// create plugin ship them. Word order, script and casing all differ across
-// them, and splitting on whitespace is what carries the derivation through:
-// German leads with the noun, Korean and Chinese space it off, Serbian writes
-// it in Cyrillic with one r.
+// The `mnu_add` and `mnu_create` labels as ruTorrent and its create plugin
+// ship them.
 test("draculaSharedWords finds the noun whatever the language does with it", () => {
 	const cases = [
 		["Add Torrent", "Create Torrent", ["torrent"]],
@@ -138,13 +116,10 @@ test("draculaSharedWords finds the noun whatever the language does with it", () 
 		["添加 Torrent", "创建 Torrent", ["torrent"]],
 		["Torrent hozzáadása", "Torrent létrehozása", ["torrent"]],
 		["Додај торент", "Направи торент", ["торент"]],
-		// French shares the article too, and dropping both is what gets
-		// "Ajouter un torrent" down to a label that fits a third of a phone.
+		// French shares the article too.
 		["Ajouter un torrent", "Créer un torrent", ["un", "torrent"]],
 	];
-	// `Array.from` re-homes the result: node:vm gives the sandbox its own
-	// realm, so an array built in there fails a strict deep compare against one
-	// built out here on its prototype alone.
+	// `Array.from` re-homes the result: node:vm gives the sandbox its own realm.
 	for (const [add, create, want] of cases)
 		assert.deepEqual(
 			Array.from(theme.draculaSharedWords(add, create)),
@@ -153,9 +128,7 @@ test("draculaSharedWords finds the noun whatever the language does with it", () 
 		);
 });
 
-// Polish translates neither label with the noun; Latvian and Bengali translate
-// only one of the two, so the spellings never meet. Nothing shared means
-// nothing dropped — the stylesheet clips those instead.
+// Labels that share nothing are left to the stylesheet to clip.
 test("draculaSharedWords finds nothing rather than guessing", () => {
 	assert.deepEqual(Array.from(theme.draculaSharedWords("Dodaj", "Utwórz")), []);
 	assert.deepEqual(
@@ -169,8 +142,7 @@ test("draculaSharedWords finds nothing rather than guessing", () => {
 	);
 });
 
-// Only buttons a plugin adds carry the dots in the label; the ones ruTorrent
-// builds keep them in the tooltip, which the panel never shows.
+// Only plugin buttons carry the dots in the label.
 test("draculaTrimEllipsis takes the dots a plugin writes into a label", () => {
 	assert.equal(
 		theme.draculaTrimEllipsis("Create Torrent..."),
@@ -199,9 +171,7 @@ test("draculaDropWords takes the noun and leaves the verb", () => {
 	assert.equal(theme.draculaDropWords("Remove", []), "Remove");
 });
 
-// The order the panel applies them in, and the reason it is that order: the
-// noun is compared as a bare word, which "Torrent..." is not until the dots
-// come off.
+// Trimming comes first: the noun is compared as a bare word.
 test("trimming before dropping is what shortens a plugin's label", () => {
 	const words = theme.draculaSharedWords("Add Torrent", "Create Torrent");
 	assert.equal(
@@ -218,8 +188,7 @@ test("draculaDropWords never empties a label", () => {
 	assert.equal(theme.draculaDropWords("Torrent", ["torrent"]), "Torrent");
 });
 
-// The budget is by area, so a small canvas is allowed to be dense: a flat
-// ceiling of 4 leaves the 100x20 status-bar meter five times too small.
+// The budget is by area, so a small canvas may be dense.
 test("draculaRatioLimit: a small meter gets all the density it asks for", () => {
 	assert.ok(theme.draculaRatioLimit(100, 20) > 10);
 });
@@ -242,8 +211,7 @@ test("draculaRatioLimit: stays inside the 8,000,000 pixel budget", () => {
 	}
 });
 
-// An allowlist on purpose: an unfamiliar phrasing must land in the loud bucket,
-// never the quiet one.
+// An allowlist: an unknown phrasing lands in the loud bucket.
 test("draculaMinorError: announce noise and a tracker takedown are minor", () => {
 	assert.equal(
 		theme.draculaMinorError({ msg: "Tracker: [network error: ETIMEDOUT]" }),
@@ -255,8 +223,7 @@ test("draculaMinorError: announce noise and a tracker takedown are minor", () =>
 		}),
 		true,
 	);
-	// chkstate arrives from rTorrent as a string; the plugin compares loosely,
-	// and so must this.
+	// `chkstate` arrives as a string.
 	assert.equal(theme.draculaMinorError({ chkstate: "4" }), true);
 	assert.equal(theme.draculaMinorError({ chkstate: 4 }), true);
 });
@@ -299,7 +266,7 @@ test("draculaStoppedTorrent: only started, checking or hashing count as running"
 	assert.equal(theme.draculaStoppedTorrent({ state: 3 }), false); // started|paused
 	assert.equal(theme.draculaStoppedTorrent({ state: 4 }), false);
 	assert.equal(theme.draculaStoppedTorrent({ state: 8 }), false);
-	assert.equal(theme.draculaStoppedTorrent({ state: 19 }), false); // the alpine case
+	assert.equal(theme.draculaStoppedTorrent({ state: 19 }), false);
 });
 
 // The profile carries a width for every column whether or not anyone chose it,
@@ -336,9 +303,7 @@ test("draculaIconKind: only tracklabels URLs classify, and by their parameter", 
 	assert.equal(theme.draculaIconKind(null), null);
 });
 
-// The Trackers tab keeps the icon's URL in an inline background rather than in
-// an attribute, so the URL has to be taken back out of a CSS value before
-// draculaIconKind can judge it.
+// The Trackers tab keeps the icon URL in an inline background.
 test("draculaCssUrl: unwraps a background whatever the browser quoted it with", () => {
 	const target = "plugins/tracklabels/action.php?tracker=debian.org";
 	assert.equal(theme.draculaCssUrl(`url("${target}")`), target);
@@ -347,8 +312,6 @@ test("draculaCssUrl: unwraps a background whatever the browser quoted it with", 
 	assert.equal(theme.draculaCssUrl(`  url( "${target}" )  `), target);
 });
 
-// Anything without exactly one URL has no icon to judge, and answering with a
-// fragment would hand draculaIconKind something it could misread.
 test("draculaCssUrl: anything that is not one plain url() answers empty", () => {
 	assert.equal(theme.draculaCssUrl("none"), "");
 	assert.equal(theme.draculaCssUrl(""), "");
@@ -359,9 +322,7 @@ test("draculaCssUrl: anything that is not one plain url() answers empty", () => 
 	assert.equal(theme.draculaCssUrl("url(a.png), url(b.png)"), "");
 });
 
-// The plugin writes ` ↑`/` ↓` before theConverter.speed and a line can carry
-// both, upload first (`plugins/mobile/init.js:1906`-`:1907`). Everything below
-// is the shape that template produces.
+// The plugin writes ` ↑` and ` ↓` before `theConverter.speed`, upload first.
 test("draculaMobileRateAt: finds a reading, arrow and unit included", () => {
 	const line = "Downloading ↓130.0 KiB/s | ETA 5h 5m";
 	const found = theme.draculaMobileRateAt(line, 0);
@@ -396,8 +357,7 @@ test("draculaMobileRateAt: a line without a rate finds nothing", () => {
 	assert.equal(theme.draculaMobileRateAt("Seeding ↓", 0), null);
 });
 
-// rTorrent 0.9.8 reports no open file descriptors, upstream hides that count
-// rather than writing a zero, and the tooltip used to print the label anyway.
+// rTorrent 0.9.8 reports no open file count, and upstream hides it.
 test("draculaCountsTooltip: a count with no value takes its label with it", () => {
 	assert.equal(
 		theme.draculaCountsTooltip("Open Connections", [
@@ -456,10 +416,8 @@ test("draculaTorrentNote: nothing to report leaves the name alone", () => {
 	assert.equal(theme.draculaTorrentNote("alpine.iso", undefined), "alpine.iso");
 });
 
-// The mobile plugin writes its whole status line as one string, so the ratio's
-// value has to be found in text before it can be given an element and coloured.
-// Everything below is what a real line looks like, taken off the plugin's own
-// template at `plugins/mobile/init.js:1907`.
+// The plugin writes the status line as one string; the lines below follow
+// its template.
 
 test("draculaMobileRatioAt: finds the value, whatever precedes it", () => {
 	const at = (text, word = "Ratio") => theme.draculaMobileRatioAt(text, word);

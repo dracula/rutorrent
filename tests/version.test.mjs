@@ -1,17 +1,6 @@
-// One version, written in twenty-one places.
-//
-// Each of the nine files carries a human-readable "Version X.Y.Z" line in its
-// header, the three sheets ruTorrent loads each stamp a machine-readable custom
-// property, init.js carries the constant it compares them against at runtime,
-// and the eight @import URLs carry it as their cache-buster. All of them have to
-// agree, or the startup check cries wolf at the user and an edited sheet is
-// served from cache.
-//
-// The five imported sheets — palette.css, fonts.css, icons.css, mobile.css and
-// legacy.css — stamp no custom property: they are fetched under the version in
-// the URL that imports them, so they cannot go stale on their own — see the
-// header of palette.css. A wrong version in one of those headers is therefore
-// invisible at runtime, and these tests are the only thing that reads it.
+// One version in many places: each file's header, the three stamped sheets,
+// init.js and the @import URLs. The five imported sheets stamp nothing at
+// runtime, so only these tests read their headers.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -64,16 +53,12 @@ test("the machine-readable stamps agree with the headers", () => {
 	);
 });
 
-// An @import whose version has stopped moving is the exact failure the URLs
-// were given a version to prevent: the importing sheet arrives new, names the
-// old palette, and the browser answers from cache. Nothing about the page looks
-// broken, so only this test would notice.
+// An @import whose version stops moving is served from cache.
 test("every @import asks for the version the theme is on", () => {
 	const declared = declaredVersion()[1];
 	let found = 0;
 	for (const name of SHEETS) {
-		// Every @import, not only the ones already written the right way — a new
-		// one added without a version is exactly what this has to catch.
+		// Every @import, including a new one.
 		for (const m of withoutComments(read(name)).matchAll(/@import\s+[^;]*;/g)) {
 			found++;
 			const statement = m[0].replace(/\s+/g, " ").trim();
@@ -90,13 +75,7 @@ test("every @import asks for the version the theme is on", () => {
 			);
 		}
 	}
-	// Exact, not a floor: another import is a decision, and it should cost
-	// whoever makes it a look at this test. Eight of them — the palette, the
-	// fonts and the icons into style.css, and those three plus the mobile rules
-	// and the pre-5.2.0 rules into plugins.css, which is the only sheet the
-	// mobile plugin's UI ever loads. The first three are named twice on purpose:
-	// same URLs, fetched once, and the desktop would otherwise wait for config
-	// time to get them.
+	// Exact: another import is a decision worth a look at this test.
 	assert.equal(
 		found,
 		8,
@@ -104,10 +83,7 @@ test("every @import asks for the version the theme is on", () => {
 	);
 });
 
-// The imports are the only way palette.css, fonts.css, icons.css and mobile.css
-// reach a page: nothing links them, and the mobile UI loads no sheet of the
-// theme's but plugins.css. Losing one costs the colours, the typeface or the
-// icons everywhere at once, and nothing else in this suite would notice.
+// The imports are the only way the imported sheets reach a page.
 test("the sheets that carry the imports still carry them", () => {
 	const carries = (sheet, target) =>
 		assert.match(

@@ -2,40 +2,10 @@
  * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
- * Every icon the theme owns, in one file because the two interfaces load
- * different sheets and both need them: style.css never reaches the mobile
- * plugin's UI, plugins.css reaches both, and each imports this.
- *
- * Two sets, and the difference is how they are painted.
- *
- * **Pictures**, the first block, carry their own palette colours and are used
- * as `background-image`. They are the desktop's, drawn inside a circle where
- * they sit in a row of round toolbar buttons.
- *
- * **Stencils**, the second block, carry no colour at all. A rule applies one
- * through `mask-image` and paints it with `background-color: currentColor`, so
- * the glyph takes whatever colour its context gives it. That is what the icon
- * font in the mobile plugin did, and it is why they replace it cleanly.
- *
- * A mask reads the alpha channel, and Phosphor draws the duotone backdrop as
- * `opacity="0.2"`. So the two tones survive the mask as two alpha levels — one
- * colour, still two tones. `fill="currentColor"` is left as Phosphor writes it
- * and never reaches the mask.
- *
- * Four of these carry no backdrop. Phosphor draws it two ways: as the glyph's
- * own silhouette, which is what the second tone is for, and as a container
- * square behind a mark that has no silhouette — a plus, a cross, an arrow. As a
- * mask the first reads as a duotone icon and the second as a tile with a mark
- * stamped on it, so the container kind is dropped and those four are one tone.
- *
- * Flat, where the desktop's counterparts are drawn inside a circle. The circle
- * belongs to the desktop toolbar, where the buttons are round and a row of them
- * reads as one control; the mobile bar has no such row, and a circled glyph
- * beside a flat one there reads as a mistake.
- *
- * No version stamp on :root here: this file is fetched under the version in the
- * @import URL that pulls it in, so it cannot go stale on its own — see the
- * header of palette.css.
+ * Imported by style.css and plugins.css. Pictures carry their own colors and
+ * paint as `background-image`. Stencils carry none and paint through
+ * `mask-image` with `currentColor`; a mask reads alpha, so the duotone backdrop
+ * survives as a second tone.
  */
 
 :root {
@@ -53,8 +23,6 @@
   /* https://phosphoricons.com/?q=pause-circle */
   --icon-pause: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%23FFB86C'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM112,96v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0Z' fill='%23FFB86C'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=stop-circle */
-  /* Circle rather than the bare `stop` square: at 28px every other glyph in
-     the row carries a ring, and a square alone reads as a gap in the rhythm. */
   --icon-stop: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%23FF5555'/%3E%3Cpath d='M232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128ZM160,88H96a8,8,0,0,0-8,8v64a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V96A8,8,0,0,0,160,88Zm-8,64H104V104h48Z' fill='%23FF5555'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=arrow-fat-up */
   --icon-move-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,120H176v88a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V120H32l96-96Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v80a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v88H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Z' fill='%236272A4'/%3E%3C/svg%3E");
@@ -71,18 +39,8 @@
   /* https://phosphoricons.com/?q=puzzle-piece */
   --icon-plugins: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M204,168a28,28,0,0,0,12-2.69V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V165.31a28,28,0,1,1,0-50.62V72a8,8,0,0,1,8-8h46.69a28,28,0,1,1,50.61,0H208a8,8,0,0,1,8,8v42.69A28,28,0,1,0,204,168Z' opacity='0.2' fill='%23FFB86C'/%3E%3Cpath d='M220.27,158.54a8,8,0,0,0-7.7-.46,20,20,0,1,1,0-36.16A8,8,0,0,0,224,114.69V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36.15,36.15,0,0,0-11.36-26.25,36,36,0,0,0-60.55,23.63,36.56,36.56,0,0,0,.14,6.62H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36.12,36.12,0,0,0-26.24,11.36,35.7,35.7,0,0,0-9.69,27,36.08,36.08,0,0,0,33.31,33.6,36.56,36.56,0,0,0,6.62-.14V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V165.31A8,8,0,0,0,220.27,158.54ZM208,208H64V165.31a8,8,0,0,0-11.43-7.23,20,20,0,1,1,0-36.16A8,8,0,0,0,64,114.69V72h46.69a8,8,0,0,0,7.23-11.43,20,20,0,1,1,36.16,0A8,8,0,0,0,161.31,72H208v32.23a35.68,35.68,0,0,0-6.62-.14A36,36,0,0,0,204,176a35.36,35.36,0,0,0,4-.22Z' fill='%23FFB86C'/%3E%3C/svg%3E");
 
-  /* Mobile navbar toggler, the one glyph here that is not Phosphor: it sits
-     beside the sidebar button, which carries Bootstrap's own bi-three-dots at
-     currentColor, and a duotone circle next to a 2px stroke at 16px reads as
-     two icon sets in one bar. Bootstrap's hamburger with the stroke moved onto
-     the palette — upstream draws it in rgba(33,37,41,0.75), which composites to
-     #313848 on the button: 2.49:1, under the 3:1 a UI graphic needs.
-
-     Two variants, the pair .dlg-close also keeps, because a data-URI cannot
-     follow currentColor the way a neighbouring inline SVG does. The button goes
-     purple on hover with the text dropped to the background colour, so the
-     glyph makes the same trip: 4.41:1 on the comment-coloured button, 5.81:1 on
-     the purple one. */
+  /* Bootstrap's hamburger, not Phosphor. Two variants, because a data URI
+     cannot follow currentColor. */
   --icon-hamburger-fg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23F8F8F2' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
   --icon-hamburger-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23282A36' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 
@@ -91,13 +49,8 @@
   --icon-caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath d='M208,96l-80,80L48,96Z' opacity='0.2' fill='%23F8F8F2'/%3E%3Cpath d='M215.39,92.94A8,8,0,0,0,208,88H48a8,8,0,0,0-5.66,13.66l80,80a8,8,0,0,0,11.32,0l80-80A8,8,0,0,0,215.39,92.94ZM128,164.69,67.31,104H188.69Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
 
   /* Dialog icons */
-  /* Dialog close: the same Phosphor x-circle the error status uses — one
-     shape, one definition. Plain crosses read as debris next to the
-     circular icons everywhere else in the theme. */
   --icon-close-red: var(--icon-status-error);
   --icon-close-fg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%23F8F8F2'/%3E%3Cpath d='M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
-  /* Cyan, the hue the download indicators use — these dialogs pull an existing
-     torrent file in from a feed or a search hit */
   /* https://phosphoricons.com/?q=file-arrow-down */
   --icon-file-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z' opacity='0.2' fill='%238BE9FD'/%3E%3Cpath d='M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-42.34-61.66a8,8,0,0,1,0,11.32l-24,24a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,164.69V120a8,8,0,0,1,16,0v44.69l10.34-10.35A8,8,0,0,1,157.66,154.34Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=magnet-straight */
@@ -106,22 +59,14 @@
   --icon-user-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M168,100a60,60,0,1,1-60-60A60,60,0,0,1,168,100Z' opacity='0.2' fill='%23BD93F9'/%3E%3Cpath d='M256,136a8,8,0,0,1-8,8H232v16a8,8,0,0,1-16,0V144H200a8,8,0,0,1,0-16h16V112a8,8,0,0,1,16,0v16h16A8,8,0,0,1,256,136Zm-57.87,58.85a8,8,0,0,1-12.26,10.3C165.75,181.19,138.09,168,108,168s-57.75,13.19-77.87,37.15a8,8,0,0,1-12.25-10.3c14.94-17.78,33.52-30.41,54.17-37.17a68,68,0,1,1,71.9,0C164.6,164.44,183.18,177.07,198.13,194.85ZM108,152a52,52,0,1,0-52-52A52.06,52.06,0,0,0,108,152Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=info */
   --icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M144,176a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176Zm88-48A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128ZM124,96a12,12,0,1,0-12-12A12,12,0,0,0,124,96Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
-  /* Purple, the accent the sidebar gives a category — this dialog assigns one */
   /* https://phosphoricons.com/?q=tag */
   --icon-tag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M237.66,153,153,237.66a8,8,0,0,1-11.31,0L42.34,138.34A8,8,0,0,1,40,132.69V40h92.69a8,8,0,0,1,5.65,2.34l99.32,99.32A8,8,0,0,1,237.66,153Z' opacity='0.2' fill='%23BD93F9'/%3E%3Cpath d='M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=terminal-window */
   --icon-console: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,56V200a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H216A8,8,0,0,1,224,56Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M128,128a8,8,0,0,1-3,6.25l-40,32a8,8,0,1,1-10-12.5L107.19,128,75,102.25a8,8,0,1,1,10-12.5l40,32A8,8,0,0,1,128,128Zm48,24H136a8,8,0,0,0,0,16h40a8,8,0,0,0,0-16Zm56-96V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56ZM216,200V56H40V200H216Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
-  /* The confirmation dialog's warning is the same Phosphor warning-circle the
-     incomplete torrent status already carries — one shape, one definition. */
   --icon-warning: var(--icon-status-incompleted);
 
-  /* Panel label status icons. Only the ones the sidebar alone uses live here;
-     the five it shares with the torrent list (down, completed, paused, error,
-     rss) are defined once, further down. */
-  /* The sidebar's Stopped row: a square reads as stopped where a pause glyph
-     reads as "will continue". Orange, unlike --icon-status-stopped-quiet
-     further down, which is the same square in Comment for the torrent list — a
-     filter is a control and stays loud, a stopped row is a state and recedes. */
+  /* Status icons only the sidebar uses; those shared with the torrent list are
+     below. */
   /* https://phosphoricons.com/?q=stop-circle (Orange) */
   --icon-status-stopped: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,32a96,96,0,1,0,96,96A96,96,0,0,0,128,32Zm32,128H96V96h64Z' opacity='0.2' fill='%23FFB86C'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM160,88H96a8,8,0,0,0-8,8v64a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V96A8,8,0,0,0,160,88Zm-8,64H104V104h48Z' fill='%23FFB86C'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=circle (Comment — inactive/stopped) */
@@ -139,9 +84,7 @@
   /* https://phosphoricons.com/?q=folder */
   --icon-share: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,80H32V56a8,8,0,0,1,8-8H92.69a8,8,0,0,1,5.65,2.34Z' opacity='0.2' fill='%2350FA7B'/%3E%3Cpath d='M216,72H131.31L104,44.69A15.86,15.86,0,0,0,92.69,40H40A16,16,0,0,0,24,56V200.62A15.4,15.4,0,0,0,39.38,216H216.89A15.13,15.13,0,0,0,232,200.89V88A16,16,0,0,0,216,72ZM92.69,56l16,16H40V56ZM216,200H40V88H216Z' fill='%23F8F8F2'/%3E%3C/svg%3E");
 
-  /* File-type icons, chosen from the name in init.js. The hue is on both
-     paths so the kind reads at a glance; the glyph differs too, so nothing
-     here depends on colour alone. */
+  /* File-type icons, chosen from the name in init.js. */
   /* https://phosphoricons.com/?q=arrow-fat-line-up (Comment — the parent entry is navigation, not content) */
   --icon-file-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,120H176v64H80V120H32l96-96Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v56a8,8,0,0,0,8,8h96a8,8,0,0,0,8-8V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v56H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Zm8,104a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,216Z' fill='%236272A4'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=file-zip (Yellow — archive) */
@@ -179,30 +122,16 @@
   /* https://phosphoricons.com/?q=sigma */
   --icon-sigma: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M192,48V208H64l64-80L64,48Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M184,72V56H80.65l53.6,67a8,8,0,0,1,0,10l-53.6,67H184V184a8,8,0,0,1,16,0v24a8,8,0,0,1-8,8H64a8,8,0,0,1-6.25-13l60-75-60-75A8,8,0,0,1,64,40H192a8,8,0,0,1,8,8V72a8,8,0,0,1-16,0Z' fill='%236272A4'/%3E%3C/svg%3E");
 
-  /* Torrent status icons (stable.css). Five — down, completed, paused, error
-     and rss — are shared with the sidebar's panel labels, which is why the
-     block above does not repeat them.
-
-     Six are the same picture as a control further up, down to the byte: a
-     status is drawn with the glyph of the action that produces it. Each points
-     at the earlier definition rather than carrying a copy, so the name still
-     says what the icon is for while the artwork exists once. Point a name at a
-     real url() again the day the two are meant to diverge. */
+  /* Torrent status icons (stable.css). Several point at an earlier definition
+     of the same picture. */
   /* https://phosphoricons.com/?q=arrow-circle-down (Cyan) */
   --icon-status-down: var(--icon-download-speed);
   /* https://phosphoricons.com/?q=arrow-circle-up */
   --icon-status-up: var(--icon-upload-speed);
   /* https://phosphoricons.com/?q=warning-circle */
   --icon-status-incompleted: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%23FFB86C'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z' fill='%23FFB86C'/%3E%3C/svg%3E");
-  /* The two rows that are not problems: something stopped, something paused.
-     They keep their shapes and lose the orange, so that in this column colour
-     carries severity and nothing else — green is healthy, Comment is at rest,
-     orange wants attention, red is broken.
-
-     Artwork duplicated rather than pointed at the originals, on purpose:
-     --icon-status-stopped is the sidebar's Stopped filter and --icon-pause the
-     toolbar's Pause button, and both stay orange where they are. A control and
-     a state are allowed to diverge — see the note above. */
+  /* Stopped and paused, in Comment. Duplicated on purpose: the sidebar filter
+     and the Pause button stay orange. */
   /* https://phosphoricons.com/?q=stop-circle (Comment) */
   --icon-status-stopped-quiet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,32a96,96,0,1,0,96,96A96,96,0,0,0,128,32Zm32,128H96V96h64Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM160,88H96a8,8,0,0,0-8,8v64a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V96A8,8,0,0,0,160,88Zm-8,64H104V104h48Z' fill='%236272A4'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=pause-circle (Comment) */
@@ -219,9 +148,7 @@
   --icon-status-checking: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%23F1FA8C'/%3E%3Cpath d='M136,32V64a8,8,0,0,1-16,0V32a8,8,0,0,1,16,0Zm88,88H192a8,8,0,0,0,0,16h32a8,8,0,0,0,0-16Zm-45.09,47.6a8,8,0,0,0-11.31,11.31l22.62,22.63a8,8,0,0,0,11.32-11.32ZM128,184a8,8,0,0,0-8,8v32a8,8,0,0,0,16,0V192A8,8,0,0,0,128,184ZM77.09,167.6,54.46,190.22a8,8,0,0,0,11.32,11.32L88.4,178.91A8,8,0,0,0,77.09,167.6ZM72,128a8,8,0,0,0-8-8H32a8,8,0,0,0,0,16H64A8,8,0,0,0,72,128ZM65.78,54.46A8,8,0,0,0,54.46,65.78L77.09,88.4A8,8,0,0,0,88.4,77.09Z' fill='%23F1FA8C'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=rss (Orange) */
   --icon-status-rss: var(--icon-rss);
-  /* A feed switched off: rss/init.js swaps the icon name when
-     rssLabels[id].enabled === 0. Same glyph in Comment instead of Orange — the
-     feed is still listed, it just has nothing to say. */
+  /* rss/init.js swaps to this icon for a disabled feed. */
   --icon-status-rss-dis: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M216,200H56V40A160,160,0,0,1,216,200Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M106.91,149.09A71.53,71.53,0,0,1,128,200a8,8,0,0,1-16,0,56,56,0,0,0-56-56,8,8,0,0,1,0-16A71.53,71.53,0,0,1,106.91,149.09ZM56,80a8,8,0,0,0,0,16A104,104,0,0,1,160,200a8,8,0,0,0,16,0A120,120,0,0,0,56,80Zm118.79,1.21A166.89,166.89,0,0,0,56,32a8,8,0,0,0,0,16A151,151,0,0,1,163.48,92.52,151,151,0,0,1,208,200a8,8,0,0,0,16,0A166.9,166.9,0,0,0,174.79,81.21ZM60,184a12,12,0,1,0,12,12A12,12,0,0,0,60,184Z' fill='%236272A4'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=folder (Orange) — a group of feeds */
   --icon-status-rss-group: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M216,88V200a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H93.33a8,8,0,0,1,4.8,1.6l27.74,20.8a8,8,0,0,0,4.8,1.6H208A8,8,0,0,1,216,88Z' opacity='0.2' fill='%23FFB86C'/%3E%3Cpath d='M216,72H131.31L104,44.69A15.86,15.86,0,0,0,92.69,40H40A16,16,0,0,0,24,56V200.62A15.4,15.4,0,0,0,39.38,216H216.89A15.13,15.13,0,0,0,232,200.89V88A16,16,0,0,0,216,72ZM92.69,56l16,16H40V56ZM216,200H40V88H216Z' fill='%23FFB86C'/%3E%3C/svg%3E");
@@ -235,11 +162,8 @@
   --icon-port-open: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 256 256'%3E%3Ccircle cx='128' cy='128' r='96' fill='%2350FA7B' opacity='0.2'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z' fill='%2350FA7B'/%3E%3C/svg%3E");
   /* https://phosphoricons.com/?q=prohibit */
   --icon-port-closed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 256 256'%3E%3Ccircle cx='128' cy='128' r='96' fill='%23FF5555' opacity='0.2'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z' fill='%23FF5555'/%3E%3C/svg%3E");
-  /* Port status is still being checked — muted, so it does not read as a verdict */
   --icon-port-unknown: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 256 256'%3E%3Ccircle cx='128' cy='128' r='96' fill='%236272A4' opacity='0.2'/%3E%3Cpath d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z' fill='%236272A4'/%3E%3C/svg%3E");
 
-  /* The tracker list falls back to this when a tracker has no domain to fetch
-     a favicon for — in practice the dht:// row. */
   /* https://phosphoricons.com/?q=share-network */
   --icon-peer-network: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M208,200a32,32,0,1,1-32-32A32,32,0,0,1,208,200ZM176,88a32,32,0,1,0-32-32A32,32,0,0,0,176,88Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M176,160a39.89,39.89,0,0,0-28.62,12.09l-46.1-29.63a39.8,39.8,0,0,0,0-28.92l46.1-29.63a40,40,0,1,0-8.66-13.45l-46.1,29.63a40,40,0,1,0,0,55.82l46.1,29.63A40,40,0,1,0,176,160Zm0-128a24,24,0,1,1-24,24A24,24,0,0,1,176,32ZM64,152a24,24,0,1,1,24-24A24,24,0,0,1,64,152Zm112,72a24,24,0,1,1,24-24A24,24,0,0,1,176,224Z' fill='%236272A4'/%3E%3C/svg%3E");
 
@@ -247,54 +171,54 @@
   --icon-no-label: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z' opacity='0.2' fill='%236272A4'/%3E%3Cpath d='M165.66,154.34a8,8,0,0,1-11.32,11.32l-64-64a8,8,0,0,1,11.32-11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z' fill='%236272A4'/%3E%3C/svg%3E");
 
   /* === Stencils, for the mobile plugin's interface === */
-  /* house-line — bottom bar, Home */
+  /* house-line: bottom bar, Home */
   --stencil-home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M216,116.69V216H152V152H104v64H40V116.69l82.34-82.35a8,8,0,0,1,11.32,0Z' opacity='0.2'/%3E%3Cpath d='M240,208H224V136l2.34,2.34A8,8,0,0,0,237.66,127L139.31,28.68a16,16,0,0,0-22.62,0L18.34,127a8,8,0,0,0,11.32,11.31L32,136v72H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM48,120l80-80,80,80v88H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48Zm96,88H112V160h32Z'/%3E%3C/svg%3E");
 
-  /* plus, backdrop dropped — bottom bar, Add */
+  /* plus, backdrop dropped: bottom bar, Add */
   --stencil-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z'/%3E%3C/svg%3E");
 
-  /* play — bottom bar, Start */
+  /* play: bottom bar, Start */
   --stencil-start: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M228.23,134.69,84.15,222.81A8,8,0,0,1,72,216.12V39.88a8,8,0,0,1,12.15-6.69l144.08,88.12A7.82,7.82,0,0,1,228.23,134.69Z' opacity='0.2'/%3E%3Cpath d='M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z'/%3E%3C/svg%3E");
 
-  /* pause — bottom bar, Pause */
+  /* pause: bottom bar, Pause */
   --stencil-pause: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M208,48V208a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8h40A8,8,0,0,1,208,48ZM96,40H56a8,8,0,0,0-8,8V208a8,8,0,0,0,8,8H96a8,8,0,0,0,8-8V48A8,8,0,0,0,96,40Z' opacity='0.2'/%3E%3Cpath d='M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z'/%3E%3C/svg%3E");
 
-  /* stop — bottom bar, Stop */
+  /* stop: bottom bar, Stop */
   --stencil-stop: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M208,56V200a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H200A8,8,0,0,1,208,56Z' opacity='0.2'/%3E%3Cpath d='M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,160H56V56H200V200Z'/%3E%3C/svg%3E");
 
-  /* trash — bottom bar, Delete */
+  /* trash: bottom bar, Delete */
   --stencil-remove: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M200,56V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V56Z' opacity='0.2'/%3E%3Cpath d='M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z'/%3E%3C/svg%3E");
 
-  /* upload-simple, backdrop dropped — bottom bar, upload speed */
+  /* upload-simple, backdrop dropped: bottom bar, upload speed */
   --stencil-upload: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z'/%3E%3C/svg%3E");
 
-  /* download-simple, backdrop dropped — bottom bar, download speed */
+  /* download-simple, backdrop dropped: bottom bar, download speed */
   --stencil-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z'/%3E%3C/svg%3E");
 
-  /* arrows-down-up — toolbar, Sort */
+  /* arrows-down-up: toolbar, Sort */
   --stencil-sort: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M176,48V208H80V48Z' opacity='0.2'/%3E%3Cpath d='M117.66,170.34a8,8,0,0,1,0,11.32l-32,32a8,8,0,0,1-11.32,0l-32-32a8,8,0,0,1,11.32-11.32L72,188.69V48a8,8,0,0,1,16,0V188.69l18.34-18.35A8,8,0,0,1,117.66,170.34Zm96-96-32-32a8,8,0,0,0-11.32,0l-32,32a8,8,0,0,0,11.32,11.32L168,67.31V208a8,8,0,0,0,16,0V67.31l18.34,18.35a8,8,0,0,0,11.32-11.32Z'/%3E%3C/svg%3E");
 
-  /* arrow-clockwise — toolbar, Refresh */
+  /* arrow-clockwise: toolbar, Refresh */
   --stencil-refresh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M216,128a88,88,0,1,1-88-88A88,88,0,0,1,216,128Z' opacity='0.2'/%3E%3Cpath d='M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z'/%3E%3C/svg%3E");
 
-  /* funnel-simple — filter header */
+  /* funnel-simple: filter header */
   --stencil-filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M232,56V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Z' opacity='0.2'/%3E%3Cpath d='M200,136a8,8,0,0,1-8,8H64a8,8,0,0,1,0-16H192A8,8,0,0,1,200,136Zm32-56H24a8,8,0,0,0,0,16H232a8,8,0,0,0,0-16Zm-80,96H104a8,8,0,0,0,0,16h48a8,8,0,0,0,0-16Z'/%3E%3C/svg%3E");
 
-  /* x, backdrop dropped — search bar, close */
+  /* x, backdrop dropped: search bar, close */
   --stencil-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z'/%3E%3C/svg%3E");
 
-  /* sort-ascending — sort page, ascending */
+  /* sort-ascending: sort page, ascending */
   --stencil-sort-asc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M224,80v88l-24,24H48V64H208A16,16,0,0,1,224,80Z' opacity='0.2'/%3E%3Cpath d='M128,128a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,128ZM48,72H184a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16Zm56,112H48a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm125.66-21.66a8,8,0,0,0-11.32,0L192,188.69V112a8,8,0,0,0-16,0v76.69l-26.34-26.35a8,8,0,0,0-11.32,11.32l40,40a8,8,0,0,0,11.32,0l40-40A8,8,0,0,0,229.66,162.34Z'/%3E%3C/svg%3E");
 
-  /* sort-descending — sort page, descending */
+  /* sort-descending: sort page, descending */
   --stencil-sort-desc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M224,88v88a16,16,0,0,1-16,16H48V64H200Z' opacity='0.2'/%3E%3Cpath d='M40,128a8,8,0,0,1,8-8h72a8,8,0,0,1,0,16H48A8,8,0,0,1,40,128Zm8-56h56a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16ZM184,184H48a8,8,0,0,0,0,16H184a8,8,0,0,0,0-16ZM229.66,82.34l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L176,67.31V144a8,8,0,0,0,16,0V67.31l26.34,26.35a8,8,0,0,0,11.32-11.32Z'/%3E%3C/svg%3E");
 
-  /* check-fat — Finished filter, label OK */
+  /* check-fat: Finished filter, label OK */
   --stencil-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M237.66,85.26l-128.4,128.4a8,8,0,0,1-11.32,0l-71.6-72a8,8,0,0,1,0-11.31l24-24a8,8,0,0,1,11.32,0L104,147.43l98.34-97.09a8,8,0,0,1,11.32,0l24,23.6A8,8,0,0,1,237.66,85.26Z' opacity='0.2'/%3E%3Cpath d='M243.28,68.24l-24-23.56a16,16,0,0,0-22.59,0L104,136.23l-36.69-35.6a16,16,0,0,0-22.58.05l-24,24a16,16,0,0,0,0,22.61l71.62,72a16,16,0,0,0,22.63,0L243.33,90.91A16,16,0,0,0,243.28,68.24ZM103.62,208,32,136l24-24a.6.6,0,0,1,.08.08l42.35,41.09a8,8,0,0,0,11.19,0L208.06,56,232,79.6Z'/%3E%3C/svg%3E");
 
-  /* warning — Error filter */
+  /* warning: Error filter */
   --stencil-warning: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M215.46,216H40.54C27.92,216,20,202.79,26.13,192.09L113.59,40.22c6.3-11,22.52-11,28.82,0l87.46,151.87C236,202.79,228.08,216,215.46,216Z' opacity='0.2'/%3E%3Cpath d='M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z'/%3E%3C/svg%3E");
 
-  /* note-pencil — details, edit label and path */
+  /* note-pencil: details, edit label and path */
   --stencil-edit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='currentColor'%3E%3Cpath d='M200,88l-72,72H96V128l72-72Z' opacity='0.2'/%3E%3Cpath d='M229.66,58.34l-32-32a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,88,128v32a8,8,0,0,0,8,8h32a8,8,0,0,0,5.66-2.34l96-96A8,8,0,0,0,229.66,58.34ZM124.69,152H104V131.31l64-64L188.69,88ZM200,76.69,179.31,56,192,43.31,212.69,64ZM224,128v80a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h80a8,8,0,0,1,0,16H48V208H208V128a8,8,0,0,1,16,0Z'/%3E%3C/svg%3E");
 }

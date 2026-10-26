@@ -2,64 +2,24 @@
  * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
- * Inter's faces and the two stacks that name them, declared once and imported
- * by the sheets that set a font rather than copied into each.
- *
- * A file of its own for the same reason as palette.css: the two interfaces load
- * different sheets. The mobile plugin disables the theme plugin
- * (`plugins/mobile/init.js:2138`), so style.css never arrives there and
- * plugins.css is the only route in — a face declared in style.css reaches the
- * desktop alone.
- *
- * JetBrains Mono's faces stay in style.css, and --font-mono names them only
- * under `html.dracula-desktop`. Nothing in the mobile plugin renders monospace:
- * its markup carries no <code>, <pre> or .font-monospace, and its own sheet
- * names a family only for the icon font. Naming the face on bare :root would
- * still cost that interface 31,432 bytes of a latin subset, because style.css
- * and the log panel it styles are both live on a phone until the mobile plugin
- * disables the theme — see `draculaOfferBundledMono` in init.js.
- *
- * The src paths below are relative to this file, not to the sheet that imports
- * it, so it belongs beside fonts/.
- *
- * No version stamp on :root here — see the header of palette.css.
+ * Imported by style.css and plugins.css: the mobile plugin disables the theme
+ * plugin, so style.css never loads there. JetBrains Mono stays in style.css,
+ * desktop only. The src paths are relative to this file.
  */
 
 :root {
-  /* Sans stack, shared by the desktop body and by the Bootstrap token the
-     mobile plugin's interface is built on, so the two cannot drift onto
-     different faces. */
   --font-sans: "Inter", system-ui, sans-serif;
 
-  /* Monospace stack, shared by the plugin consoles, the chunk map, the log
-     panel and the URL textarea so they do not drift apart. Generic here: the
-     bundled face is added by the rule below, and only where the mark says the
-     theme still has its full sheet set. */
   --font-mono: ui-monospace, monospace;
 }
 
-/* "JetBrainsMono Nerd Font" is in the stack because Nerd Font builds register
-   under their own family name and never under "JetBrains Mono" — a locally
-   installed copy answers to that name alone, and only to it, if the bundled
-   file ever fails. */
+/* Nerd Font builds register under this name, never as "JetBrains Mono". */
 :root.dracula-desktop {
   --font-mono: "JetBrains Mono", "JetBrainsMono Nerd Font", ui-monospace, monospace;
 }
 
-/* Inter, bundled rather than linked. A CDN would tell a third party the IP of
-   everyone who opens their own torrent client, and would leave the typography
-   broken on the LAN-only and VPN-only setups this software usually runs on.
-   The files are in fonts/, under the SIL Open Font License in fonts/OFL.txt —
-   Inter reserves no font name, so the subsets may keep it.
-
-   Seven files rather than one, and not base64 inside this sheet: unicode-range
-   only earns its keep when the subsets are separately fetchable, so a browser
-   downloads just the ranges the page uses. Latin alone is 48KB, Latin plus
-   Cyrillic 67KB, against 219KB for the whole set — and base64 adds a third
-   again and does not compress, woff2 being compressed already.
-
-   One file per range covers every weight: these are variable fonts with a wght
-   axis, which is why the ranges below say `100 900` rather than a number. */
+/* Bundled rather than linked from a CDN, which a LAN-only client cannot reach.
+   One file per unicode range, so a browser fetches only the ranges a page uses. */
 
 @font-face {
   font-family: "Inter";

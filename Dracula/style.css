@@ -6,30 +6,15 @@
  * Icons: Phosphor Icons Duotone (MIT) - https://phosphoricons.com
  */
 
-/* The colours, the typefaces and the icons, so both this sheet and plugins.css
-   can name them without either owning them. The version in the URL is the
-   theme's own, which moves on every release — unlike the `?v=<ruTorrent
-   version>` ruTorrent gives the sheets it loads, under which an edited file
-   keeps its old URL.
-
-   All three are imported here as well as from plugins.css, and deliberately:
-   plugins.css is the only route into the mobile plugin's interface, but it is
-   loaded at config time, some forty milliseconds after this sheet. Importing
-   them here too is what keeps the desktop's colours, faces and icons from
-   arriving late. Same URLs both times, so a browser fetches each once. */
+/* Imported here as well as from plugins.css, which loads later, so the
+   desktop has them with the first sheet. */
 @import url("palette.css?v=0.3.2"); /* x-release-please-version */
 @import url("fonts.css?v=0.3.2"); /* x-release-please-version */
 @import url("icons.css?v=0.3.2"); /* x-release-please-version */
 
-/* === Dracula Palette === */
-
 :root {
-  /* Read back by init.js to catch a stale sheet. ruTorrent serves every sheet
-     under a `?v=<its own version>` URL (`js/plugins.js:3`), so a theme update
-     changes no character of the URL and a browser may keep yesterday's CSS;
-     init.js cannot go stale the same way, being inlined into the PHP response
-     (`plugins/theme/init.php:27`). Each sheet stamps separately, so a set of
-     files from two different releases is caught too. */
+  /* init.js reads these back to catch a stale cached sheet: ruTorrent serves
+     every sheet under its own version, which a theme update does not change. */
   --dracula-version:    "0.3.2"; /* x-release-please-version */
 }
 
@@ -41,14 +26,7 @@
 
 /* === Typography === */
 
-/* JetBrains Mono for the consoles, the chunk map and the URL field, bundled on
-   the same terms as Inter — fonts/OFL-JetBrainsMono.txt, no Reserved Font Name.
-   All six ranges together are 66KB, a third of what Inter costs, and the same
-   unicode-range rule applies: only what a page uses is fetched.
-
-   These faces are declared here rather than in fonts.css, which carries Inter
-   and both stacks, because they are desktop-only: this sheet never loads in the
-   mobile plugin's interface, and nothing there renders monospace. */
+/* Desktop only: style.css never loads in the mobile interface. */
 
 @font-face {
   font-family: "JetBrains Mono";
@@ -113,19 +91,14 @@ html, body {
   font-size: 14px;
 }
 
-/* Upstream sets the face in one rule — `html, body, input, select, button,
-   textarea` at 11px Tahoma — so the controls need the same treatment as the
-   body or every field sits at 11px Tahoma beside a 14px label. font-family and
-   font-size only: font-weight is set deliberately elsewhere. */
+/* Upstream sets 11px Tahoma on the body and the controls in one rule. */
 input, select, textarea, button, optgroup, option {
   font-family: inherit;
   font-size: inherit;
 }
 
-/* The graph legend is drawn by flot, which writes `font-size: smaller` into an
-   inline style on the legend table — 11.67px against the 14px around it. An
-   inline style can only be beaten by !important. The colour swatch beside each
-   series name is boxed in a hardcoded #ccc the same way. */
+/* flot writes `font-size: smaller` inline on the legend, and only !important
+   beats inline. */
 .legend table {
   font-size: 12px !important;
 }
@@ -134,8 +107,8 @@ input, select, textarea, button, optgroup, option {
   border-color: var(--dracula-selection) !important;
 }
 
-/* Upstream asks for `monospace` at 0.9em here, and a bare `monospace` also
-   trips Chrome's separate default size for the generic family. */
+/* Upstream asks for a bare `monospace`, which trips Chrome's separate default
+   size for that family. */
 #addtorrenturl textarea#url {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -146,16 +119,11 @@ a:hover { color: var(--dracula-pink); }
 
 /* === Scrollbars === */
 
-/* The standard properties are the only ones Firefox reads, and Chrome prefers
-   them over ::-webkit-scrollbar wherever they are set, so this one rule paints
-   the same bar in both. Both inherit, so the root covers every scroller. Width
-   is left at the default `auto`, which is what makes the bar wider than the
-   10px the webkit rules below ask for. */
+/* Firefox reads only the standard properties, and Chrome prefers them where
+   they are set. */
 html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
 
-/* Fallback for WebKit browsers without standard support. Chrome ignores every
-   rule here because of the scrollbar-color above; do not tune it by eye in
-   Chrome, nothing you change will show. */
+/* Fallback for WebKit without the standard properties; Chrome ignores it. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--dracula-bg-dark); }
 ::-webkit-scrollbar-thumb { background: var(--dracula-comment); border-radius: 4px; }
@@ -164,12 +132,6 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
 
 /* === CSS Custom Properties (ruTorrent) === */
 
-/* A second :root, on purpose. The block at the top of the file is the Dracula
-   palette itself; this one is the mapping layer, taking upstream's variable
-   names and giving them values from that palette. Nothing
-   is shadowed either way, since no property is declared in both — the hazard a
-   duplicate selector usually signals, and checked separately by
-   declaration-block-no-duplicate-custom-properties. */
 /* stylelint-disable-next-line no-duplicate-selectors */
 :root {
   --text-color: var(--dracula-fg);
@@ -182,17 +144,8 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
   --menu-highlight-color: var(--dracula-bg);
   --menu-highlight-background-color: var(--dracula-purple);
   --menu-active-color: var(--dracula-green);
-  /* Both marks a menu item can carry ship as baked-in GIFs, and both are off
-     palette: the submenu arrow's entire colour table is `000000`, 1.33:1 on the
-     menu background, and the "current item" tick decodes to `#008C14`, 3.58:1.
-
-     These hold shape only. The ink is applied further down, where the marks are
-     painted as masks rather than as pictures. The arrow is the caret the
-     sidebar already draws, turned a quarter turn by the rule that uses it — one
-     shape, one definition, as `--icon-close-red` also does. The tick is
-     Phosphor's `check` drawn as its centreline stroke rather than as an
-     outline, at bold weight: these render at 0.75rem, where an outlined check
-     thins to a 0.75px hairline. */
+  /* Upstream's menu marks are GIFs. These hold the shape only; the ink is
+     painted through a mask further down. */
   --menu-item-active-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='24' d='M224,72,96,200,40,144'/%3E%3C/svg%3E");
   --menu-item-exp-icon: var(--icon-caret-down);
   --menu-connect-line-color: var(--dracula-selection);
@@ -216,19 +169,12 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
   --navbar-border-color: transparent;
   --navbar-item-bg-color: transparent;
   --navbar-item-border-color: transparent;
-  /* A round orb web, to sit with the round icons either side of it: eight
-     spokes and three rings, the rings' corners landing on the spokes so the
-     whole thing meshes. Everything is inscribed in a circle of radius 108, so
-     the shape sweeps no wider than itself when it turns and needs no extra room
-     in the bar. Upstream's default for this variable is a GIF. */
   --loading-indicator-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cg fill='none' stroke='%236272A4' stroke-width='11' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M128 20V236M20 128H236M51.6 51.6L204.4 204.4M204.4 51.6L51.6 204.4'/%3E%3Cpath d='M128 92L153.5 102.5L164 128L153.5 153.5L128 164L102.5 153.5L92 128L102.5 102.5Z'/%3E%3Cpath d='M128 56L178.9 77.1L200 128L178.9 178.9L128 200L77.1 178.9L56 128L77.1 77.1Z'/%3E%3Cpath d='M128 20L204.4 51.6L236 128L204.4 204.4L128 236L51.6 204.4L20 128L51.6 51.6Z'/%3E%3C/g%3E%3C/svg%3E");
 
   --loading-indicator-side-length: 32px;
 
-  /* The theme's own, not one of upstream's. How tall the settings dialog is
-     allowed to grow — read here by the dialog itself and, below ruTorrent
-     5.1.0 where the dialog is sized by its content, by the block that holds
-     the pages. */
+  /* The theme's own. Read by the settings dialog, and below 5.1.0 by its pages
+     block. */
   --settings-max-height: min(720px, 90vh);
 }
 
@@ -274,37 +220,16 @@ span#loadimg::after {
   animation: dracula-bounce 1.2s ease-in-out 0.4s infinite;
 }
 
-/* Hides the "Loading..." caption so only the three dots above it show. Matched
-   on the element rather than on `[uilang]`, which ruTorrent strips once it has
-   localised the text. Hiding the caption from the parent instead is not an
-   option — see the #msg rule further down. */
+/* Hides the Loading caption. Matched on the element, because ruTorrent strips
+   `[uilang]` once the text is localized. */
 div#msg > span:not(#loadimg) {
   display: none !important;
 }
 
 /* === Loading Indicator: The Web === */
 
-/* Two loaders, two jobs. The three dots above live inside `#cover` and exist
-   only while the page boots; this one lives in the toolbar and reports every
-   request the UI makes afterwards.
-
-   Motion is the whole signal: a web standing still means the UI is idle, a web
-   turning means it is waiting on the server. So the web is a permanent part of
-   the bar rather than a glyph that appears and disappears.
-
-   One full turn and then a rest, repeating, not a continuous spin. The
-   keyframes hold at 360 degrees for the last third of the cycle, and because
-   360 is where the glyph started, that hold is also where the animation can be
-   taken away without anything moving — draculaWatchLoadingIndicator in init.js
-   waits for exactly that moment, which is what stops the web snapping back
-   mid-turn when a request finishes.
-
-   Known limit, accepted: an eight-spoke web lands on an identical silhouette
-   every 45 degrees, so the eye reads a still picture even while the transform
-   runs. Round is the requirement — this glyph sits between round icons — so the
-   easing carries the legibility instead: a pendulum that creeps away, sweeps
-   through the middle and settles. A linear turn at this size reads as a
-   flicker, if it reads at all. */
+/* The web turns once and rests. init.js removes the animation at the rest, so
+   a finished request never snaps it back. */
 
 @keyframes dracula-web-spin {
   0%   { transform: rotate(0deg); }
@@ -313,17 +238,13 @@ div#msg > span:not(#loadimg) {
 }
 
 #ind {
-  /* Upstream hides this element with an inline `visibility`, which only
-     !important outranks. The web is permanent, so it is beaten here. */
+  /* Upstream hides this element with an inline `visibility`. */
   visibility: visible !important;
-  /* A little smaller than its box, to match the 28px glyphs either side. */
   background-size: 28px;
 }
 
-/* The class is put on and taken off by init.js, which follows the inline
-   `visibility` upstream already writes. Not driven from CSS alone: an animation
-   stops the instant its rule stops matching, so a request finishing mid-turn
-   would snap the web back to zero. */
+/* init.js sets the class, following upstream's inline `visibility`: an
+   animation stops the instant its rule stops matching. */
 #ind.dracula-loading {
   animation: dracula-web-spin 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
@@ -337,8 +258,6 @@ category-panel {
   font-size: 14px;
 }
 
-/* 22px between the two 1px borders and 3px of padding each side is the theme's
-   30px row. */
 category-panel::part(heading) {
   height: 22px;
   line-height: 22px;
@@ -347,10 +266,7 @@ category-panel::part(heading) {
   color: var(--dracula-purple);
 }
 
-/* Compact takes the heading to 26px: 1px each side of the 22px line, between
-   the two 1px borders. Upstream zeroes the padding here
-   (`css/stable.css:203`), which would leave it at 24 and out of step with
-   everything else in compact. */
+/* Upstream zeroes this padding in compact mode. */
 body.compact category-panel::part(heading) {
   padding-block: 1px;
 }
@@ -360,18 +276,8 @@ category-list {
   border: none;
 }
 
-/* A row ends in two pills, the count and the size, with a "/" between them.
-   ruTorrent 5.3.7 added that mark as a `separator` part; below it the part does
-   not exist and the two pills sit 7px apart with nothing in the gap.
-
-   `init.js` writes the marker, because no stylesheet can ask whether a shadow
-   part exists. Neither pill can hold the glyph — both are filled and rounded, so
-   a `::before` inside one lands under its own background. The size opens the gap
-   instead and draws the glyph in it, out of flow so the pill keeps its box.
-
-   The numbers are the space 5.3.12 leaves: 7px of the host's part spacing either
-   side of the glyph, and the pill's own 1.4px of top padding, which is the row's
-   centre line. */
+/* ruTorrent 5.3.7 added a `separator` part. Below it init.js sets this marker
+   and the size pill draws the glyph. */
 html[data-dracula-label-separator="missing"] panel-label[size]::part(size) {
   position: relative;
   margin-left: 12.1px;
@@ -387,51 +293,15 @@ html[data-dracula-label-separator="missing"] panel-label[size]::part(size)::befo
 
 /* === Buttons === */
 
-/* Interaction colours, used by every control in the theme:
- *
- *   hover     Current Line on an icon or a row, Purple on a filled button
- *   pressed   Pink, always — the one state that never means anything else
- *   selected  Purple — the current tab, the current settings page, the
- *             selected torrent. A lasting state, not a transient one.
- *   focus     a 2px Purple outline, inset, on :focus-visible only
- *
- * Purple therefore reads as "this is the one" and pink as "you are pressing
- * it right now". Anywhere those two are swapped or missing is a bug. */
-
-/* The selected surface, defined once for every list in the product — the
-   torrent table, the directory picker, anything else that gains one. Purple at
-   full strength runs as a solid bright band the width of the screen; mixed back
-   into the page it still reads as selected without glaring. Dark text goes on
-   it: this is as far as the mix can go before the two stop working together,
-   and the next step down would need light text instead. */
-/* Third :root, kept here rather than joined to either of the others because the
-   paragraph above is the whole justification for the number in it. */
 /* stylelint-disable-next-line no-duplicate-selectors */
 :root {
   --selection-bg-color: color-mix(in srgb, var(--dracula-purple) 70%, var(--dracula-bg));
 }
 
-/* Upstream groups these as `button, input[type="button"], input[type="submit"],
-   .Button`. A bare `button` is only 0,0,1, so the `.Button` half of that rule
-   keeps the border and text colour unless the whole list is matched here — a
-   #B0B0B0 outline on the plugin dialogs' buttons otherwise. */
+/* Upstream groups these with `.Button`, so the whole list is matched. */
 
-/* Horizontal padding is a floor, not a look. Upstream gives 82 of the product's
-   83 buttons a fixed width — 80px from this same rule, plus 30px for the "..."
-   picker, 50px in rss, 57px in extratio, 130px for Recent trackers — so the
-   padding is never seen as air. It eats the content box, and under border-box
-   padding wider than the declared width floors that box at 0 and grows the used
-   width to padding + border, after which the label starts at the content-box
-   edge and overflows right; `text-align: center` cannot save it, because the
-   line box it centres in *is* the content box. 10px is upstream's own value,
-   the one its 80px was sized for; 18px overflows the 30px picker.
-
-   `min-width: fit-content` is the invariant that keeps this from coming back: a
-   button is never narrower than its own label. It covers the few labels too long
-   for their box ("Save Log", "Recent trackers...", extratio's "Delete") and any
-   fixed width a future plugin invents, because min-width beats width no matter
-   which selector set it — no per-plugin list to maintain. It cannot widen a
-   button that has no text, so Bootstrap's .btn-close stays 21px. */
+/* Upstream gives nearly every button a fixed width, so padding eats the
+   label's box. `min-width: fit-content` keeps a button as wide as its label. */
 button, input[type="button"], input[type="submit"], .Button {
   color: var(--dracula-fg);
   background-color: var(--dracula-comment);
@@ -453,11 +323,8 @@ input[type="submit"]:not([disabled]):hover,
   filter: none;
 }
 
-/* :active on its own, not :hover:active. A button reached by Tab and fired with
-   Space is active without ever being hovered, and upstream's
-   `button:not(:disabled):active { background-color: #FAFAFA }` then paints it
-   near-white under #F8F8F2 text — ~1.02:1 for as long as the key is held. Equal
-   specificity to upstream's rule, so order settles it. */
+/* `:active` alone: a button fired with Space is never hovered, and upstream's
+   `:active` paints it near-white. */
 button:not([disabled]):active,
 input[type="button"]:not([disabled]):active,
 input[type="submit"]:not([disabled]):active,
@@ -469,24 +336,10 @@ input[type="submit"]:not([disabled]):active,
 
 /* === Focus === */
 
-/* One ring, one mechanism, everywhere. Left alone, focus arrives in four
-   different guises: Bootstrap's blue rgba(13,110,253,.25) on .nav-link,
-   .form-select and .form-check-input; the browser's own white outline wherever
-   nothing is styled; .navbar-toggler drawing its ring from currentColor, so it
-   changes hue with the button underneath; and nothing at all on the toolbar
-   buttons.
+/* An outline, not a box-shadow: the `overflow: hidden` ancestors of the
+   torrent list clip a shadow. */
 
-   An outline rather than a box-shadow, for two reasons. A shadow is clipped by
-   any ancestor with overflow: hidden — the torrent list sits inside three of
-   them — so a catch-all built on shadows can silently leave an element with no
-   focus state at all once the browser's own ring has been removed. And an
-   outline is what the browser itself uses, so replacing it is like for like.
-   Chrome follows border-radius with it. */
-
-/* :focus-visible fires for keyboard and other non-pointer focus but not for a
-   plain click, so clicking a control stays quiet. The long selector list is
-   not redundancy: the bare `:focus-visible` is a single pseudo-class and loses
-   to every component rule below it, each of which is at least two classes. */
+/* The bare `:focus-visible` loses to every component rule, so each is named. */
 :focus-visible,
 .nav-link:focus-visible,
 .form-select:focus-visible,
@@ -503,9 +356,7 @@ button:focus-visible {
   box-shadow: none;
 }
 
-/* Bootstrap hangs its rings off plain `:focus`, which matches on click as well
-   and would otherwise paint over the rule above. Cleared here so the only
-   thing that ever shows is the outline. */
+/* Bootstrap hangs its rings on plain `:focus`, which also fires on a click. */
 .nav-link:focus,
 .form-select:focus,
 .form-check-input:focus,
@@ -516,10 +367,7 @@ button:focus-visible {
 
 /* === Form Elements === */
 
-/* Upstream tags only some inputs with .Textbox, and in 5.3.7 most carry no
-   class at all. Unmatched, those fall through to Chrome's own dark-mode control
-   colours — #3B3B3B on a #B0B0B0 border — across roughly 260 controls in the
-   dialogs. Match on the input type instead of on the class. */
+/* Most inputs carry no `.Textbox`, so the rule keys on the input type. */
 input:is([type="text"], [type="number"], [type="password"], [type="search"],
          [type="url"], [type="email"], [type="tel"], [type="date"], [type="time"]),
 textarea,
@@ -532,11 +380,8 @@ select {
   transition: border-color 0.15s ease;
 }
 
-/* The purple border marks a focused field however it was reached, including by
-   click. `outline: none` here is what suppresses the browser's own ring; the
-   focus section above puts the theme's ring back for the keyboard, and this
-   rule is one step more specific than the catch-all, so it has to say so
-   itself rather than leave the field with no ring at all. */
+/* More specific than the focus rule above, so it restates the keyboard ring
+   itself. */
 input:is([type="text"], [type="number"], [type="password"], [type="search"],
          [type="url"], [type="email"], [type="tel"], [type="date"], [type="time"]):focus,
 textarea:focus,
@@ -553,8 +398,7 @@ select:focus-visible {
   outline-offset: -2px;
 }
 
-/* The file picker renders as a native control: a bordered box holding a button
-   the theme's button rule cannot reach without the pseudo-element. */
+/* The native file control; its button needs the pseudo-element. */
 input[type="file"] {
   color: var(--dracula-fg);
   background-color: var(--dracula-bg-dark);
@@ -587,10 +431,7 @@ input[type="checkbox"] {
 
 /* === Dialog Close Button === */
 
-/* 20px to match the header icon on the opposite side. !important is needed
-   throughout: upstream sizes this via `a.dlg-close:link`, which outranks a
-   plain class selector. The 14px box it ships also doubles as the hit area,
-   so growing the icon makes the target easier to hit too. */
+/* !important: upstream sizes this through `a.dlg-close:link`. */
 .dlg-close {
   width: 20px !important;
   height: 20px !important;
@@ -602,32 +443,20 @@ input[type="checkbox"] {
   background-image: var(--icon-close-fg);
 }
 
-/* The sidebar's close button under 768px is Bootstrap's `.btn-close`, and three
-   things stack up against it: Bootstrap draws the X with `fill='%23000'`;
-   ruTorrent boxes it in `.offcanvas-header .btn-close { background-color:
-   var(--btn-bg-color) }`, which this theme fills with comment blue; and the
-   whole button sits at `opacity: 0.5`.
-
-   Given the same x-circle as .dlg-close, at the same 20px, with the box dropped
-   — the glyph carries its own colour, so dimming it only muddies it. The 28px
-   hit area is untouched; only the fill goes. No !important: this matches
-   ruTorrent's own two-class selector and wins on order. */
+/* Bootstrap draws the X black, ruTorrent fills its box, and Bootstrap dims it.
+   This matches ruTorrent's two-class selector and wins on order. */
 .offcanvas-header .btn-close {
   --bs-btn-close-bg: var(--icon-close-red);
   --bs-btn-close-opacity: 1;
   --bs-btn-close-hover-opacity: 1;
   --bs-btn-close-focus-opacity: 1;
-  /* Bootstrap's default is rgba(13,110,253,.25). Emptied rather than
-     recoloured: the focus section draws this button's ring the same way it
-     draws every other one. */
   --bs-btn-close-focus-shadow: none;
   background-color: transparent;
   background-size: 20px;
 }
 
-/* The theme's own `button:hover` and `:hover:active` are one step more
-   specific than a two-class selector, so without naming those states here the
-   box comes back — purple under the pointer, pink while pressed. */
+/* The theme's `button:hover` and `:hover:active` outrank two classes, so
+   these states are named. */
 .offcanvas-header .btn-close:hover,
 .offcanvas-header .btn-close:hover:active {
   --bs-btn-close-bg: var(--icon-close-fg);
@@ -636,12 +465,8 @@ input[type="checkbox"] {
 
 /* === Panel Labels === */
 
-/* Upstream's shadow sheet spaces the parts with a bare `div { margin-right: 0.5em }`,
-   so the gap between an icon and its label is read off the icon's own font size,
-   which the badge rule below changes. Registering the gap as a length makes it
-   absolute where it is declared, on panel-label, so it stays 6.5px whatever the
-   icon's font size becomes — otherwise every row's text, letterless icons
-   included, shifts 1.5px sideways. */
+/* Upstream spaces the parts with `0.5em`, read off the icon's font size, which
+   the badge rule changes. A registered length stays absolute. */
 @property --panel-label-icon-gap {
   syntax: "<length>";
   inherits: true;
@@ -657,104 +482,47 @@ panel-label {
   --badge-background-color: var(--dracula-selection);
   --icon-size: 22px;
   --status-image: none;
-  /* A saved view has no icon of its own — upstream hands the component the first
-     character of the view's name (js/category-list.js:71) and draws it as a disc
-     with the letter inside. These three are its own hooks for restyling that,
-     and they are needed because its fallbacks read
-     `var(--icon-letter-color, --badge-color)` with no var() around the fallback,
-     so they resolve to nothing and the letter lands as inherited white.
-
-     The disc is emptied rather than recoloured. A ring has to be wide enough to
-     hold its letter, and a capital W at a readable size is as wide as the whole
-     22px box: a disc big enough for the letter stands out beside the Phosphor
-     glyphs, which paint 17.88px inside the same box, and a disc that matches
-     them forces the letter down to 11px. With no ring the letter is free to be
-     the size that reads, and there is no second circle in a column of
-     circles. */
+  /* Upstream draws a saved view as a letter in a disc, and its fallbacks resolve
+     to nothing without these. */
   --icon-letter-color: var(--dracula-purple);
   --icon-letter-background-color: transparent;
   --icon-letter-border-color: transparent;
-  /* The 22px icon plus 4px each side is the theme's 30px row. */
   padding: 4px;
   height: 22px;
   transition: all 0.15s ease;
 }
 
-/* Compact keeps the icon and takes 2px each side instead, which is the 26px
-   row. Upstream zeroes the padding outright (`css/stable.css:202`), leaving the
-   label at 22 against a 26px list. */
+/* Upstream zeroes this padding in compact mode. */
 body.compact panel-label {
   padding-block: 2px;
 }
 
-/* Individual sidebar status icons — Phosphor Duotone */
 panel-label[icon="down"]     { --status-image: var(--icon-status-down); }
 panel-label[icon="completed"]{ --status-image: var(--icon-status-completed); }
-/* These two are keyed to the id, because the `icon` names are reversed below
-   ruTorrent 5.2.2: there `icon="inactive"` is the Inactive row rather than
-   Stopped. The ids are the core's own state keys and its filtering depends on
-   them (`js/category-list.js`). 5.2.0 has no Stopped row at all. */
+/* Keyed to the id: below 5.2.2 the `icon` names are reversed. 5.2.0 has no
+   Stopped row. */
 panel-label#-_-_-wfa-_-_- { --status-image: var(--icon-status-stopped); }
 panel-label#-_-_-iac-_-_- { --status-image: var(--icon-status-inactive); }
 panel-label[icon="error"]    { --status-image: var(--icon-status-error); }
 panel-label[icon="up-down"]  { --status-image: var(--icon-status-active); }
 panel-label[icon="all"]      { --status-image: var(--icon-status-all); }
 panel-label[icon="rss"]      { --status-image: var(--icon-status-rss); }
-/* Three more names upstream draws from its sprite, which this theme blanks —
-   without these rules every saved quick search, every feed group and every
-   switched-off feed paints nothing at all. */
+/* Upstream draws these from its sprite, which the theme blanks. */
 panel-label[icon="search"]   { --status-image: var(--icon-status-search); }
 panel-label[icon="rss-group"]{ --status-image: var(--icon-status-rss-group); }
 panel-label[icon="rss-dis"]  { --status-image: var(--icon-status-rss-dis); }
 
-/* ruTorrent 5.3.7 added a "/" separator part between count and size. It
-   inherits the foreground color, so it competes with the values it divides. */
+/* ruTorrent 5.3.7 added this separator part. */
 panel-label::part(separator) {
   color: var(--dracula-comment);
 }
 
-/* Parity: the label's ink is 11 device rows tall, odd, inside a 32px row box,
-   even — 21 rows of space that will not halve, so it sits half a pixel low. The
-   icons centre exactly because theirs is 18, even. No text size fixes it; every
-   one of 12 to 15px measures the same +0.5, and a half-pixel transform is
-   snapped away.
-
-   Up is the half pixel that reads as centred: the empty descender space below a
-   line already makes text feel low. Padding rather than a transform, to keep it
-   a layout offset with no stacking side effects, and on the label alone — the
-   icon, the count pill and the digit inside it all measure dead centre and must
-   not move. */
 panel-label::part(text) {
   padding-bottom: 1px;
 }
 
-/* Everything here exists for the letter badge; none of it reaches an icon drawn
-   as a background, which is why the rule is unscoped. Those parts are not flex
-   containers, carry no text, and under border-box their padding box is still the
-   full 22px, so their painting area is unchanged — measured, not assumed: the
-   icon column of every panel renders pixel for pixel identically with and
-   without this block.
-
-   box-sizing settles a contradiction in upstream's own sheet, which sizes the
-   badge `width: icon-size - 2px` and then overrides itself with
-   `min-width: icon-size`, giving a 24px border box against every other icon's
-   22px. align-items centres the line box the letter sits on.
-
-   The font size is one pixel under upstream's `icon-size - 5px`, and the pixel
-   is load-bearing: at 16px the ink of a capital rasterises to an even number of
-   rows, 12 at 1x and 24 at 2x, so it centres exactly in the even 22px box. 15px
-   and 17px give odd ink and sit half a pixel off, which is visible on a letter
-   this size. Parity flips with whatever the letter is centred against, so
-   re-derive it before changing either number — and measure by counting ink rows
-   in an unscaled render, or by scaling up nearest neighbour. Font metrics
-   describe layout, not paint, and CSS `zoom` rasterises afresh at the zoomed
-   size, where the parity lands differently. */
-/* The 2px of bottom padding puts the letter on the same baseline as the row's
-   label, which is the right target rather than centring: the label is text and
-   sits by its baseline, so a letter centred in the box ends up a pixel below a
-   label sitting half a pixel high. Capitals for a related reason — a capital and
-   a lowercase letter have different ink heights, so against one shared baseline
-   they cannot both be centred and "movies" would sit lower than "Completed". */
+/* Everything here is for the letter badge. `box-sizing` settles upstream's
+   conflicting width and min-width. */
 panel-label::part(icon) {
   box-sizing: border-box;
   align-items: center;
@@ -786,11 +554,8 @@ panel-label[selected] {
   border-radius: 0;
 }
 
-/* The selected row's pills cannot be reached through --badge-color: upstream
-   guards the rule that reads it with `:not(:host([selected]))`
-   (css/panel-label.css:55), so a selected row's count and size take the host's
-   own `color` by inheritance instead. Recolouring the host would drag the row's
-   label along with them, so the two parts are addressed directly. */
+/* Upstream guards the rule that reads `--badge-color` with
+   `:not(:host([selected]))`, so a selected row's pills are addressed here. */
 panel-label[selected]::part(count),
 panel-label[selected]::part(size) {
   color: var(--dracula-cyan);
@@ -804,18 +569,8 @@ panel-label[selected]::part(size) {
 
 /* === Pane Splitters === */
 
-/* The two 5px drag handles between sidebar, torrent list and detail panel.
-   Invisible at rest, as upstream intends: the panes already carry their own
-   border, so a permanent bar would only double it.
-
-   :active is what holds the colour through a drag. A fast drag outruns the
-   pointer and :hover drops, but :active belongs to the element that took the
-   mousedown until the button comes back up. Both rules match upstream's
-   specificity and win on order.
-
-   Behind the same 768px floor as upstream's own hover and cursor rules, because
-   below it `#HDivider` is hidden by resizeLeft (`webui.js:2246`) and hover is a
-   pointer state a touch screen never enters. */
+/* `:active` holds the color through a fast drag. Behind upstream's 768px
+   floor, below which `#HDivider` is hidden. */
 @media (min-width: 768px) {
   div#HDivider, div#VDivider {
     transition: background-color 0.15s ease;
@@ -830,24 +585,15 @@ panel-label[selected]::part(size) {
   }
 }
 
-/* A drag that starts here must move the divider, not scroll the page behind it.
-   Unscoped: `touch-action` costs a mouse nothing, and the pointer handlers in
-   init.js are bound whatever the viewport. */
+/* A drag here moves the divider, not the page. */
 div#HDivider,
 div#VDivider {
   touch-action: none;
 }
 
-/* draculaTouchDividers makes both dividers work under a finger — upstream binds
-   the drag to mouse events alone (`objects.js:36-37`, `objects.js:50`) and
-   `DnD.start` refuses to run at all below 768px (`objects.js:41-43`). What the
-   finger needs is something to aim at: 5px is a hairline, and at rest the
-   dividers are invisible by design, so on a touch screen they get a grip and the
-   width to hold it.
-
-   `pointer: coarse` rather than a viewport size — the question is what is
-   pointing at the screen, not how wide it is. A touch laptop gets the grip and
-   can also drag it. */
+/* Upstream binds the divider drag to mouse events, and `DnD.start` refuses to
+   run below 768px. draculaTouchDividers handles touch; this gives a finger a
+   grip. */
 @media (pointer: coarse) {
   div#HDivider,
   div#VDivider {
@@ -875,13 +621,8 @@ div#VDivider {
     height: 72px;
   }
 
-  /* Held: Pink, the colour :active gives these two under a mouse. The class is
-     set from the pointer handlers rather than relying on :active, which a touch
-     screen does not hold through a drag, and the grip is what changes because a
-     finger is sitting on the strip around it.
-
-     Grown by the same third again, so the change reads past the edge of the
-     contact. */
+  /* Set from the pointer handlers: a touch screen does not hold `:active`
+     through a drag. */
   div#HDivider.dracula-divider-held::after,
   div#VDivider.dracula-divider-held::after {
     background-color: var(--dracula-pink);
@@ -896,11 +637,8 @@ div#VDivider {
   }
 }
 
-/* A tap on the V divider swaps between the list and the detail panel; the class
-   is set from draculaTogglePanelFull. The list is hidden rather than sized to
-   zero because upstream writes a `flex-basis` onto it on every resize
-   (`webui.js:2276`), and a zero height here would be overwritten on the next
-   refresh. */
+/* Hidden, not sized to zero: upstream writes a `flex-basis` onto the list on
+   every resize. */
 body.dracula-panel-full #list-table {
   display: none;
 }
@@ -912,16 +650,8 @@ body.dracula-panel-full #tdetails {
 /* === Cover & Messages === */
 
 div#cover { background: var(--dracula-bg); }
-/* This element is the full-screen loading panel — and also where ruTorrent
-   prints a fatal error: `webui.js:233` calls `catchErrors(false)`, and that
-   branch writes every uncaught JS error here through `theWebUI.msg()`, which
-   does `$("#msg").text(s)`.
-
-   So it must keep a visible font size and colour: blanking it to hide the
-   "Loading..." caption renders those errors at 0x0. The caption is hidden by
-   the rule above instead, on the span, which works because `.text()` replaces
-   every child — while loading there are spans, and once an error lands there is
-   only a text node. */
+/* ruTorrent also prints a fatal error here, through `theWebUI.msg()`, so this
+   keeps a visible size and color. */
 div#msg {
   background: var(--dracula-bg) !important;
   border: none !important;
@@ -948,34 +678,21 @@ div#lng { background-color: var(--dracula-bg-dark); border: 1px solid var(--drac
   background-image: none;
   border-color: var(--dracula-selection);
 
-  /* The overflow-menu toggle shown under 768px draws its glyph through
-     Bootstrap's --bs-navbar-color, and .navbar-toggler is a class selector, so
-     it outranks the element-level rule in the Buttons section and leaves a 65%
-     black icon on the comment-coloured button. Feed Bootstrap its own hook
-     rather than fighting the cascade. */
+  /* The toggle draws its glyph through `--bs-navbar-color`. */
   --bs-navbar-color: var(--dracula-fg);
 }
 
-/* ruTorrent never sets data-bs-theme, so Bootstrap's dark variant of this
-   variable never applies and one class is enough to reach it. */
+/* ruTorrent never sets `data-bs-theme`. */
 .navbar-toggler-icon {
   --bs-navbar-toggler-icon-bg: var(--icon-hamburger-fg);
 }
 
-/* Same guard the theme's own button hover carries, so the glyph turns exactly
-   when the button beneath it turns. :hover:active is covered by implication —
-   the pink pressed state also drops the text to the background colour. */
 .navbar-toggler:not([disabled]):hover .navbar-toggler-icon {
   --bs-navbar-toggler-icon-bg: var(--icon-hamburger-bg);
 }
 
-/* The most-used controls in the product. Upstream's only hover is
-   `filter: brightness(1.3)`, which does nothing to a transparent background, so
-   every state needs a real filled shape of its own. Full strength at rest: an
-   opacity step is too slight to register on glyphs already muted by it.
-
-   The button is 40px, which clears the 32-40px a pointer target wants on the
-   desktop; upstream's is 31px, a 24px glyph in 3.5px of padding. */
+/* Upstream's only hover is a brightness filter, which does nothing to a
+   transparent background. */
 #t .nav-link {
   color: var(--dracula-fg);
   padding: 6px;
@@ -988,29 +705,19 @@ div#lng { background-color: var(--dracula-bg-dark); border: 1px solid var(--drac
   height: 28px;
 }
 
-/* `background-image: none` is the important half. Upstream's hover is
-   `background: transparent url(../images/tb_bg.gif) …` — a shorthand, so
-   overriding only the colour leaves its pale raster painting on top. */
+/* Upstream's hover is a `background` shorthand with a raster image. */
 #t .nav-link:hover {
   background-color: var(--dracula-selection);
   background-image: none;
 }
 
-/* Pink for the press — see the interaction-colour note above the buttons.
-
-   The padding is restated, not decoration: upstream's `:active` swaps in
-   `padding: 0.35rem 0.15rem 0.15rem 0.35rem`, the old "button sinks in" trick.
-   Asymmetric padding on a flex row shrinks the pressed button 40px -> 35px,
-   slides its glyph down-right and pushes every button after it along, so the
-   whole bar jumps while the mouse is held. Same specificity as upstream's rule,
-   so order settles it. */
+/* Upstream's `:active` swaps in asymmetric padding, which shrinks the button
+   and shifts the row. */
 #t .nav-link:active {
   padding: 6px;
   background-color: var(--dracula-pink);
 }
 
-/* Focus gets the hover fill as well as the ring. A ring alone around a button
-   otherwise identical to its neighbours reads as decoration, not position. */
 #t .nav-link:focus-visible {
   background-color: var(--dracula-selection);
 }
@@ -1021,20 +728,8 @@ div#t div.TB_Separator {
   margin: 4px 2px;
 }
 
-/* Both of these open a menu and say so with a caret. The magnifier's is
-   `theSearchEngines.show()` from an inline onclick, and below ruTorrent 5.1.0
-   the plugins button is the same shape — a plain link on
-   `theWebUI.showPluginsMenu()`. From 5.1.0 up that button carries Bootstrap's
-   `dropdown-toggle`, whose own `::after` these declarations restate value for
-   value, so naming it here costs those releases nothing.
-
-   Drawn here rather than by adding the class: `dropdown-toggle` is also
-   Bootstrap's hook for *operating* a dropdown, and neither menu is Bootstrap's
-   to operate.
-
-   The declarations are Bootstrap's `.dropdown-toggle::after` copied exactly —
-   em-based so it tracks the font, and `border-top` with no colour so it takes
-   currentColor from the link. */
+/* Both open a menu. Bootstrap's `.dropdown-toggle::after`, copied: the class
+   would also have Bootstrap operate the menu. */
 #mnu_search::after,
 #mnu_plugins::after {
   display: inline-block;
@@ -1047,31 +742,12 @@ div#t div.TB_Separator {
   border-left: 0.3em solid transparent;
 }
 
-/* The bar in three zones, by `order` alone. No wrappers, no JS, and the markup
-   stays upstream's, which otherwise keeps every item in one flex row and pushes
-   only the search block right with Bootstrap's `ms-md-auto`:
-
-     left    the actions: add, create, remove, start, pause, stop
-     centre  the search, and the loading indicator that rides with it
-     right   RSS, settings, plugins, help — the settings-shaped things
-
-   `:has(+ #mnu_rss)` picks upstream's separator by what it stands in front of
-   rather than by counting `:nth-child`, so it keeps working if anything is ever
-   inserted before it. Both separators travel with the block they introduce;
-   left behind, the first would be a rule floating alone in the gap.
-
-   The search lands 37px right of the bar's true centre, and that is arithmetic
-   rather than an oversight: auto margins split free space equally, so the block
-   is centred between the two zones and the left zone is 79px wider than the
-   right. Exact centring would need the side widths measured in JS on every
-   resize, or absolute positioning that can overlap on a narrow window.
-
-   Everything in this query is scoped to the expanded bar — below 768px the row
-   folds into a column where a three-zone layout means nothing. */
+/* The bar in three zones, by `order`. `:has(+ #mnu_rss)` finds upstream's
+   separator by what follows it. */
 @media (min-width: 768px) {
   #top-menu .navbar-nav > #rc {
     order: 2;
-    /* the left auto margin is already there, from Bootstrap's ms-md-auto */
+    /* The left auto margin comes from Bootstrap's `ms-md-auto`. */
     margin-right: auto;
   }
 
@@ -1085,78 +761,33 @@ div#t div.TB_Separator {
     order: 3;
   }
 
-  /* Neither separator upstream ships is in the right place once the bar is in
-     three zones. The first divides nothing: the auto margin above opens some
-     390px between the search group and the settings group, so a hairline four
-     pixels left of RSS reads as debris rather than as structure. The second
-     stands in front of the Plugins dropdown, ending the bar
-     `RSS Settings │ Plugins ▾ Help` — the caret shares a group with Help and
-     reads as though it could open either.
-
-     init.js inserts real `TB_Separator` replacements between Go and the
-     activity indicator, and after the dropdown, so they take the width, colour
-     and inset every separator here already has. */
+  /* init.js inserts separators where the three zones need them, so upstream's
+     two go. */
   #top-menu .navbar-nav > .TB_Separator:has(+ #mnu_rss),
   #top-menu .navbar-nav > .TB_Separator:has(+ .btn-group) {
     display: none;
   }
 
-  /* Moving a button drags whatever hangs off it. The plugins dropdown is
-     positioned by plain CSS rather than Popper — `position: absolute` with no
-     transform — so it opens from the toggle's left edge and, with that toggle
-     110px from the right of the window, runs 84px off the screen with two of
-     its six entries unreachable. Anchoring it to the right edge is what
-     Bootstrap's own `.dropdown-menu-end` does, and a theme cannot add a class.
-
-     It is the only popup this move can break: the toolbar's other menu is the
-     category `<select>`, which is native, and the browser keeps that on screen
-     itself. */
+  /* The plugins dropdown is positioned by plain CSS, so it is anchored to the
+     right edge, as `.dropdown-menu-end` would. */
   #top-menu .navbar-nav > .btn-group > .dropdown-menu {
     right: 0;
     left: auto;
   }
 
-  /* A wider field is only safe if it can give the space back, and by default it
-     cannot: every flex item starts at `min-width: auto`, a floor of its own
-     min-content size. These two are pure containers whose only job is to hold
-     the row, so releasing them costs nothing — without it the overflow surfaces
-     at the top of the chain, and at a 1100px window the help button hangs 79px
-     past the end of the bar.
-
-     `#rc` is deliberately *not* in this list. Zeroing a flex container's
-     minimum lets its box be squeezed below its own contents; the contents
-     cannot shrink to match, so they spill out and whatever comes next paints on
-     top of them — at 850px, RSS 30px over the go button and the gear over the
-     loading indicator. A container that holds things keeps its floor; only the
-     elastic thing inside it gives way. */
+  /* A flex item floors at its min-content size. These containers release it;
+     `#rc` keeps it, or its contents spill. */
   #top-menu,
   #top-menu .navbar-nav {
     min-width: 0;
   }
 
-  /* A definite `width` is also a flex item's "specified size suggestion", which
-     feeds the automatic minimum of every box that contains it. That is what
-     makes 460px work here — the search block sizes itself to 692px around it —
-     and also why it cannot survive a narrow window: the whole chain is pinned
-     at that size and nothing can give. So the wide field is claimed only while
-     there is room for it. The bar needs 1177px to hold it (284 left + 692
-     search + 201 right); 1200 is the first round number above that, and it is
-     Bootstrap's own xl breakpoint. */
+  /* A definite width pins the flex chain, so the wide field waits for 1200px. */
   #query {
     width: 460px;
   }
 
-  /* Below that the field stops being the fixed thing and becomes the elastic
-     one. Two changes together, and neither works alone: `flex-basis` instead of
-     `width` so the field is no longer a definite size pinning its ancestors,
-     and an explicit `min-width` so it can actually yield — without one its
-     automatic minimum is its own 220px of content. Only then is it safe to
-     release the search block's floor.
-
-     Measured at 775px, the last pixel before the toggler takes over: with the
-     floor, the field yields to 50px, the block equals its own content and
-     nothing overlaps; without it, the field stays 220px, the block is crushed
-     and seven pairs of controls collide. */
+  /* Below that the field yields: `flex-basis` and an explicit `min-width`. */
   @media (max-width: 1199.98px) {
     #top-menu .navbar-nav > #rc {
       min-width: 0;
@@ -1165,63 +796,39 @@ div#t div.TB_Separator {
     #query {
       width: auto;
       flex-basis: 220px;
-      /* 24px, not 40px: the caret on the magnifier costs 11px, and at 775px —
-         the last window before the toggler takes over — there is nothing else
-         to take it from. The field is the designated yielder, so its floor is
-         what moves. */
       min-width: 24px;
     }
   }
 }
 
-/* Below 768px the bar folds out of the toggler into a panel, and a column of
-   one command per line spends 412px of an 844px screen on ten of them. Six
-   columns is the common multiple of the two rhythms the panel wants: three
-   across for what acts on a torrent, two for what configures the client.
-
-   Its own top-level block, not a branch of the one above: a max-width query
-   nested inside that min-width one closes it early and silently carries every
-   rule after it, the field's 460px included, into the mobile branch. */
+/* Below 768px the bar folds into a panel. A top-level block: a max-width
+   query nested in a min-width one closes it early. */
 @media (max-width: 767.98px) {
-  /* Every separator here, upstream's as well as init.js's. Stacked in a column
-     each one paints as a 1x1px dot and still claims its 4px margins, so they
-     cost panel height to divide nothing. The grid's gaps separate the rows. */
   #top-menu .TB_Separator {
     display: none;
   }
 
-  /* `.navbar-nav` is one of Bootstrap's own class rules rather than a `d-*`
-     utility, so a two-class selector takes it without `!important`. */
+  /* `.navbar-nav` is a class rule, not a `d-*` utility, so two classes outrank
+     it. */
   #top-menu .navbar-nav {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 4px;
   }
 
-  /* `.flex-md-nowrap` marks upstream's two action groups and nothing else —
-     `#rc` carries `.d-flex` as well, and matching on that would drag the search
-     row in. Both groups take the same `order`, so between themselves they keep
-     source order. */
+  /* `.flex-md-nowrap` marks upstream's two action groups and nothing else. */
   #top-menu .navbar-nav > .flex-md-nowrap {
     grid-column: span 6;
     order: 1;
     gap: 4px;
   }
 
-  /* Thirds by `flex-basis: 0` rather than by making the group a grid: `.d-flex`
-     is `display: flex !important` and could only be overridden in kind. Add and
-     Remove already carry `flex-grow: 1 !important` from `.flex-grow-1`; Create
-     does not, and the shorthand gives it the same growth without a fight.
-     `min-width: 0` releases the automatic minimum, so a long label shrinks its
-     own cell instead of widening the row. */
+  /* `.d-flex` carries !important, so the links take thirds by `flex-basis: 0`. */
   #top-menu .navbar-nav > .flex-md-nowrap > .nav-link {
     flex: 1 1 0;
     min-width: 0;
   }
 
-  /* Source order runs RSS, Settings, Plugins, Help. The panel pairs them the
-     other way round, by what each one opens: the two that configure the client
-     on one row, the two that describe it on the next. */
   #mnu_settings {
     grid-column: span 3;
     order: 2;
@@ -1247,30 +854,16 @@ div#t div.TB_Separator {
     order: 6;
   }
 
-  /* The cells sit flush against the grid's gaps; upstream's 0.15rem margin
-     inside them would double every gutter and leave the row edges short.
-
-     44px is the floor a finger wants, and a 28px glyph in 6px of padding and a
-     1px border stands 42px. Width is not at risk: the narrowest cell here is
-     125px.
-
-     `box-sizing` is what makes the 44 mean 44. Upstream opens with
-     `* { box-sizing: unset }` (`css/style.css:2`) and hands it back only to
-     `div, td, label, fieldset, textarea, select, input, button, dialog`
-     (`css/style.css:19`) — `a` is not on that list, so a content-box
-     `min-height` would add the padding and the border on top and stand the cell
-     at 58px. */
+  /* Upstream resets `box-sizing` and gives it back to a list that leaves out
+     `a`. */
   #top-menu .nav-link {
     box-sizing: border-box;
     min-height: 44px;
     margin: 0;
   }
 
-  /* A third of 390px leaves a cell 78px of label beside its 28px icon, which
-     init.js keeps the three torrent commands inside by dropping the noun. Three
-     of the languages ruTorrent ships give it nothing to drop; there the label
-     clips rather than widening the row. `min-width: 0` is what lets it: a flex
-     item's automatic minimum is its own text. */
+  /* init.js drops the noun from the three torrent commands. `min-width: 0` lets
+     a long label clip. */
   #top-menu .nav-link > .d-md-none {
     min-width: 0;
     overflow: hidden;
@@ -1278,65 +871,33 @@ div#t div.TB_Separator {
     text-overflow: ellipsis;
   }
 
-  /* Search and Go are the exception to the labels above. They do not stand in
-     the grid: their row also carries the filter field, and at 390px the two
-     words take the width that field needs to be usable. A magnifier and an
-     arrow already say what they are, and above 768px upstream hides these same
-     words itself.
-
-     `!important` because the word is inside Bootstrap's own `d-inline`, whose
-     declaration carries it — no selector outranks a utility class here. */
+  /* !important: the word sits in Bootstrap's `d-inline`. */
   #mnu_search > .d-md-none,
   #mnu_go > .d-md-none {
     display: none !important;
   }
 
-  /* `.btn-group` is a column flex box holding the toggle and its menu, and the
-     grid stretches the group rather than the toggle inside it — without this
-     the Plugins cell paints its fill short of the Help beside it. */
+  /* The grid stretches the `.btn-group`, not the toggle inside it. */
   #top-menu .navbar-nav > .btn-group > #mnu_plugins {
     flex-grow: 1;
   }
 
-  /* Bootstrap parks the dropdown in the flow while the bar is collapsed, so
-     opening it grows the panel by the menu's own height and shoves Help, the
-     search row and the whole page below it down. A menu is not layout; it
-     belongs over the page. `.btn-group` already carries the `position:
-     relative` this anchors to, and the static position it leaves from is
-     directly under the toggle.
-
-     Right-aligned for the reason the expanded bar right-aligns it: the group
-     holds the right half of the grid, so a menu opening from its left edge
-     would run off the screen. */
+  /* Bootstrap leaves the dropdown in the flow while the bar is collapsed. */
   #top-menu .navbar-nav > .btn-group > .dropdown-menu {
     position: absolute;
     right: 0;
     left: auto;
   }
 
-  /* Floating it is only half the fix. The open panel carries
-     `overflow-y: auto` (`css/style.css:345`), which keeps a panel taller than
-     the screen reachable — and an ancestor whose overflow is not `visible`
-     clips absolutely positioned descendants whether or not a scrollbar is
-     showing, so the menu lost its last entries to a box that was not
-     scrolling. No z-index reaches out of that; only removing the clip does.
-
-     Released while a menu is open and at no other time, which is precisely when
-     the panel has nothing of its own to scroll. `:has()` carries enough
-     specificity here on its own: it counts as its most specific argument, so
-     this reads (1,2,0) against upstream's (1,1,0). */
+  /* The open panel's `overflow-y: auto` clips the menu, so it is released while
+     a menu is open. */
   #top-menu:has(.dropdown-menu.show) {
     overflow: visible;
   }
 }
 
-/* The search source badge, filled from init.js. 16px is the native size of the
-   engine favicons the plugin ships, which the theme refuses to scale — the
-   sidebar pins the same files to 16px for the same reason.
-
-   The only thing in this row that is not a control, so it takes no padding and
-   no hover: it reports, it does not act. `flex-shrink: 0` keeps it whole when
-   the row tightens, since 16px is already the smallest it can be. */
+/* The search source badge, filled from init.js. Favicons stay at their own
+   16px. */
 #dracula-search-source {
   width: 16px;
   height: 16px;
@@ -1364,27 +925,13 @@ div#t div#plugins { background: transparent var(--icon-plugins) no-repeat center
 
 /* === File/Dir Icons === */
 
-/* These sit on `.stable-icon` too, and stable.css clears that class's
-   background-image from a later sheet at the same specificity, so a plain
-   `.Icon_File` loses and the Files tab shows no icons. `!important` is how the
-   `.Status_*` rules in stable.css already win the same fight.
-
-   The size rides inside the shorthand, after the position: `background` resets
-   `background-size` to `auto`, and `!important` carries that reset, so a
-   separate `background-size` declaration after it never applies. These glyphs
-   carry only a viewBox, and `auto` then stretches them to the whole 22px cell. */
+/* !important: stable.css clears `.stable-icon`'s image from a later sheet. The
+   size rides inside the shorthand, which resets it. */
 .Icon_File { background: transparent var(--icon-file) no-repeat left center / 20px !important; }
 .Icon_Dir { background: transparent var(--icon-dir) no-repeat left center / 20px !important; }
 .Icon_Share { background: transparent var(--icon-share) no-repeat left center / 20px !important; }
 
-/* Upstream gives every entry one of three classes, so the kind of a file is
-   nowhere in the markup — `draculaFileIconClass` reads it from the name and
-   appends a second class beside upstream's. These follow `.Icon_File` in source
-   order at the same specificity, which is what settles the tie; `!important` is
-   still needed against `.stable-icon`, exactly as above.
-
-   Left as a pair rather than replacing upstream's class: a row whose extension
-   matches nothing keeps the plain document glyph with no rule of ours involved. */
+/* `draculaFileIconClass` adds the kind class beside upstream's. */
 .Icon_File_Up { background: transparent var(--icon-file-up) no-repeat left center / 20px !important; }
 .Icon_File_Archive { background: transparent var(--icon-file-archive) no-repeat left center / 20px !important; }
 .Icon_File_Disc { background: transparent var(--icon-file-disc) no-repeat left center / 20px !important; }
@@ -1398,12 +945,8 @@ div#t div#plugins { background: transparent var(--icon-plugins) no-repeat center
 div.tab { background: var(--dracula-bg); }
 div#lcont { background: var(--dracula-bg); }
 
-/* The log arrives as one class for everything: `log()` in js/common.js builds
-   every entry as `span.std` holding "[stamp] message" in a single text node, and
-   log_history's separators are span.std too. CSS alone can only paint the panel
-   one colour, so init.js puts the bracketed stamp in its own element and marks
-   the separator lines; what each looks like is decided here. Monospace because
-   the stamps line up into a column only when the digits are the same width. */
+/* Upstream writes every log entry as one `span.std`; init.js wraps the stamp
+   and marks the separators. */
 div#lcont .std {
   font-family: var(--font-mono);
   color: var(--dracula-yellow);
@@ -1412,22 +955,13 @@ div#lcont .dracula-log-time,
 div#lcont .std.dracula-log-rule {
   color: var(--dracula-comment);
 }
-/* The General tab is seventeen `Key: Value` rows, all in the same white, with
-   nothing separating a label from the thing it labels. The value takes Yellow
-   and the key keeps the bold white upstream gives it. */
-/* One selector does the whole tab because the markup already sorts it: every
-   value is a `span.det` and every key a `span.det-hdr`. The colon sits outside
-   the key's span, so it stays with the row rather than following the key — and
-   rutracker_check, which appends two rows of its own from JS, reuses both
-   classes, so its rows come along too. */
+/* Every value is a `span.det` and every key a `span.det-hdr`; rutracker_check
+   reuses both. */
 div#gcont span.det {
   color: var(--dracula-yellow);
 }
 
-/* Upstream positions `span.htkey` in the menus and never fills it; init.js
-   does. The hint is secondary to the command beside it, so it takes Comment
-   rather than the foreground. On the highlighted row it would otherwise be the
-   one grey thing on purple, so there it follows the row. */
+/* Upstream places `span.htkey` and never fills it; init.js does. */
 .CMenu span.htkey {
   color: var(--dracula-comment);
 }
@@ -1437,15 +971,8 @@ div#gcont span.det {
   color: inherit;
 }
 
-/* A menu item is not one background: highlighted it flips to Purple with the
-   label in `--dracula-bg`, disabled the label drops to Comment. Any single ink
-   that clears 3:1 on the dark menu falls under 2:1 on that purple — and the
-   arrow matters most on exactly the item the pointer is on.
-
-   So the marks are painted rather than drawn: `currentColor` through a mask of
-   the shape, which takes the colour of the label it belongs to in every state.
-   `background-image: none` is not optional — a background image paints over the
-   colour beneath it, and the mask would then cut out upstream's green tick. */
+/* Painted through a mask with `currentColor`, so the marks follow the label in
+   every state. `background-image: none`, or the mask cuts out upstream's GIF. */
 .CMenu li a.sel::before,
 .CMenu li a.exp::after {
   background-image: none;
@@ -1460,17 +987,11 @@ div#gcont span.det {
 .CMenu li a.exp::after {
   -webkit-mask: var(--menu-item-exp-icon) center / 0.75rem no-repeat;
   mask: var(--menu-item-exp-icon) center / 0.75rem no-repeat;
-  /* The box is square and the rotation is about its centre, so nothing moves —
-     upstream's `margin-left: auto` still puts it at the far edge. */
   transform: rotate(-90deg);
 }
 
 div#gcont div.row.Header {
-  /* Upstream gives this band 0.5rem all round (`css/style.css:570`) while the
-     rows it heads take `0 0.3rem` one line below (`:571`), which sits the
-     heading's text 2.8px off the labels it names. It takes the rows' own 0.3rem
-     instead, and no block padding at all: the height is built in the cell, the
-     way the table heading builds it. */
+  /* Upstream gives this band 0.5rem against the rows' 0.3rem. */
   padding: 0 0.3rem;
   background: var(--dracula-bg-dark);
   border-bottom: 1px solid var(--dracula-selection);
@@ -1478,17 +999,8 @@ div#gcont div.row.Header {
   font-weight: bold;
 }
 
-/* This theme has one row height and it is the table's: a 22px line over 3.5px of
-   block padding with a 1px rule under it — 30px — falling to 22 over 2px for 27
-   in compact (`stable.css`, where those four numbers are derived from the
-   body cell). A heading is exactly as tall as the rows under it and told apart
-   by its paint alone, which is what makes the list read as one grid rather than
-   as bands; the General tab takes the same four numbers so the panel continues
-   that grid.
-
-   Heading and row want identical metrics, which is why this is one rule and not
-   two. The cell carries them rather than the row because that is where upstream
-   puts the line box, and because `.dlg-window .row > div` is 0,2,1. */
+/* On the cell, because upstream puts the line box there and
+   `.dlg-window .row > div` is 0,2,1. */
 div#gcont div.row > div {
   line-height: 22px;
 }
@@ -1498,30 +1010,14 @@ body.compact div#gcont div.row > div {
   line-height: 21px;
 }
 
-/* The separator goes on the cells, not on the .row. Only Transfer is built as
-   one .row per line; Tracker and General each pack every field into a single
-   .row and let the pairs wrap, so a rule on the row drew one line under the
-   whole section instead of one per field. Each wrapped line is a set of cells
-   sharing a top and a height and spanning the full width, so bottom borders on
-   them meet edge to edge and read as a single rule. */
+/* Tracker and General pack every field into one .row, so the rule goes on the
+   cells. */
 div#gcont div.row:not(.Header) > div {
   border-bottom: 1px solid color-mix(in srgb, var(--dracula-selection) 45%, transparent);
 }
 
-/* The General tab is laid out `col-6 col-md-2` — two fields per line when there
-   is no room, six when there is. `col-md-*` answers to the **viewport**, but
-   this panel is sized by the splitter above it, so on a wide screen with a wide
-   sidebar the grid still believes it has six columns' worth of room while the
-   panel is half that. Measured at a 1920px viewport: at a 606px panel, 13 of 42
-   cells wrap and 10 overflow their column.
-
-   A media query cannot express that, the viewport being unchanged; a container
-   query can. 880px is the last panel width where nothing wraps and 860px the
-   first where it does, so the query fires below 880 and hands each cell the
-   width its own small-screen class already asks for.
-
-   The container is #gcont rather than the scrolling #tdcont so the containment
-   this establishes reaches one tab instead of all eleven. */
+/* `col-md-*` answers to the viewport, but this panel is sized by the splitter,
+   so a container query decides. */
 div#gcont {
   container-type: inline-size;
 }
@@ -1536,21 +1032,14 @@ div#gcont {
 div.graph_tab { background-color: var(--dracula-bg); }
 .graph_tab_legend { color: var(--dracula-fg); background-color: var(--dracula-bg); }
 
-/* ruTorrent hands flot its grid colours by reading them off .graph_tab_grid, a
-   hidden hook element; unstyled, the grid keeps flot's own #545454 and the axis
-   labels sit at 1.88:1 on the background. flot derives the gridline colour from
-   this one at 22% alpha, so a readable foreground here still leaves the lines
-   faint. */
+/* ruTorrent hands flot its grid colors from this hidden element. */
 .graph_tab_grid {
   color: var(--dracula-fg);
   border-color: var(--dracula-selection);
 }
 
-/* The hook above only reaches the canvas. flot writes the tick-label colour
-   into an inline style on .flot-text once, when the plot is first created, and
-   never rewrites it — and at that moment the theme's stylesheet is not
-   necessarily applied yet, so it captures the wrong colour. Only !important
-   beats an inline style. */
+/* flot writes the tick-label color inline once, before this sheet may apply,
+   and only !important beats inline. */
 .flot-text,
 div.graph_tab {
   color: var(--dracula-fg);
@@ -1577,9 +1066,8 @@ div#FileList, div#TrackerList, div#PeerList, div#Speed { background-color: var(-
 
 /* === Disabled States === */
 
-/* ruTorrent marks some controls with a class and leaves others to the real
-   disabled attribute, which Chrome then greys out its own way (#AAAAAA text
-   on a translucent #3B3B3B). Both spellings get the same treatment. */
+/* ruTorrent marks some controls with a class and others with the disabled
+   attribute. */
 input.disabled, button.disabled,
 input:disabled, textarea:disabled, select:disabled, button:disabled {
   background-color: var(--dracula-bg-dark);
@@ -1602,39 +1090,22 @@ div#tdetails { background-color: var(--dracula-bg); }
 
 /* === Tab Bar === */
 
-/* Drawn as real tabs rather than a row of words: each one is outlined and
-   rounded at the top, and the selected one takes the panel's own background
-   and reaches down over the bar's bottom rule, so it reads as attached to the
-   content below rather than floating above it.
-
-   No !important anywhere here. Upstream's own rules use the identical
-   selectors — including `:hover`, where it paints a #FFC73C top border that is
-   not a Dracula colour — so equal specificity plus the theme loading after
-   css/style.css settles every one of them on order alone.
-
-   Padding on `.tabbar` itself cannot be set from here at all: upstream puts
-   Bootstrap's `p-0` utility on the element, and every Bootstrap utility carries
-   `!important`. Full-width tabs want to touch the panel edges anyway. */
+/* No !important: upstream uses the same selectors, so order wins. Padding on
+   `.tabbar` is Bootstrap's !important `p-0`. */
 .tabbar {
   background-color: var(--dracula-bg-dark);
   border-bottom: 1px solid var(--dracula-selection);
 }
 
-/* init.js builds this and sizes the thumb; it is a sibling of the row, so it
-   stays put while the tabs scroll under it. Absent until the row overflows. */
+/* init.js builds this and sizes the thumb. */
 #dracula-tab-scroll {
-  /* Written by init.js on every scroll; declared here so the sheet stands on
-     its own and the pair reads as part of the rule they drive. */
+  /* Written by init.js on every scroll. */
   --dracula-tab-thumb-left: 0;
   --dracula-tab-thumb-width: 0;
 
   display: none;
 }
 
-/* A desktop scrollbar is drawn and stays drawn, so only a coarse pointer is
-   told anything. There the platform's own bar is an overlay that appears while
-   a finger moves and is gone by the time anyone looks, so it is taken out
-   rather than left to draw a second line beside this one. */
 @media (pointer: coarse) {
   .tabbar {
     scrollbar-width: none;
@@ -1663,46 +1134,15 @@ div#tdetails { background-color: var(--dracula-bg); }
   }
 }
 
-/* `flex: 1 1 0` gives every tab an equal share of the row; left alone the tabs
-   stop about 60% of the way across and leave the rest of the bar empty. The
-   basis is 0 rather than auto on purpose: with auto, the free space is spread
-   evenly on top of each tab's natural width, so the row keeps the ragged rhythm
-   of the words; from 0, the share itself is the width and the row reads as one
-   segmented control.
-
-   Nothing here needs to know how many tabs there are. `ul#tabbar` is already a
-   flex row upstream, so a tab a plugin appends is an ordinary flex item and the
-   row redistributes on its own — 11 tabs at 119.7px each, 14 at 92.6px.
-   Squashing is not a risk either: `white-space: nowrap` is in force on the
-   link, so a tab's min-content size is its whole label and flex cannot shrink
-   past it — at 23 tabs upstream's `overflow-x: auto` scrolls the bar instead.
-
-   The label needs centring explicitly: `.nav-link` is a block at
-   `text-align: start`, which would pin every label to the left. */
+/* `flex: 1 1 0`, so every tab takes an equal share, appended plugin tabs
+   included. */
 .tabbar li.nav-item {
   flex: 1 1 0;
 }
 
 .tabbar li.nav-item a.nav-link {
-  /* -1px pulls the tab down onto the bar's bottom rule, which is what lets the
-     selected one punch a gap in it */
+  /* Puts the tab on the bar's bottom rule, so the selected one covers it. */
   margin: 0 0 -1px;
-  /* The tab row lands on the theme's 30px row, the same as the sidebar's group
-     headings, and the bar's own metrics do not get it there on their own: it
-     takes its height from its tallest tab.
-
-     The bar's height works out to `3 + padding-top + line-height +
-     padding-bottom` — the 3 being the selected tab's 2px accent, its 1px seam
-     over the bar's rule, and the bar's own bottom border, less the -1px margin
-     above. The heading's is `2 + padding + line-height`, its 22px line between
-     two 1px borders.
-
-     That extra pixel of border is why the tab's line is one under the
-     heading's, 21 against 22: matched, the two can only agree in one mode at a
-     time, and compact would need a negative padding to reach 26. Offset by one
-     they fall out with the same padding the heading uses — 3px here, 0 in
-     compact — so the two rows track each other rather than being separately
-     tuned. */
   padding: 3px 14px;
   line-height: 21px;
   font-size: 14px;
@@ -1715,9 +1155,6 @@ div#tdetails { background-color: var(--dracula-bg); }
   transition: all 0.15s ease;
 }
 
-/* Compact takes the tab row to 26px with everything else. Its own arithmetic is
-   the one above — `3 + padding-top + line-height + padding-bottom` — over the
-   21px line the tab already has, so 1px each side is the whole change. */
 body.compact .tabbar li.nav-item a.nav-link {
   padding-block: 1px;
 }
@@ -1726,10 +1163,7 @@ body.compact .tabbar li.nav-item a.nav-link {
   color: var(--dracula-fg);
   background-color: var(--dracula-bg-light);
   border-color: var(--dracula-selection);
-  /* Upstream's hover is `border-top: 2px solid #FFC73C`. Recolouring alone
-     leaves the width, so a hovered tab grows 33px -> 34px and, with
-     `transition: all` above, wobbles on its way there. The 2px top belongs to
-     the selected tab alone — hover says its piece through fill and text. */
+  /* Upstream's hover is a 2px top border; 1px keeps the tab from growing. */
   border-top-width: 1px;
 }
 
@@ -1738,17 +1172,13 @@ body.compact .tabbar li.nav-item a.nav-link {
   font-weight: bold;
   background-color: var(--dracula-bg);
   border-color: var(--dracula-selection);
-  /* accent on top, where upstream puts its yellow one */
   border-top: 2px solid var(--dracula-purple);
-  /* the panel colour over the bar's rule: the seam between tab and panel */
+  /* Covers the bar's rule under the selected tab. */
   border-bottom: 1px solid var(--dracula-bg);
 }
 
-/* The panel starts at its first row, with nothing between it and the tabs. Two
-   things sit in the way and both go: 3.5px of Bootstrap's `p-1`, which is a
-   utility and carries !important, so nothing without one reaches it; and the
-   container's own top border, which draws a second line directly under the one
-   the tab bar already has. The other three sides keep theirs. */
+/* Bootstrap's `p-1` carries !important, and the top border doubles the tab
+   bar's. */
 #tdcont {
   padding-top: 0 !important;
   border-top: none;
@@ -1756,28 +1186,15 @@ body.compact .tabbar li.nav-item a.nav-link {
 
 /* === Settings Dialog Layout === */
 
-/* Upstream wires Bootstrap's hover and active list-group variables to the same
-   pair — `--menu-highlight-background-color` and `--menu-highlight-color`, the
-   context-menu highlight — so the page under the pointer and the page you are
-   on paint identically and the list loses its "you are here" the moment the
-   pointer enters it. Only the hover half is remapped: the current page keeps
-   the purple pill, hover drops to Current Line.
-
-   Hovering the current page still leaves it purple: `.list-group-item.active`
-   and `.list-group-item-action:hover` are both two classes, and the active rule
-   sits later in bootstrap.min.css. */
+/* Upstream wires the list's hover and active states to one pair; only the
+   hover half is remapped. */
 #stg .list-group {
   --bs-list-group-action-hover-bg: var(--dracula-selection);
   --bs-list-group-action-hover-color: var(--dracula-fg);
 }
 
-/* Each settings page is one long Bootstrap .row, and options.js breaks the line
-   after the checkbox block with a bare empty .col-md-6. That only works when
-   the checkbox count is odd; the General page has sixteen, so the block already
-   ends on a line boundary and the spacer takes the left half of a fresh line,
-   pushing every following label into the right-hand column. A zero-height
-   full-width break ends the line without claiming a cell, which is right either
-   way. */
+/* options.js breaks the line with an empty `.col-md-6`, which works only for
+   an odd checkbox count. */
 #stg .row > div:empty {
   flex: 0 0 100%;
   max-width: 100%;
@@ -1788,15 +1205,8 @@ body.compact .tabbar li.nav-item a.nav-link {
 
 /* === Settings Dialog Size === */
 
-/* Upstream's base rule is 95vw/95vh, but @media (min-width: 768px) pins the
-   dialog to 660x600 on every desktop, where the settings pages wrap their
-   labels onto a second line — measured across all 22 pages: six wrap at 660px,
-   one still wraps at 900px, none at 1060px (bar Upload ETA, whose label is long
-   enough that no width helps). 600px also cuts 84px off the page list on the
-   left, so Ratio Groups and below are only reachable by scrolling. Capped
-   against the viewport so the dialog cannot outgrow a 1280x720 screen; the same
-   breakpoint keeps phones on upstream's near-fullscreen sizing. No !important:
-   the theme loads after css/style.css, so equal specificity wins on order. */
+/* Upstream pins the dialog to 660x600 above 768px, which wraps the labels.
+   Capped to the viewport. */
 @media (min-width: 768px) {
   div#stg {
     width: min(1060px, 92vw);
@@ -1806,24 +1216,8 @@ body.compact .tabbar li.nav-item a.nav-link {
 
 /* === Dialogs === */
 
-/* Upstream leaves `.dlg-window` with no `overflow` deliberately: a dialog's
-   body is a `.cont` carrying `flex: 1 1 auto; overflow-y: auto`
-   (`css/style.css:594`), so at `max-height: 95dvh` the `.cont` shrinks and
-   scrolls while the sticky header and button row stay pinned. Twenty-two of the
-   twenty-four dialogs work that way.
-
-   Two have no `.cont` — `#dlgHelp` and `#dlgAbout`, whose bodies are a
-   `div.container-fluid` — so they paint past their own border with nothing able
-   to reach the overflow: `html` and `body` are both `overflow: hidden`, and an
-   element with `overflow: visible` reports `scrollHeight > clientHeight` while
-   refusing to scroll. At 667x375 `#dlgHelp` puts 309px outside its border.
-
-   Naming `.container-fluid` is safer than a negation: it is a direct child of
-   exactly those two dialogs, where `:not(.cont):not(.buttons-list)` would also
-   catch and stretch `#tegLoadTorrents`, whose button row is an unclassed div.
-   `flex: 1 1 auto` is half the fix, not tidying — without the grow the body
-   keeps `flex: 0 1 auto`, cannot claim the height the header leaves it, and
-   scrolls a box shorter than it needs to be. Inert on `#dlgAbout`. */
+/* `#dlgHelp` and `#dlgAbout` have no scrolling `.cont`; their body is a
+   `.container-fluid`. */
 .dlg-window > .container-fluid {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -1831,35 +1225,19 @@ body.compact .tabbar li.nav-item a.nav-link {
 
 /* === Help Dialog === */
 
-/* Nineteen bindings in upstream's single 300px column stand 773px tall in a
-   961px window. init.js rebuilds them as the two groups the content already
-   has — movement and commands — and this gives the dialog the width to stand
-   them side by side. Capped against the viewport the way `#stg` above is.
-
-   `width`, not only `max-width`: the dialog has no width of its own and
-   shrink-wraps its content, so unpinned the box is a function of the text
-   inside it and one-line entries pull it in to 552px, taking the description
-   column down to 166px and wrapping every entry again. Pinned, the column is
-   what the wording was measured against.
-
-   No height: this dialog is as tall as its longer group. */
+/* init.js rebuilds the bindings as two groups. A pinned width, because the
+   dialog shrink-wraps its content. */
 div#dlgHelp {
   width: min(720px, 92vw);
   max-width: min(720px, 92vw);
 }
 
-/* Upstream turns every direct div of a dialog row into a centred flex row —
-   `.dlg-window .row > div` in `css/style.css` — which is how its key/value
-   pairs line up. A group is a column of two blocks, not a pair, so it opts out;
-   left in, the heading sits to the left of its own list, vertically centred.
-   The padding and margin from that rule are still wanted, so only the box type
-   is overridden. */
+/* Upstream's `.dlg-window .row > div` makes each div a centered flex row; a
+   group opts out of the box type only. */
 .dlg-window .row > .dracula-help-group {
   display: block;
 }
 
-/* Purple and ruled, the same way the torrent list and the sidebar mark a
-   heading — the two groups need to read as two, not as one list with a gap. */
 .dracula-help-title {
   padding-bottom: 3px;
   margin-bottom: 6px;
@@ -1868,9 +1246,6 @@ div#dlgHelp {
   font-weight: bold;
 }
 
-/* `max-content` rather than a fixed fraction: each group then sizes its key
-   column to its own longest key, so "Ctrl-Enter" fits on one side and "Tab"
-   wastes nothing on the other. */
 .dracula-help-list {
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -1882,13 +1257,8 @@ div#dlgHelp {
   margin: 0;
 }
 
-/* Stacked below 768px the two groups run together: upstream's
-   `.dlg-window .row > div` leaves them 2px apart, and at 0,2,1 that outranks a
-   bare class, so the gap has to be asked for at the same weight.
-
-   Its own top-level block. A `max-width` query opened inside the `min-width`
-   one above closes that one early and carries every rule after it into the
-   mobile branch, with the brace count still balanced. */
+/* Upstream's row rule at 0,2,1 outranks a bare class. A top-level block: a
+   max-width query nested in a min-width one closes it early. */
 @media (max-width: 767.98px) {
   .dlg-window .row > .dracula-help-group:not(:last-child) {
     margin-bottom: 12px;
@@ -1897,36 +1267,15 @@ div#dlgHelp {
 
 /* === Status Bar === */
 
-/* Every number down here changes while you watch — the clock every second, the
-   speeds and totals every couple — and Inter's default figures are
-   proportional, so each change resizes the text and shoves its neighbours. The
-   clock alone swings 3.76px between seconds, enough to keep the port and socket
-   cells twitching for as long as the tab is open.
-
-   Tabular figures fix that at the cause, every digit taking the same advance,
-   and leave no measured constant to go stale when the font size or the locale
-   changes. The bundled Inter carries the feature — checked rather than assumed,
-   these being per-script subsets where a stripped one would fail silently: at
-   14px "1111" and "0000" measure 22.78 and 35.33 proportionally, and 36.31 both
-   when tabular. */
+/* Tabular figures, so changing numbers do not shift their neighbors. */
 #StatusBar .stval,
 #StatusBar .sthdr {
   font-variant-numeric: tabular-nums;
 }
 
-/* The bar is styled from two sheets and the split is load-bearing. Its
-   background lives in plugins.css because that sheet loads at index 30, after
-   every plugin sheet (10-27), and the plugins that put cells in this bar paint
-   their own; from here, at index 7, an equal-specificity rule loses on order.
-   Layout has no such fight, so it stays with the rest of the structure.
-
-   The height and the border are written exactly as 5.2.0's own `css/style.css`
-   writes them, together with `#maincont` below, so from 5.2.0 up all three
-   restate what upstream already computes. Below 5.2.0 the bar is
-   `position: absolute; bottom: 0` with no height of its own and a hardcoded
-   `#A0A0A0` line (`css/style.css:578` on 5.1.12), and `#maincont` reserves a
-   literal 25px for it (`css/style.css:329`) — a 32px bar in a 25px reserve
-   covers the panels' bottom edges instead of clearing them. */
+/* The background lives in plugins.css, which loads after the plugins that
+   paint this bar. Below 5.2.0 upstream positions the bar absolutely and
+   reserves a literal 25px for it. */
 #StatusBar {
   display: flex;
   justify-content: space-between;
@@ -1939,12 +1288,10 @@ div#dlgHelp {
   height: calc(100dvh - var(--navbar-height) - 5px - var(--footer-height) - 5px);
 }
 
-/* Upload speed icon (Phosphor arrow-circle-up, Green) */
 #st_up .icon {
   background-image: var(--icon-upload-speed);
 }
 
-/* Download speed icon (Phosphor arrow-circle-down, Cyan) */
 #st_down .icon {
   background-image: var(--icon-download-speed);
 }
@@ -1960,9 +1307,8 @@ div#dlgHelp {
   padding: 0 8px;
 }
 
-/* A hold on a cell is the theme's gesture for showing that cell's reading, so
-   the system's selection and callout must not claim it first. Coarse pointers
-   only: under a mouse the readings stay selectable. */
+/* A hold shows the cell's reading, so the system callout must not claim it.
+   Coarse pointers only. */
 @media (pointer: coarse) {
   .status-cell {
     -webkit-touch-callout: none;
@@ -1971,14 +1317,12 @@ div#dlgHelp {
   }
 }
 
-/* Text in the bar sits a touch high without this. */
 #StatusBar .sthdr,
 #StatusBar .stval,
 #StatusBar span {
   padding-top: 2px !important;
 }
 
-/* Status bar section icons via ::before */
 #st_fd::before,
 #StatusBar .status-cell:nth-child(6)::before,
 #StatusBar .status-cell:nth-child(7)::before,
@@ -1995,7 +1339,6 @@ div#dlgHelp {
   padding-top: 2px;
 }
 
-/* Open connections — plugs-connected (Comment) */
 #st_fd::before {
   background-image: var(--icon-plugs-connected);
   width: 20px;
@@ -2003,7 +1346,7 @@ div#dlgHelp {
   background-size: 20px;
 }
 
-/* rTorrent version — pulse (Comment) */
+/* rTorrent version */
 #StatusBar .status-cell:nth-child(6)::before {
   background-image: var(--icon-pulse);
   width: 22px;
@@ -2011,7 +1354,7 @@ div#dlgHelp {
   background-size: 22px;
 }
 
-/* Torrents count — list (Comment) */
+/* torrent count */
 #StatusBar .status-cell:nth-child(7)::before {
   background-image: var(--icon-list);
   width: 24px;
@@ -2019,7 +1362,7 @@ div#dlgHelp {
   background-size: 24px;
 }
 
-/* Time — clock (Comment) */
+/* time */
 #StatusBar .status-cell:last-child::before {
   background-image: var(--icon-clock);
   width: 22px;
@@ -2027,7 +1370,6 @@ div#dlgHelp {
   background-size: 22px;
 }
 
-/* Disk icon color: Purple (matches progress bar) */
 #meter-disk-pane .icon {
   background-image: var(--icon-disk) !important;
   width: 22px !important;
@@ -2035,7 +1377,6 @@ div#dlgHelp {
   background-size: 22px !important;
 }
 
-/* CPU icon color: Cyan (matches graph) */
 #meter-cpu-pane .icon {
   background-image: var(--icon-cpu) !important;
   width: 22px !important;
@@ -2043,14 +1384,13 @@ div#dlgHelp {
   background-size: 22px !important;
 }
 
-/* Upload/Download speed arrow icons */
 #st_up .icon, #st_down .icon {
   width: 22px;
   height: 22px;
   background-size: 22px;
 }
 
-/* Hide text labels — icons speak for themselves (except rTorrent version) */
+/* Labels hidden, except the rTorrent version. */
 #st_fd > .sthdr,
 #st_up > .sthdr,
 #st_down > .sthdr,
@@ -2058,7 +1398,6 @@ div#dlgHelp {
   display: none !important;
 }
 
-/* Speed sub-icons: Limit (speedometer) and Total (sigma) */
 #st_up > .stval:nth-child(5)::before,
 #st_down > .stval:nth-child(5)::before,
 #st_up > .stval:nth-child(7)::before,
@@ -2074,13 +1413,7 @@ div#dlgHelp {
   background-size: 16px;
 }
 
-/* Limit — Phosphor speedometer-duotone (Comment)
-
-   Out of the flow, like the sigma below it. An inline-block of 28px is taller
-   than the 23px line the other two values make, so in the flow it grew this
-   cell to 30px; the row centres its cells, and a taller cell puts its text
-   above its neighbours'. Measured with a limit set: 30px against 23px, and the
-   figure standing 3.5px high of the speed beside it. */
+/* Out of the flow: a 28px inline-block would grow the cell. */
 #st_up > .stval:nth-child(5),
 #st_down > .stval:nth-child(5) {
   position: relative;
@@ -2098,19 +1431,8 @@ div#dlgHelp {
   transform: translateY(-50%);
 }
 
-/* Both speed cells open the throttle menu, and nothing else marks them as
-   controls: `content.js:7-8` binds the click to the whole cell rather than to
-   something inside it, so there is no button to carry a mark and no pointer
-   cursor either.
-
-   The caret is the one the search and plugins menus wear, so a menu looks like
-   a menu everywhere in the theme. It points **up** because that is where this
-   one opens: the status bar sits on the floor of the window.
-
-   Drawn on the cell rather than on a child, which puts it after the total and
-   inside the clickable area rather than beside it. The theme's other marks in
-   this row live on `#StatusBar::after` and on the values' own `::before`, worth
-   checking before claiming a pseudo-element here. */
+/* Upstream binds the throttle menu to the whole cell. The caret points up,
+   where the menu opens. */
 #st_up,
 #st_down {
   cursor: pointer;
@@ -2126,7 +1448,6 @@ div#dlgHelp {
   border-left: 0.3em solid transparent;
 }
 
-/* Total — Phosphor sigma-duotone (Comment) */
 #st_up > .stval:nth-child(7),
 #st_down > .stval:nth-child(7) {
   position: relative;
@@ -2144,66 +1465,44 @@ div#dlgHelp {
   transform: translateY(-50%);
 }
 
-/* Status bar centering: ::before/::after spacers with flex-grow for true center */
+/* Spacers that center the speeds. */
 #StatusBar::before {
   content: "";
-  order: 5;  /* Spacer between Torrents(4) and Upload(6) */
+  order: 5;
   flex-grow: 1;
   min-width: 0;
 }
 #StatusBar::after {
   content: "";
-  order: 8;  /* Spacer between Download(7) and Open(9) */
+  order: 8;
   flex-grow: 1;
   min-width: 0;
 }
 #StatusBar #st_fd { margin-left: 0; }
 #StatusBar #st_fd .stval { min-width: 0; }
 
-/* The bar asks for more width than a phone has in either orientation, and
-   upstream's `overflow-x: auto` on it turns the remainder into a 32px scrolling
-   strip rather than dropping anything: 662px of content at 390px wide, and
-   1029px at 844px, where two more cells appear at upstream's `md` line.
-   Measured shares: connections 204px, the disk and CPU meters 102px each, the
-   two speeds 102px each, the rTorrent version 219px.
-
-   The cells that only report collapse to their icon, which brings 390px down to
-   340 and 844px down to 721. A tap opens what they were holding: each already
-   carries a full reading in `title`, written by draculaConnectionsTooltip and
-   its four siblings, and a title is a hover state no touch screen ever enters.
-   The tap is upstream's `theStatusTip` from 5.3.17, draculaStatusCellPopovers
-   below it.
-
-   The speeds keep their numbers. They are what the bar is watched for, and they
-   are the two cells a tap already owns — it opens the throttle menu.
-
-   991.98px is upstream's own `lg` line, where it stops showing the labels beside
-   these same values (`index.html:267-289`). */
+/* Below upstream's `lg` line the reporting cells collapse to their icon. A tap
+   opens the reading, through upstream's `theStatusTip` from 5.3.17, and
+   draculaStatusCellPopovers below it. */
 @media (max-width: 991.98px) {
   #meter-disk-holder,
   #meter-cpu-holder {
     display: none;
   }
 
-  /* `!important`: upstream shows these three through jQuery's `.show()`
-     (`webui.js:2355`), which writes `display: block` as an inline style, and it
-     rewrites them on every refresh. An inline declaration outranks any rule
-     here that does not say this. */
+  /* !important: upstream shows these through jQuery's `.show()`, an inline
+     `display: block`, on every refresh. */
   #st_fd > .stval {
     display: none !important;
   }
 
-  /* The collapse leaves the bar 400px wide against 390px of screen, and the last
-     10 of those are cheaper to take from the gaps than from a reading. The two
-     meter panes keep their own padding, set by their plugins on an id. */
   .status-cell {
     padding-inline: 4px;
   }
 }
 
-/* A tapped pane's reading. From ruTorrent 5.3.17 upstream's `theStatusTip` draws
-   `.status-tip`; below it the theme draws its own. `pre-line` keeps the lines of
-   the string the tooltips build. */
+/* From ruTorrent 5.3.17 upstream's `theStatusTip` draws `.status-tip`; below
+   it the theme draws its own. */
 #dracula-status-popover,
 .status-tip {
   padding: 6px 10px;
@@ -2217,15 +1516,14 @@ div#dlgHelp {
   box-shadow: 0 4px 12px var(--dracula-shadow);
 }
 
-/* Below `theDialogManager`'s 2000 floor, so a dialog stays over it. Fixed because
-   the bar scrolls its own overflow and a child cannot rise above it; init.js sets
-   `left` and `bottom`. */
+/* Below `theDialogManager`'s 2000, so a dialog stays over it. Fixed, because
+   the bar clips its overflow. init.js sets `left` and `bottom`. */
 #dracula-status-popover {
   position: fixed;
   z-index: 1900;
   max-width: 80vw;
 }
 
-/* === Preload (disabled — no images) === */
+/* === Preload === */
 
 div#preload { display: none; }
