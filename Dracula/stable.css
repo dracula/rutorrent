@@ -23,6 +23,7 @@
   /* Reaches selected rows only: the hover rule further down takes the filter
      off everything else. */
   --row-highlight-brightness: 1.15;
+  --seedingtime-highlight-color: color-mix(in srgb, var(--dracula-cyan) 12%, transparent);
 
   /* The containing block for everything drawn over the table. Upstream declares
      it here in 5.0.0 and again from 5.2.0; 5.1.x carries it on `.stable-head`
