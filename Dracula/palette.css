@@ -2,44 +2,16 @@
  * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
- * Every colour the theme uses, declared once and imported by the sheets that
- * need it rather than copied into each.
+ * Imported by style.css and plugins.css: the mobile plugin disables the theme
+ * plugin, so style.css never loads there.
  *
- * A file of its own because the two UIs load different sheets. When the mobile
- * plugin takes the page over it disables the theme plugin
- * (`plugins/mobile/init.js:2138`) and style.css never arrives; plugins.css
- * does, and imports this. On the desktop style.css imports it directly, so the
- * palette lands with the first sheet rather than at config time.
- *
- * No version stamp on :root here, and none in mobile.css: those stamps exist
- * because ruTorrent serves its sheets under `?v=<its own version>`, which does
- * not move between theme releases. These two are fetched under the theme's own
- * version instead, written into the @import URLs, so they cannot go stale
- * without the sheet that imports them going stale first — which the stamp on
- * that sheet already catches.
- *
- * Every value here is the specification's, at a fixed point:
- *
- *     github.com/dracula/draculatheme.com
- *     content/spec.mdx
- *     ab9840fc416836e1474b9a7d21522234af1eaddd  (2026-08-14)
- *
- * A commit, not draculatheme.com/spec: that page is generated from this file
- * and moves without notice. tests/integrity.test.mjs holds the same table, so
- * an edit away from it fails; raising the pin means raising it in both places.
- *
- * The ANSI palettes are left out. The specification assigns them to terminal
- * applications, and this interface has no terminal.
- *
- * One :root: stylelint counts several as the same rule.
+ * The values are the spec's, github.com/dracula/draculatheme.com
+ * content/spec.mdx at ab9840fc416836e1474b9a7d21522234af1eaddd.
+ * tests/dracula-spec.mjs holds the same table.
  */
 
 :root {
-  /* ── Dracula Classic ──────────────────────────────────────────────────────
-     Current Line and Comment hold the same value, and the specification says
-     so outright: they "intentionally share the same semantic color". Both
-     names are kept because the record is of the specification, not of the
-     hexes. */
+  /* Dracula Classic. Current Line and Comment share a value in the spec. */
   --dracula-bg: #282a36;
   --dracula-fg: #f8f8f2;
   --dracula-current-line: #6272a4;
@@ -53,23 +25,15 @@
   --dracula-purple: #bd93f9;
   --dracula-pink: #ff79c6;
 
-  /* The interface surfaces, named as the specification names them. Light and
-     Floating are one value there — a floating element is drawn on the light
-     surface — and both names are kept for the same reason as Current Line. */
   --dracula-floating: #343746;
   --dracula-bg-lighter: #424450;
   --dracula-bg-light: #343746;
   --dracula-bg-dark: #21222c;
   --dracula-bg-darker: #191a21;
 
-  /* What a line highlight falls back to where it cannot be drawn as a
-     translucent layer over the background. */
   --dracula-line-highlight: #353747;
 
-  /* ── Alucard Classic ──────────────────────────────────────────────────────
-     The specification's light variant. Dracula Classic's accents are unusable
-     on #FFFBEB — Green measures 1.32:1 and Cyan 1.33:1 where text needs 4.5 —
-     while Alucard's own run 4.80:1 to 7.33:1 on it. */
+  /* Alucard Classic. */
   --alucard-bg: #fffbeb;
   --alucard-fg: #1f1f1f;
   --alucard-current-line: #6c664b;
@@ -91,30 +55,16 @@
 
   --alucard-line-highlight: #e2deca;
 
-  /* ── Functional ───────────────────────────────────────────────────────────
-     One set for both variants, and the specification is explicit that these
-     are for interface chrome and must not be used in an editor or a terminal.
-     Recorded rather than used: measured against this theme's own surfaces they
-     carry 3.01:1 to 4.66:1 on #282A36 and 2.95:1 to 4.57:1 on #FFFBEB, so they
-     clear the 3:1 a graphical element needs and miss the 4.5:1 text needs
-     almost everywhere. The variant accents do that job here. */
+  /* Functional. Recorded only: the theme uses the variant accents. */
   --functional-red: #de5735;
   --functional-orange: #a39514;
   --functional-green: #089108;
   --functional-cyan: #0081d6;
   --functional-purple: #815cd6;
 
-  /* ── Derived roles ────────────────────────────────────────────────────────
-     Not the specification's, and the only two colours here that are not: the
-     torrent progress bar's ends. It prints its percentage on the fill, and a
-     hue at full strength puts that text at 1.3:1; at 35% over the page the same
-     hues still read as purple and green while the label clears 6.90:1 at the
-     start, 6.20:1 halfway and 5.30:1 at the end.
-
-     Mixes rather than hexes, so that a change to Purple, Green or Background
-     reaches them instead of leaving a stale pair behind. `init.js` resolves
-     them through an element: a mix serialises to `color(srgb …)`, which
-     upstream's own colour parser does not read. */
+  /* Derived roles, not in the spec: the ends of the progress bar. init.js
+     resolves them through an element, because upstream's color parser does not
+     read `color(srgb ...)`. */
   --dracula-progress-start: color-mix(
     in srgb,
     var(--dracula-purple) 35%,
@@ -126,10 +76,6 @@
     var(--dracula-bg)
   );
 
-  /* The traffic graph draws the period before this one beside the current one,
-     from the same two hues so that the pair reads as one measurement at two
-     depths. 45% over the page is what separates them without introducing a
-     colour the theme does not otherwise use. */
   --dracula-graph-down-earlier: color-mix(
     in srgb,
     var(--dracula-cyan) 45%,
@@ -141,22 +87,10 @@
     var(--dracula-bg)
   );
 
-  /* Shades rather than hues, and the same in either variant: a darkening of
-     whatever happens to be under them. The shadow sits beneath a floating
-     surface; the stripe is the diagonal overlay on a striped progress bar, one
-     value for both variants because the fill is a mix of the accent with the
-     page rather than the accent itself. Named here because a colour is a
-     colour, whatever it is made of. */
   --dracula-shadow: rgb(0 0 0 / 45%);
   --dracula-stripe: rgb(0 0 0 / 15%);
 
-  /* ── Decimal copies ───────────────────────────────────────────────────────
-     Bootstrap's utilities take a bare `r, g, b` rather than a colour —
-     `.text-danger` resolves to
-     `rgba(var(--bs-danger-rgb), var(--bs-text-opacity))` — and CSS cannot
-     derive one from a hex custom property. Each triple is a second copy of the
-     colour named beside it; integrity.test.mjs holds it to that name's hex, and
-     refuses a triple written anywhere but here. */
+  /* Decimal copies for Bootstrap utilities, which take a bare `r, g, b`. */
   --dracula-rgb-bg: 40, 42, 54;
   --dracula-rgb-fg: 248, 248, 242;
   --dracula-rgb-red: 255, 85, 85;

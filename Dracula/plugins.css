@@ -6,46 +6,36 @@
  * lands twice: same name, same value, later copy wins.
  */
 
-/* Every import carries the theme's own version rather than ruTorrent's, which
-   is what the sheets ruTorrent loads are stamped for — see palette.css.
-
-   This sheet is the only one of the theme's that reaches the mobile plugin's
-   interface, so it is where the palette, the typefaces, the icons and the rules
-   for that interface have to enter. Imported rules take the position of the
-   @import, which is above everything else here and below every sheet loaded
-   before this one: still later than the plugin's own, which is what matters. */
+/* The only theme sheet the mobile interface loads, so the shared sheets enter
+   here. Each import carries the theme's version, not ruTorrent's. */
 @import url("palette.css?v=0.3.2"); /* x-release-please-version */
 @import url("fonts.css?v=0.3.2"); /* x-release-please-version */
 @import url("icons.css?v=0.3.2"); /* x-release-please-version */
 @import url("mobile.css?v=0.3.2"); /* x-release-please-version */
 @import url("legacy.css?v=0.3.2"); /* x-release-please-version */
 
-/* init.js reads this back at startup to catch a sheet the browser has cached
-   from an older release. Declared per sheet, so a mixed set is caught too. */
+/* init.js reads this back to catch a stale cached sheet. */
 :root {
   --dracula-version-plugins: "0.3.2"; /* x-release-please-version */
 }
 
-/* Only the background is here; colour and layout are in style.css. This half
-   must be, because that sheet loads before every plugin and this one after
-   them — see the note beside the rule there. */
+/* The background only: this sheet loads after every plugin sheet, style.css
+   before them. */
 #StatusBar {
   background-color: var(--dracula-bg-dark);
 }
 
-/* Status bar layout: LEFT [rTorrent Disk CPU Torrents] | spacer | CENTER [↑Speed ↓Speed] | spacer | RIGHT [Open Port Time] */
-/* Spacers (::before order:5, ::after order:8) defined in style.css */
-#StatusBar > .status-cell:nth-child(6) { order: 1; }  /* rTorrent version → first */
-#meter-disk-pane { order: 2; }                         /* Disk → second */
-#meter-cpu-pane { order: 3; }                          /* CPU → third */
-#StatusBar > .status-cell:nth-child(7) { order: 4; }  /* Torrents count → after CPU */
-/* ::before spacer = order 5 */
-#st_up { order: 6; }                                   /* Upload speed → center-left */
-#st_down { order: 7; }                                 /* Download speed → center-right */
-/* ::after spacer = order 8 */
-#st_fd { order: 9; }                                   /* Open connections */
-#port-pane { order: 10; }                              /* Port status */
-#StatusBar > .status-cell:last-child { order: 11; margin-left: 0; }  /* Time → last */
+/* Status bar order. Orders 5 and 8 are the spacers, the ::before and ::after
+   in style.css. */
+#StatusBar > .status-cell:nth-child(6) { order: 1; }  /* rTorrent version */
+#meter-disk-pane { order: 2; }
+#meter-cpu-pane { order: 3; }
+#StatusBar > .status-cell:nth-child(7) { order: 4; }  /* torrent count */
+#st_up { order: 6; }
+#st_down { order: 7; }
+#st_fd { order: 9; }
+#port-pane { order: 10; }
+#StatusBar > .status-cell:last-child { order: 11; margin-left: 0; }  /* time */
 
 .browseFrame {
   border: 1px solid var(--dracula-selection);
@@ -53,34 +43,15 @@
   border-radius: 4px;
 }
 
-/* The "..." picker is the one button upstream deliberately keeps small:
-   `_getdir.css:29` sets `width: 30px`. The theme's 10px of horizontal padding
-   does not fit inside that, so `min-width: fit-content` pushes it out to 34px;
-   4px fits and the button holds the width the plugin asked for. `flex-shrink:
-   0` because it shares a flex row with the path field and is otherwise squeezed
-   to 28.3px — a narrow dialog takes its space out of the elastic field, not out
-   of a fixed-size control. Ten of these exist; all come from this rule. */
+/* `_getdir.css` sets `width: 30px` on the picker, which the theme's padding
+   would overflow. `flex-shrink: 0`, so the path field gives way instead. */
 .browseButton {
   padding-inline: 4px;
   flex-shrink: 0;
 }
 
-/* A button standing beside a text field takes the field's height, so the pair
-   reads as one control. Upstream keeps the two level by giving both 1px of
-   vertical padding; this theme's buttons carry 6px and its fields still carry
-   1px, which is the 10px step — 35px against 25px.
-
-   The button comes down rather than the field going up: these are pickers
-   carrying three dots, so the height buys them nothing, and the fields are
-   compact by design throughout the theme.
-
-   Only buttons that are actually paired — a standalone Add File or Create keeps
-   its full height. The two arms are the two shapes a pair takes: the button
-   beside the field in one column, as every path picker is, and the button in the
-   column after it, which is how Add Torrent builds its label control.
-
-   `.dlg-window .row > div` is upstream's own flex row (`css/style.css:207`) at
-   0,2,1, so this has to outrank that as well as the theme's own button rule. */
+/* A button beside a text field takes the field's height. Outranks upstream's
+   `.dlg-window .row > div` flex row. */
 .dlg-window
   .row
   > :is(
@@ -96,17 +67,8 @@
   padding-block: 1px;
 }
 
-/* _getdir ships literal system colours — `windowtext` for the entries,
-   `highlight`/`highlighttext` for the selected one — so the directory picker
-   wears the operating system's theme rather than this one: an OS blue selection
-   on a near-black panel, and under a light OS theme a black `windowtext` on a
-   panel that stays #21222C.
-
-   `.active` here is a real selection, not a pointer highlight — set on click,
-   moved by the arrow keys, opened by Enter — so it takes the same purple and
-   dark text as a selected torrent row. The selected rule comes last on purpose,
-   so hovering the selected entry leaves it selected rather than dropping it to
-   the hover colour. */
+/* _getdir ships system colors (`windowtext`, `highlight`). The selected rule
+   comes last, so hover keeps a selected entry selected. */
 .rmenuitem {
   color: var(--dracula-fg);
   border-radius: 3px;
@@ -127,26 +89,9 @@
   font-family: var(--font-mono);
 }
 
-/* The task console's spinner, which `_task.css` gives #tsk_btns as
-   `url(./images/ajax-loader.gif)` — a direct URL rather than
-   --loading-indicator-icon, which is why setting that variable to none
-   elsewhere does not touch it.
-
-   The plugin drives this entirely through the `background` property:
-
-       _task/init.js:252   $('#tsk_btns').css({background:"none", paddingTop:0})
-       _task/init.js:262   $('#tsk_btns').css({background: "", paddingTop:""})
-
-   so the spinner appears while a task runs and goes when it finishes. That
-   rules out three shapes: `!important` would beat the inline style and leave
-   the thing spinning forever; a ::before would survive the clearing, which does
-   not reach a pseudo-element; and an SVG data-URI cannot animate itself, since
-   as a background-image it renders in static mode. What is left is drawing the
-   dots as background layers and animating their positions, which keeps
-   everything inside the one property the plugin toggles.
-
-   padding-top stays upstream's: its rule still applies, and its own inline
-   reset still clears it. */
+/* `_task.css` sets the spinner as a direct `url()`, and the plugin toggles it
+   through an inline `background`. !important, a ::before or an SVG animation
+   would each break that toggle, so the dots are background layers. */
 @keyframes dracula-task-dots {
   0%, 100% { background-position: 5px 6px, 23px 12px, 41px 12px; }
   33%      { background-position: 5px 12px, 23px 6px, 41px 12px; }
@@ -161,30 +106,15 @@
   animation: dracula-task-dots 1.2s ease-in-out infinite;
 }
 
-/* The chunk map asks for the `fixed` generic, which resolves to a bitmap face
-   nothing else in the UI uses. */
+/* The chunk map asks for the `fixed` generic, a bitmap face. */
 #cCont {
   font-family: var(--font-mono);
 }
 
-/* Chunk availability map. The letter in each cell is the availability count in
-   hex, so "F" means 15 or more peers have that piece; upstream ramps the
-   background across 16 steps from cream to salmon (#FFFDF0 to #C3988B), none of
-   it on the palette. Same idea in Dracula: one hue mixed over the panel
-   background, one step per level. Capped at 50% — past that the count printed
-   on top drops below 4.5:1. chunks.css is linked before plugins.css, so order
-   settles this without !important. */
-/* Typing --chunk-level is worth the four lines. Untyped, a value the plugin
-   never meant to produce reaches `calc()` as a token soup, makes the whole
-   color-mix() invalid at computed-value time and leaves the cell with no
-   background at all; typed, anything that is not a <number> is rejected at
-   parse and the cell falls back to level 0. inherits: false because the two
-   classes land on the same element (chunks/init.js:63 sets
-   `className = "cCell Cell" + chunk`), so nothing below reads it.
-
-   The `, 0` fallback below stays regardless: it is what answers on a browser
-   with no @property support, where an unregistered property has no initial
-   value to fall back to. */
+/* One hue mixed over the panel, a step per availability level. chunks.css
+   loads before this sheet, so order wins without !important. */
+/* Typed, so a value `calc()` cannot read falls back to level 0 instead of
+   voiding the `color-mix()`. Not inherited: both classes are on one element. */
 @property --chunk-level {
   syntax: "<number>";
   inherits: false;
@@ -215,11 +145,8 @@
 .CellE { --chunk-level: 47; }
 .CellF { --chunk-level: 50; }
 
-/* tracklabels shows a per-tracker favicon and falls back to the "checking"
-   spinner when a tracker has no domain to fetch one from — the dht:// row, in
-   practice. A permanent spinner reads as a stuck request, so inside the tracker
-   list that fallback becomes a network glyph. The spinner rule it overrides
-   carries !important, hence the one here. */
+/* tracklabels falls back to the spinner for a tracker with no domain. The
+   spinner rule carries !important. */
 #TrackerList .stable-icon.Status_Checking {
   background-image: var(--icon-peer-network);
 }
@@ -237,20 +164,14 @@
   border-radius: 4px;
 }
 
-/* Padding compensation for the meter blocks. #port-pane appears here as well as
-   in the flex order map at the top of this file, and the two stay apart
-   deliberately: that map is a single picture of the bar's left-to-right layout,
-   while this is spacing that belongs beside the two panes it matches. Different
-   properties, so neither shadows the other. */
 #meter-disk-pane, #meter-cpu-pane { padding-right: 14px; }
 /* stylelint-disable-next-line no-duplicate-selectors */
 #port-pane { padding-right: 12px; }
 
 /* === Status Bar Meters === */
 
-/* No background-color here on purpose. The diskspace plugin writes one inline,
-   interpolated between the two colours set in init.js by how full the disk is,
-   and an !important here would beat that inline style and flatten the meter. */
+/* No background-color: diskspace writes one inline, and !important would beat
+   it. */
 #meter-disk-value {
   border-radius: 3px;
 }
@@ -271,8 +192,7 @@
   text-shadow: 0 1px 2px color-mix(in srgb, var(--dracula-bg-dark) 80%, transparent);
 }
 
-/* No #meter-cpu-value rule: in 5.3.7 cpuload draws a flot graph into a canvas
-   rather than a bar, so no such element exists. */
+/* No #meter-cpu-value rule: cpuload draws a canvas graph. */
 
 #meter-cpu-holder {
   background-color: var(--dracula-selection);
@@ -281,28 +201,18 @@
   height: 20px;
 }
 
-/* Only cpuload has a canvas — diskspace builds two divs, #meter-disk-value and
-   #meter-disk-text, and paints its bar with a background colour.
-
-   This is cover for the moment between flot building its canvas and init.js
-   resizing it: flot reads the holder before this stylesheet arrives, so without
-   the rule the mismatch shows as a gap along the bottom. Once the resize lands
-   flot sets the same height itself and this becomes a no-op. It is not what
-   keeps the graph sharp — that is the canvas resize in init.js, and stretching
-   is what blurs it. */
+/* flot reads the holder before this sheet arrives; this covers the gap until
+   init.js resizes the canvas. */
 #meter-cpu-holder canvas {
   height: 100%;
 }
 
-
-/* Port status icons */
 #port-pane .icon {
   width: 22px;
   height: 22px;
   background-size: 22px;
 }
-/* Status classes as check_port defines them: 0 = checking, 1 = closed, 2 = open.
-   Scoped to #port-pane to match the plugin's own specificity. */
+/* check_port's classes: 0 checking, 1 closed, 2 open. */
 #port-pane .pstatus0 {
   background-image: var(--icon-port-unknown);
 }
@@ -315,21 +225,9 @@
   background-image: var(--icon-port-open);
 }
 
-/* The pane's hidden parts are not hidden. check_port empties a segment and calls
-   jQuery's `.hide()` on it, which writes a plain inline `display: none`, while
-   the same elements carry Bootstrap's `d-lg-block` — `display: block !important`
-   above 992px. An important declaration outranks an inline one that is not, so
-   they stay in the flow, and the separator carries `margin: 0 3px` inline
-   (`plugins/check_port/init.js`, `onLangLoaded`): six pixels of nothing after
-   the address, measured 19px from the number to the pane's edge against the
-   12px its padding asks for.
-
-   `:empty` is what tells a hidden segment from a live one — the plugin clears
-   the text in the same breath as it hides the element — and `!important` is
-   here because only `!important` outranks `!important`.
-
-   Silent on releases whose check_port has one protocol and no separator: that
-   markup carries neither this id nor this class. */
+/* check_port hides a segment with jQuery's `.hide()`, an inline
+   `display: none`, but the segments carry Bootstrap's !important `d-lg-block`.
+   `:empty` marks a hidden one, and only !important outranks !important. */
 #port-pane #port-ip-separator:empty,
 #port-pane .port-ip-text-segment:empty {
   display: none !important;
@@ -337,12 +235,7 @@
 
 /* === Scheduler === */
 
-/* The scheduler paints its week grid with a saturated #00A800 for full speed,
-   three near-identical greens for the limited steps, white for off and pink for
-   seeding. Limited 1, 2 and 3 are not a scale — each is an independent preset
-   with its own UL/DL fields — so one distinct palette hue each, leaving green
-   for full speed, red for off (the theme's stop colour) and pink for seeding.
-   Three shades of one hue are indistinguishable across 168 cells. */
+/* Limited 1, 2 and 3 are independent presets, so each takes its own hue. */
 .sch_fast { background: var(--dracula-green); }
 .sch_res1 { background: var(--dracula-cyan); }
 .sch_res2 { background: var(--dracula-purple); }
@@ -350,9 +243,6 @@
 .sch_stop { background: var(--dracula-red); }
 .sch_seed { background: var(--dracula-pink); }
 
-/* Shown while the scheduler is switched off. Upstream flattens every state to a
-   grey here, losing the pattern; each hue held at a low mix says "inactive"
-   without erasing what the cells mean. */
 .sch_fastdis { background: color-mix(in srgb, var(--dracula-green) 22%, var(--dracula-bg)); }
 .sch_res1dis { background: color-mix(in srgb, var(--dracula-cyan) 22%, var(--dracula-bg)); }
 .sch_res2dis { background: color-mix(in srgb, var(--dracula-purple) 22%, var(--dracula-bg)); }
@@ -362,48 +252,22 @@
 
 /* === Search Category === */
 
-/* extsearch puts its category picker in a shrink-to-fit flex item, and the
-   select inside is width: 100%, which contributes nothing to the intrinsic
-   width — so without a floor the whole control collapses to 23px and shows only
-   its caret. 7rem is wide enough to read the current category. */
+/* The select inside is `width: 100%`, which gives this shrink-to-fit wrapper
+   no width. */
 #exscat {
   min-width: 7rem;
 }
 
-/* Most engines have no categories, and Local Torrents is not a search at all —
-   in those cases the plugin hides the `<select>` and leaves its wrapper
-   standing (extsearch/init.js:738 sets `hidden` on the select, not on `#exscat`).
-   Bootstrap's `[hidden]` collapses the select alone, so the wrapper keeps the
-   7rem above and holds 98px of empty box between the field and the Go button,
-   plus a gap of its own.
-
-   `display: none` rather than a zeroed width, so the flex gap on either side
-   goes too and Go sits against the field. The wrapper returns on its own the
-   moment an engine with categories is chosen, because the selector asks the
-   select — which is what the plugin actually toggles. */
+/* The plugin hides the select, not its wrapper, for an engine without
+   categories. */
 #exscat:has(> select[hidden]) {
   display: none;
 }
 
 /* === Notifications === */
 
-/* The _noty plugin paints its bar with a base64 PNG gradient over #fff while
-   the text inherits the theme foreground — white on white, 1.07:1. Every
-   notification the UI raises goes through it: rTorrent faults, JS errors,
-   timeouts, "copied to clipboard", and diskspace's low-space warning, which is
-   sent with `timeout: false` and stays on screen until the disk frees up.
-
-   Repainted rather than recoloured: one tinted panel per notification type,
-   carrying the same Phosphor circle the sidebar and the torrent list use for
-   that state, so the type reads without relying on colour alone. Only the four
-   types noty itself defines are listed, which is exactly the set it paints
-   wrong; an unknown type falls through to the base rule below and still lands
-   on the palette.
-
-   No rules for `.noty_close`, `.noty_buttons` or `.noty_modal`: noty defaults
-   `closeButton`, `buttons` and `modal` to false and ruTorrent never overrides
-   them, so jquery.noty.js strips the close button out of the DOM and the other
-   two are never built. */
+/* _noty paints its bar with a PNG gradient over white. Only noty's four types
+   are listed; an unknown type falls through to the base rule. */
 .noty_bar.noty_theme_default {
   color: var(--dracula-fg);
   background-color: var(--dracula-bg-dark);
@@ -411,8 +275,7 @@
   --noty-icon: var(--icon-info);
 }
 
-/* Upstream gives each type a three-class selector, so the shared block needs
-   its own three classes to outrank it — order settles the tie. */
+/* Upstream gives each type three classes, so the shared block takes three. */
 .noty_bar.noty_theme_default.noty_alert,
 .noty_bar.noty_theme_default.noty_error,
 .noty_bar.noty_theme_default.noty_success,
@@ -422,8 +285,7 @@
   border-color: var(--noty-accent);
 }
 
-/* `alert` is noty's default type, and what ruTorrent sends for timeouts and
-   deprecation notices — a warning in everything but name. */
+/* `alert` is noty's default type, which ruTorrent sends for warnings. */
 .noty_bar.noty_theme_default.noty_alert {
   --noty-accent: var(--dracula-orange);
   --noty-icon: var(--icon-warning);
@@ -455,14 +317,13 @@
   background-size: 18px;
 }
 
-/* Tahoma is hardcoded on the message, and again on every growl layout. The
-   container prefix is what outranks that second, more specific rule; it is also
-   where the face is inherited from. */
+/* Tahoma is hardcoded on the message and on every growl layout. The container
+   prefix outranks the second. */
 ul.noty_cont .noty_bar.noty_theme_default .noty_message {
   font-family: inherit;
 }
 
-/* tracklabels plugin: No Label icon override */
+/* tracklabels' No Label row. */
 panel-label#-_-_-nlb-_-_- {
   --icon-size: 0px;
 }
@@ -477,47 +338,22 @@ panel-label#-_-_-nlb-_-_-::before {
   transform: translateY(-1px);
 }
 
-/* extsearch: the three group tags are clip-art, the engines are not. Every
-   finished external search becomes a row in the Search panel wearing the
-   engine's own 16px favicon, written straight onto the shadow node as an inline
-   background-image (plugins/extsearch/init.js:467). Of the 48 files in that
-   folder, search.png, public.png and private.png stand for "all engines", "all
-   public" and "all private" — generic pictures of nothing in particular — so
-   they become the sidebar's own magnifier. The other 44 keep their favicon,
-   which says which tracker answered.
-
-   !important is not about sheet order here: it is the only thing that outranks
-   an inline style, and the plugin writes one on every such row. */
+/* extsearch writes each engine's favicon inline on its row, so only
+   !important replaces the three generic group icons. */
 panel-label[icon$="/extsearch/images/search.png"]::part(icon),
 panel-label[icon$="/extsearch/images/public.png"]::part(icon),
 panel-label[icon$="/extsearch/images/private.png"]::part(icon) {
   background-image: var(--icon-status-search) !important;
 }
 
-/* Those 44 favicons are 16px files, and the theme paints icons `contain`, which
-   blows each one up to 22px and softens it; at their own size they are exact.
-   Scoped to this folder on purpose: the Trackers panel gets its icons from
-   tracklabels, which serves .ico files whose first frame is 32px, and `auto`
-   there would push them past the column. The three rows above are safe inside
-   this selector — the magnifier replacing them is an SVG with a viewBox and no
-   width, so it has no intrinsic size and `auto` still resolves to 22px. */
+/* Favicons at their own 16px. Scoped to extsearch: tracklabels serves 32px
+   .ico frames. */
 panel-label[icon*="/extsearch/images/"]::part(icon) {
   background-size: auto;
 }
 
-/* tracklabels: the rows it has no picture for.
-
-   A label with no icon, and a tracker whose favicon was never fetched, both
-   point at `action.php?label=…` / `?tracker=…`, and that endpoint answers 200
-   with a 16x16 PNG transparent in every pixel. The row is not missing its icon,
-   it is painting an empty one, which no selector can see; init.js loads each
-   image once, draws it and sets data-dracula-blank only where nothing is
-   opaque. Two kinds because the rows mean different things: a label is a name
-   someone chose, a tracker is a host that answered.
-
-   The tracker glyph is the one already standing in for a picture-less tracker
-   further up this file. Same meaning, same drawing — and it stays Comment,
-   because a stand-in should not compete with the real favicons around it. */
+/* tracklabels answers with a fully transparent PNG for a row without a
+   picture, and init.js marks it. */
 panel-label[data-dracula-blank="label"]::part(icon) {
   background-image: var(--icon-tag);
 }
@@ -528,57 +364,37 @@ panel-label[data-dracula-blank="tracker"]::part(icon) {
 
 /* === Dialog Header Icons === */
 
-/* Upstream draws these from a handful of 16px GIFs shared across core and the
-   plugins. The whole set lives here rather than in style.css for one reason:
-   this sheet is the last one the page loads, so an ordinary rule of equal
-   specificity wins on order alone. From style.css, at index 7 of 32 with 21
-   plugin sheets after it, all 26 of these rules would need a priority flag.
+/* Here because this sheet loads last, so equal specificity wins on order.
+   Below 5.1.0 upstream writes `div#tadd-header` and
+   `div#dlgHelp div.dlg-header`, so each selector names the dialog and the
+   header. */
 
-   The set is kept whole even though some of these dialogs are core rather than
-   plugin: an icon block split by who owns the dialog is a block nobody can edit
-   confidently. 20px matches the close button on the other side of the header.
-
-   Every selector carries the dialog around the header as well as the header's
-   own id. Below ruTorrent 5.1.0 the id is on the header itself and upstream
-   writes these two ways — `div#tadd-header` and `div#dlgHelp div.dlg-header` —
-   both of which outrank a bare id and would keep their own GIF. This shape ties
-   the heavier of the two and wins on order, on every release. Each header is a
-   div inside a `.dlg-window`; the dialog builder makes nothing else. */
-
-/* Five dialogs put a torrent into the list, and upstream draws four of them
-   with the same images/world.gif. They do different things, so each gets its
-   own glyph, and the two that mirror a toolbar button reuse that button's icon
-   so the button and the dialog it opens read as one action. */
-
-/* Add Torrent — the toolbar's Add button */
+/* Add Torrent */
 div.dlg-window div#tadd-header {
   background-image: var(--icon-add);
   background-size: 20px;
 }
 
-/* Create New Torrent — the toolbar's Create button. Replaces
-   plugins/create/images/create16.gif, a yellow star that reads as
-   "favourite" rather than "new file". */
+/* Create New Torrent */
 div.dlg-window div#tcreate-header {
   background-image: var(--icon-create);
   background-size: 20px;
 }
 
-/* Bulk loading — the bulk_magnet plugin, which takes a list of magnet links */
+/* bulk_magnet */
 div.dlg-window div#dlgBulkAdd-header {
   background-image: var(--icon-magnet);
   background-size: 20px;
 }
 
-/* Loading torrents picked out of a search result or an RSS feed. Same job in
-   two plugins, so they share a glyph. */
+/* Loading from a search result or an RSS feed */
 div.dlg-window div#tegLoadTorrents-header,
 div.dlg-window div#dlgLoadTorrents-header {
   background-image: var(--icon-file-down);
   background-size: 20px;
 }
 
-/* Settings and the dialogs that configure one thing each */
+/* Settings, and the dialogs that configure one thing */
 div.dlg-window div#stg-header,
 div.dlg-window div#dlg_datadir-header,
 div.dlg-window div#tedit-header,
@@ -588,7 +404,7 @@ div.dlg-window div#dlg_unpack-header {
   background-size: 20px;
 }
 
-/* RSS feeds, groups, filters and the URL rewrite rules that feed them */
+/* RSS */
 div.dlg-window div#dlgAddRSS-header,
 div.dlg-window div#dlgAddRSSGroup-header,
 div.dlg-window div#dlgEditRSS-header,
@@ -605,23 +421,20 @@ div.dlg-window div#dlgAbout-header {
   background-size: 20px;
 }
 
-/* Add Peer — a plus on a person. The bare plus-circle belongs to Add Torrent,
-   and those two dialogs sit one click apart in the Peers tab. */
+/* Add Peer */
 div.dlg-window div#padd-header {
   background-image: var(--icon-user-plus);
   background-size: 20px;
 }
 
-/* Properties, and the dialog that annotates a peer rather than adding one */
+/* Properties */
 div.dlg-window div#dlgProps-header,
 div.dlg-window div#cadd-header {
   background-image: var(--icon-info);
   background-size: 20px;
 }
 
-/* geoip2 paints its icon on the header itself rather than on the title cell,
-   which lands it under the text at the very left edge. Clear it and let the
-   rule above draw it in the same place as every other dialog. */
+/* geoip2 paints its icon on the header itself; the rule above draws it. */
 div#cadd div.dlg-header {
   background-image: none;
 }
@@ -638,10 +451,7 @@ div.dlg-window div#dlgLabel-header {
   background-size: 20px;
 }
 
-/* Task console — upstream shares the settings gear, but this dialog shows the
-   output of running commands, not a configuration form. mediainfo reports here
-   too: its own #dlg_info window is gone in 5.3.7, and mediainfo.css still
-   carries a rule for an element nothing creates. */
+/* Task console. mediainfo reports here too. */
 #tskConsole-header {
   background-image: var(--icon-console);
   background-size: 20px;
@@ -649,19 +459,14 @@ div.dlg-window div#dlgLabel-header {
 
 /* === Plugin Rule Editors === */
 
-/* extratio and rssurlrewrite paint their rule rows white and pale blue. Both
-   sheets load after style.css, so these overrides have to live here, where they
-   win on order without `!important`. */
+/* extratio and rssurlrewrite load after style.css, so these live here. */
 
-/* The lists those rows sit in are unthemed too — a #A0A0A0 box and a white
-   panel. */
 div#ratioRuleList,
 .lf_rur {
   background-color: var(--dracula-bg-dark);
   border-color: var(--dracula-selection);
 }
 
-/* The .TextboxFocus half is the focused state, so it takes the focus border. */
 ul#rlsul > li input[type="text"],
 ul#rlsul > li input.TextboxNormal,
 .lf_rur input.TextboxNormal {
@@ -677,30 +482,9 @@ ul#rlsul > li input.TextboxFocus,
 
 /* === Plugin Dialog Geometry === */
 
-/* Both "Rules Manager" windows clip their own `<select>` options at upstream's
-   `min-width: 600px` (`rssurlrewrite.css:50`, `extratio.css:27`), so the first
-   dropdown reads "If the torrent description URL matches the patt", cut
-   mid-word.
-
-   Each width is its widest control's intrinsic size carried back out through
-   the boxes it sits in: the control, + 2 fieldset border + 16 fieldset padding
-   + 7 column padding, doubled for the two `.col-md-6`, + 12 for `.cont` + 4 for
-   the dialog border. `#RLS_src` measures 359 and gives 784; `#ratio_reason`
-   measures 326 and gives 718.
-
-   Intrinsic means `width: max-content` on the control, not the text: a select
-   reserves room for its own arrow, and a string measured on a canvas is 33px
-   short of what the box needs. `scrollWidth` answers nothing here — it does not
-   grow with an option the control cannot show.
-
-   Read them from the page rather than from this note if the option strings move
-   again: they are upstream's own wording and it changes between releases.
-
-   `div#` on the ratio editor is not decoration: `extratio.css:27` is written
-   `div#dlgEditRatioRules`, specificity 1,0,1, and a bare id at 1,0,0 loses to
-   it from any sheet at any position. This lives in `plugins.css` for the same
-   kind of reason — `style.css` is sheet index 7 against the plugin sheets' 13
-   to 27, where `plugins.css` is index 30. */
+/* Upstream's `min-width: 600px` clips the options of both Rules Manager
+   windows. `div#` matches the selector in extratio.css, which a bare id loses
+   to. */
 @media (min-width: 768px) {
   #dlgEditRules {
     min-width: min(784px, 92vw);
@@ -711,23 +495,7 @@ ul#rlsul > li input.TextboxFocus,
   }
 }
 
-/* Unadjusted this is the one dialog taller than it is wide: 518x737, a portrait
-   box on a landscape screen, and 53px past the 684px that `max-height: 95dvh`
-   allows on a 720-tall display, so it scrolls there.
-
-   Its height is `497 + the trackers textarea`, exact at five sampled heights,
-   which is why neither dimension fixes it alone: at the stock 224px textarea a
-   landscape shape needs 721px, giving 721x720.5, and 497px is everything that
-   is not the textarea, so shortening alone would need a 20px box.
-
-   Both, then. `8rem` is upstream's own value below 576px (`create.css:3`) — the
-   `16rem` above it is the outlier — which puts the height at 609, back under
-   the 720-screen cap. 700 for the width gives 1.15; the floor is 610, one pixel
-   over the height, below which it is a square again. The settings dialog's 1.47
-   would want 896 and reads as too airy for three short fields and a textarea.
-
-   The trackers box loses about four visible lines and gets back most of them
-   per line, a tracker URL taking far fewer wraps at 700 than at 518. */
+/* 8rem is upstream's own textarea height below 576px. */
 @media (min-width: 576px) {
   #tcreate {
     min-width: min(700px, 92vw);
@@ -738,20 +506,7 @@ ul#rlsul > li input.TextboxFocus,
   }
 }
 
-/* The three checkboxes are `col-md-4`, so each cell is a third of the row while
-   its label is only about 120px of ink, leaving "Hybrid torrent" ending 169px
-   short of the frame. The cell is flush; the text is not.
-
-   Narrowing cannot fix that: for three labels to fill the row the dialog would
-   have to be 415px, below the 528 its own "Piece size:" label needs to stay on
-   one line and far below the 610 that keeps it landscape. Shrinking the cells
-   to their content and spreading them puts the last label 6px from the frame at
-   every width from 660 to 896.
-
-   `:has()` rather than a bare `.row` because this fieldset is not the only one:
-   the "Piece size" row is `col-md-2` + `col-md-4`, and a blanket
-   `justify-content` on `#tcreate .row` throws its select to the far right. The
-   checkbox row is the only one whose `col-md-4` children hold a checkbox. */
+/* Spreads the three checkbox cells. `:has()` keeps it off the Piece size row. */
 @media (min-width: 576px) {
   #tcreate fieldset .row:has(> .col-md-4 input[type="checkbox"]) {
     justify-content: space-between;
@@ -763,34 +518,12 @@ ul#rlsul > li input.TextboxFocus,
   }
 }
 
-/* Bulk loading ships at 395x362, ratio 1.09, and its width is not decoration:
-   the textarea is `white-space: nowrap` (`bulk_magnet.css:3`) and holds magnet
-   links, so every pixel of it is a pixel of horizontal scrolling saved. 460
-   takes the box to 1.27 and the textarea from 379 to 444.
-
-   `bulk_magnet.css:1` is a bare id at 1,0,0, and this sheet loads at index 30
-   against its 10, so order settles it without `!important`. */
+/* The textarea is `white-space: nowrap` and holds magnet links. */
 #dlgBulkAdd {
   width: min(460px, 92vw);
 }
 
-/* Add Torrent ships at 600x554, ratio 1.08, and it is square because of its
-   height rather than its width. Dead space to the right of the last ink in each
-   of its five rows measures 22, 139, 113, 70, 69, so widening adds air to rows
-   that already have it.
-
-   Hence 40px, not the 214 the settings dialog's 1.47 would ask for. That
-   reaches 1.16 and lands in the three controls that can use it — the directory
-   field, the file picker's "No file chosen", and the URL textarea.
-
-   The route to a proper landscape shape here is height, not width: the four
-   checkboxes are stacked in a `d-flex flex-column` row 102px tall, and laying
-   them out 2x2 would cut about 50px and reach 1.19 at the stock 600. That is a
-   change to upstream's markup rather than to its geometry.
-
-   `div#` because `css/style.css:748` is written that way at 1,0,1, and inside
-   the same 768px query it lives in — below that breakpoint upstream wants
-   `95vw` (`css/style.css:710`), which is right for a phone. */
+/* `div#` and the 768px query match upstream's own rule. */
 @media (min-width: 768px) {
   div#tadd {
     width: min(640px, 92vw);

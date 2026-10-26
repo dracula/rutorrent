@@ -3,8 +3,7 @@
  * https://draculatheme.com
  */
 
-/* init.js reads this back at startup to catch a sheet the browser has cached
-   from an older release. Declared per sheet, so a mixed set is caught too. */
+/* init.js reads this back to catch a stale cached sheet. */
 :root {
   --dracula-version-stable: "0.3.2"; /* x-release-please-version */
 }
@@ -17,79 +16,34 @@
   --row-border-color: transparent;
   --row-odd-bg-color: var(--dracula-bg);
   --row-even-bg-color: var(--dracula-bg-dark);
-  /* Shared with every other list in the theme; defined as --selection-bg-color
-     in style.css. */
   --row-active-bg-color: var(--selection-bg-color);
-  /* Reaches selected rows only: the hover rule further down takes the filter
-     off everything else. */
   --row-highlight-brightness: 1.15;
   --seedingtime-highlight-color: color-mix(in srgb, var(--dracula-cyan) 12%, transparent);
 
-  /* The containing block for everything drawn over the table. Upstream declares
-     it here in 5.0.0 and again from 5.2.0; 5.1.x carries it on `.stable-head`
-     alone, and the overlays then resolve against the page. The column resize
-     mark is built inside `.stable-body` in those releases, so it lands at the
-     top of the window instead of on the border, and the scroll badge, which is
-     `left: 10%` of its containing block, sits left of the table and below it.
-     Redundant wherever upstream sets it, so no release keys this. */
+  /* The containing block for the resize mark and the scroll badge. 5.1.x sets
+     it on `.stable-head` only. */
   position: relative;
 
-  /* Upstream leaves the container white. It is normally hidden behind
-     .stable-body, but shows through wherever that does not reach. */
   background-color: var(--dracula-bg);
 }
 
-/* The mark that follows a column border during a resize, and the one part of
-   the table that keeps upstream's own look below 5.2.0.
-
-   Its height is computed there from an inline height on `.stable-body` that a
-   flex layout never sets, so it comes out the height of the heading rather than
-   of the list. !important because that figure is written inline, and `100%` is
-   what upstream's own sheet gives the mark from 5.2.0
-   (`css/stable.css:144`), where it sits in `.stable-gadgets` and needs no help.
-
-   Its colour is a literal grey in those releases rather than the custom
-   property `.stable` fills in, which leaves the mark the one grey line in the
-   table. Naming the property here is what 5.2.0 resolves to anyway, so this is
-   one value for every release and not a second one. */
+/* Below 5.2.0 upstream writes the mark's height inline, from a `.stable-body`
+   height a flex layout never sets, and paints the mark a literal gray. */
 .stable-resize-header {
   height: 100% !important;
   background-color: var(--col-resize-sep-bg-color);
 }
 
-/* No rule may give this table a width. A column drag reads the width the
-   browser rendered and stores it as that column's declaration
-   (`js/stable.js:662`), which is only ever correct while the two are equal.
-   Sizing the table makes the rendered width a function of every declared width
-   — `table-layout: fixed` hands the slack out in proportion — so the drag then
-   feeds its own output back in: one mouse movement of a pixel widens a column
-   by 426, and once the row fills its pane the column cannot be narrowed at all.
-   Columns are sized in init.js instead, at what their content measures.
-
-   `separate` with zero spacing, not the collapsed default: collapsing resolves
-   the edge between head and body into one shared border and gives half of it to
-   each side, which leaves the heading measuring half a pixel taller than the
-   rows under it. Nothing doubles under the separate model here — body cells set
-   only `border-bottom`, and no cell sets a left or right border. */
+/* No rule may give this table a width: a column drag stores the rendered width
+   as the declared one, so a sized table feeds the drag its own output.
+   `separate`, because collapsing leaves the heading half a pixel taller. */
 .stable table {
   border-collapse: separate;
   border-spacing: 0;
 }
 
-/* Column widths are one profile of absolute pixels, shared by every viewport
-   and saved per table (`webui.trt.colwidth`). A width already in it outranks
-   anything the theme sets, so a phone is shown the widths someone chose at
-   1920px and `table-layout: fixed` clips whatever does not fit — a timestamp
-   loses its minutes, a peer count its bracket.
-
-   Letting the table measure itself is the only answer that writes nothing back:
-   widths chosen here would have to be saved to take effect, and saving them
-   would overwrite that same desktop profile. The row is already wider than the
-   pane and already scrolls, so the extra width costs nothing new.
-
-   The cap is what auto layout needs to stay usable: a column grows to its
-   longest cell, and a torrent name has no bound. Name is also the one column
-   where a cut is harmless, because what identifies a torrent is at the front. */
+/* Saved column widths are one desktop profile. On a phone the table measures
+   itself, which writes nothing back; the cap bounds the name column. */
 @media (max-width: 767.98px) {
   .stable table {
     table-layout: auto;
@@ -120,70 +74,44 @@
   background-color: var(--dracula-bg);
 }
 
-/* 30px is the theme's row, and every list in the UI is set to it: the sidebar's
-   labels and section headings, the detail-panel tabs, the General tab's cells
-   and this table's own heading. */
 .stable tbody tr {
   height: 30px;
 }
 
-/* Compact is 26px, the theme's other grid, and every surface is set to it the
-   same way the 30px one is. Stated as a height rather than left to add up:
-   upstream zeroes the cell's own block padding in compact
-   (`css/stable.css:201`), so the row would otherwise be whatever its tallest
-   cell happens to come to. */
+/* Compact rows. A fixed height, because upstream zeroes the cell's block
+   padding in compact mode. */
 body.compact .stable tbody tr {
   height: 26px;
 }
 
-/* 1px each side over the 22px icon cell and the rule beneath comes to 25, which
-   clears the row height above. The shared rule has no block padding at all,
-   because the normal row cannot afford any. */
 body.compact .stable tbody td {
   padding-block: 1px;
 }
 
-/* Every compact rule upstream ships is scoped to `tbody` or to the sidebar
-   (`css/stable.css:201-203`), so the list's own heading is the one row in the
-   table that never hears about compact mode and has to be told here.
-
-   2px padding each side, a 21px line and the 1px rule land it on the same 26px
-   as the body rows. The line is one under the 22px it takes in normal mode,
-   which is where the fourth pixel comes from. Only the block axis moves — the
-   0.5rem inline padding is what keeps the heading's text over its column. */
+/* Upstream's compact rules skip the list heading. */
 body.compact .stable thead td div {
   padding-block: 2px;
   line-height: 21px;
 }
 
-/* No block padding: the cell's own div already carries upstream's 0.15rem top
-   and bottom, and at `content-box` that puts a 22px icon cell at 26.2px. Four
-   more here would push the row past 30 and the height above would stop being
-   the height. The inline 6px is what separates the columns. */
+/* No block padding: the cell's div already carries upstream's 0.15rem, and
+   more would push the row past its height. */
 .stable tbody td {
   border-bottom: 1px solid color-mix(in srgb, var(--dracula-selection) 40%, transparent);
   padding: 0 6px;
 }
 
-/* 19px, not 16px: at 14px type the descenders of g/y/p need ~18.1px, and the
-   cell is `overflow: hidden`. Fixed rather than `height: auto`, which comes out
-   fractional — the virtual scroller reads this as TR_HEIGHT. */
 .stable tbody td div {
   height: 19px;
 }
 
-/* The progress bar is a div in a cell too, but its height is a visual, not a
-   text box, so it keeps its own. Upstream also gives it
-   `border: 1px inset #BBBBBB`, a grey bevel that is off palette. */
 .stable tbody td .meter-value {
   height: 16px;
   border: 0;
 }
 
-/* Progress cell: upstream offsets the percentage text by a fixed top: 0.25rem,
-   calibrated for its own 1.5rem bar. The rule above forces the bar to 16px, so
-   that offset drops the text below it — hidden in a 32px row, overflowing in a
-   compact one. Centring on the cell tracks the bar at any row height. */
+/* Upstream's fixed offset suits its own 1.5rem bar. Centering tracks the 16px
+   bar at any row height. */
 .stable tbody td:has(> .meter-text) {
   position: relative;
 }
@@ -197,18 +125,8 @@ body.compact .stable thead td div {
   height: auto;
 }
 
-/* Upstream marks the hovered row with `filter: brightness()`, which is
-   multiplicative and so does almost nothing to a dark palette: 1.15 moves a row
-   from #21222C to #252732, where the same factor on the purple selected row
-   moves it #BD93F9 -> #D9A9FF. It also brightens the row's icons and text along
-   with the background.
-
-   Current Line instead, the colour Dracula reserves for this. It has to outrank
-   `.stable.alternate tbody tr:nth-child(odd) td`, three classes to the hover
-   rule's two — which is why upstream reaches for a filter at all.
-   `:not(.selected)` brings it level and the theme loads later. That class is on
-   the table whenever the Alternate list background setting is on, so this holds
-   either way. */
+/* Selection instead of upstream's brightness filter, which barely moves a dark
+   row. `:not(.selected)` levels it with the alternate-row rule. */
 .stable tbody tr:hover:not(.selected) td {
   background-color: var(--dracula-selection);
   filter: none;
@@ -218,45 +136,34 @@ body.compact .stable thead td div {
   color: var(--dracula-bg);
 }
 
-/* A hovered selected row takes the brightness step, which upstream gives only
-   from 5.2.0 to 5.3.15. `hover: hover` keeps a tapped row from holding it on a
-   touch screen, as upstream does. */
+/* Upstream brightens a hovered selected row only from 5.2.0 to 5.3.15. */
 @media (hover: hover) {
   .stable tbody tr.selected:hover td {
     filter: brightness(var(--row-highlight-brightness));
   }
 }
 
-/* ruTorrent 5.3.7 renders the release-group prefix of a normalized torrent
-   name as <code>, which would otherwise pick up Bootstrap's #D63384. */
+/* The release-group prefix of a torrent name, from ruTorrent 5.3.7. */
 .stable tbody td code {
   color: var(--dracula-pink);
   background: transparent;
 }
 
-/* Selected rows switch cell text to the dark background color; keep the code
-   fragment readable on the purple selection instead of leaving it pink. */
 .stable tbody tr.selected td code {
   color: var(--dracula-bg);
 }
 
-/* The progress bar keeps its own background when the row is selected, so the
-   percentage must keep its own color too — inheriting the row's dark selected
-   text would drop it to 2.5:1 on the bar. */
+/* The percentage sits on the bar, not on the selection. */
 .stable tbody tr.selected td .meter-text {
   color: var(--dracula-fg);
 }
 
-/* At 0% ruTorrent hides the bar (visibility, in the inline style it writes), so
-   the label sits on the purple selection instead, where light text drops to
-   2.3:1 — the row's dark selected colour comes back for that case. */
+/* At 0% upstream hides the bar inline, so the label sits on the selection. */
 .stable tbody tr.selected td:has(.meter-value[style*="hidden"]) .meter-text {
   color: var(--dracula-bg);
 }
 
-/* Upstream sets `font: menu` here, which pulls the OS menu face into the ghost
-   dragged while reordering columns, so it does not match the header it came
-   from. */
+/* Upstream sets `font: menu` on the column drag ghost. */
 .stable-move-header {
   background: color-mix(in srgb, var(--dracula-purple) 50%, transparent);
   border: 1px solid var(--dracula-purple);
@@ -276,8 +183,6 @@ body.compact .stable thead td div {
   background: var(--dracula-bg);
 }
 
-/* 12px rather than upstream's 11px: this badge is secondary text, but nothing
-   in the theme goes below 12px. */
 .stable-scrollpos {
   background: var(--dracula-bg-dark);
   color: var(--dracula-comment);
@@ -287,15 +192,7 @@ body.compact .stable thead td div {
 
 /* === Detail Tab Alignment === */
 
-/* Upstream right-aligns most numeric columns through inline styles, which reads
-   fine at 550px but drifts the values far from their headings once the tables
-   fill the pane. One left edge across all six detail tables — Files, Trackers,
-   Peers, Plugins, History and Tasks — headers and cells alike. Inline styles,
-   hence !important.
-
-   Progress columns are exempt without being excluded here: their label is
-   absolutely positioned over the bar and centred by the rule above, so
-   text-align never reaches it. */
+/* Upstream right-aligns numeric columns with inline styles. */
 #tdcont .stable thead td,
 #tdcont .stable tbody td {
   text-align: left !important;
@@ -303,14 +200,6 @@ body.compact .stable thead td div {
 
 /* === Status Icons (Phosphor Duotone, Dracula colors) === */
 
-/* 22px, the size the sidebar and the status bar already use. At upstream's
-   1.35rem — 18.9px against the theme's 14px root — a duotone circle loses the
-   shape inside it and the hue carries the whole meaning, so the box grows with
-   the glyph.
-
-   The cell's own div is clipped to 19px, so only the div holding an icon is
-   opened up; every other cell keeps its height. A normal row is fixed at 32px
-   and has the room to spare. */
 .stable-icon {
   width: 22px;
   height: 22px;
@@ -318,15 +207,8 @@ body.compact .stable thead td div {
   background-repeat: no-repeat;
   background-position: center;
 
-  /* Clears upstream's tstatus.png sprite. No !important, which is what makes
-     all three cases land correctly from one rule:
-       - upstream sets the sprite in a plain `.stable-icon` rule with no
-         !important, so equal specificity and a later sheet already beat it;
-       - tracklabels writes each tracker's favicon as an *inline* background,
-         which outranks a normal declaration; !important outranks the inline
-         style in turn, so an !important here would erase every favicon;
-       - the per-status rules below match at the same 0,1,0 and sit later in
-         this same sheet, so they win without needing any weight. */
+  /* No !important: tracklabels writes each favicon inline, and !important
+     beats inline. */
   background-image: none;
 }
 
@@ -334,21 +216,8 @@ body.compact .stable thead td div {
   height: 22px;
 }
 
-/* tracklabels answers for a tracker it has no picture of with a 16x16 PNG
-   transparent in every pixel, so the row paints an empty icon rather than
-   failing — nothing in the markup says which it is, and init.js counts opaque
-   pixels to find out.
-
-   A pseudo-element rather than this element's background-image, because
-   `js/stable.js:944` writes the favicon as an *inline* style: a sheet can only
-   beat that with !important, and an !important here would erase every real
-   favicon along with the blank ones. Painting over instead of behind is safe
-   only because of the marking — a row carries this attribute after its image is
-   proved to have no opaque pixel, and never before.
-
-   Same glyph and same Comment as the stand-in a picture-less tracker already
-   gets in the sidebar and on the phone; a substitute should not compete with the
-   real favicons beside it. */
+/* tracklabels sends a fully transparent PNG for a tracker without a picture,
+   and init.js marks the cell. A pseudo-element, because the favicon is inline. */
 .stable-icon[data-dracula-blank="tracker"] {
   position: relative;
 }
@@ -373,37 +242,13 @@ body.compact .stable thead td div {
 .Status_Checking { background-image: var(--icon-status-checking); background-position: center; }
 .Status_RSS { background-image: var(--icon-status-rss); background-position: center; }
 
-/* Two names in this sheet come from the getStatusIcon wrap in init.js rather
-   than from upstream, and both are new classes rather than restyles on purpose.
-   Status_Warning is the first; Status_Stopped follows below.
-
-   Status_Warning takes the benign half of the error bit — announce noise, a
-   release the tracker check thinks is gone. A separate class rather than a
-   softening of .Status_Error, because _task, history and rutracker_check reuse
-   that name for tables of their own (`_task/init.js:537`, `history/init.js:328`,
-   `rutracker_check/init.js:64`) and none of them mean announce noise by it. */
+/* Status_Warning and Status_Stopped come from the getStatusIcon wrap in
+   init.js. Plugins reuse .Status_Error for their own tables, so the benign half
+   of the error bit takes a class of its own. */
 .Status_Warning { background-image: var(--icon-warning); background-position: center; }
 
-/* Status_Stopped is the second name, for a state upstream does not have — it
-   picks Completed or Incompleted by percentage, so a stopped torrent shows
-   either praise or an alarm. A square inside a circle reads as stopped where a
-   pause glyph reads as "will continue", in Comment rather than Orange because a
-   stopped torrent is not a problem. Paused sits with it, being the same kind of
-   state in the same column.
-
-   These two are the only statuses whose colour carries no meaning, which is
-   what lets them take the row's instead. A fixed ink cannot serve both
-   backdrops: Comment renders at 3.1:1 on an unselected row and 1.21:1 on the
-   #9073BE selection, and raising it for one lowers it for the other. Painting
-   currentColor under a mask of the shape hands the mark the row's own text
-   colour, which the selected rule higher up this sheet already switches to
-   --dracula-bg — 3.44:1 rendered there, Comment everywhere else.
-
-   background-image stays none from .stable-icon: an image paints over the
-   colour beneath it, so the mask would cut out the picture instead of the
-   shape. A mask reads the source's alpha and not its fill, so the duotone's
-   opacity="0.2" backdrop survives and both icon variables are reused as they
-   are. */
+/* Stopped and Paused paint the row's text color through a mask, so the mark
+   reads on a plain and on a selected row. */
 .Status_Stopped,
 .Status_Paused {
   background-color: currentColor;

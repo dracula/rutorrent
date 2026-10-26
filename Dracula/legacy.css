@@ -2,28 +2,12 @@
  * Version 0.3.2 · built against ruTorrent 5.3   # x-release-please-version
  * https://draculatheme.com
  *
- * 5.2.0 rewrote the torrent table. Before it, the heading is a table of its own
- * inside `div.stable-head` rather than a `thead` inside the body table, the row
- * striping is a class on the row rather than `.alternate` with nth-child, and a
- * handful of declarations the theme relies on being absent are still there.
- * Everything here addresses that older shape.
- *
- * `.stable-head` is the release marker and every rule is keyed to it: nine of
- * those wrappers exist below 5.2.0 and none at all from 5.2.0 on. The body's
- * rules reach it as `.stable-head ~ .stable-body`, the two being siblings inside
- * the table's wrapper. Without that key the selectors would match the newer
- * shape too — `.stable-body td > div` is every cell of every release — and the
- * heights here would be imposed on a table that does not want them.
- *
- * Imported last, from plugins.css, because it has to outrank the upstream
- * sheets rather than the theme's own.
- *
- * No version stamp on :root here — see the header of palette.css.
+ * Every rule is keyed to `.stable-head`, which exists only below 5.2.0, so none
+ * reaches a newer table. Imported last, from plugins.css, to outrank the
+ * upstream sheets.
  */
 
-/* The heading is its own table in a wrapper, and upstream paints it with a
-   raster gradient. The values are the ones 5.3.12 resolves to for the same
-   surfaces. */
+/* Upstream paints the heading with a raster gradient. */
 .stable-head {
   height: 30px;
   background: var(--dracula-bg-dark);
@@ -33,9 +17,7 @@
   background-image: none;
 }
 
-/* Upstream puts a border and side padding on the heading cell itself, which
-   makes it 32px tall and pushes its text off the row. 5.3.12 leaves the cell
-   bare and draws the column divider on the div inside it. */
+/* Upstream puts a border and side padding on the heading cell itself. */
 .stable-head table tr td {
   padding: 0;
   border-width: 0;
@@ -58,23 +40,20 @@
   background: transparent;
 }
 
-/* Striping is a class on the row here, not `.alternate` plus nth-child. */
+/* Striping is a class on the row here, not `.alternate` with nth-child. */
 .stable-head ~ .stable-body tr.even td,
 .stable-head ~ .stable-body tr.odd td {
   background: var(--dracula-bg-dark);
 }
 
-/* A selected row is a pale blue written straight into the upstream sheet, with
-   no `--row-active-bg-color` to fill in. After the striping rule, which it shares
-   a specificity with and has to outrank; upstream writes no !important here. */
+/* Upstream writes the selected row's color into its sheet, at the striping
+   rule's specificity, so this follows the striping rule. */
 .stable-head ~ .stable-body tr.selected td {
   background: var(--row-active-bg-color);
 }
 
-/* `.stable td` carries `font: menu` — a system font, 16px Arial in practice.
-   Only the family and the size are taken back: the `font` shorthand would also
-   pull in the row's line box, and the cell needs the normal one to centre its
-   text. Cells are top-aligned in these releases as well. */
+/* `.stable td` carries `font: menu`. Only the family and the size are taken
+   back: the shorthand would also reset the line box. */
 .stable-head td,
 .stable-head ~ .stable-body td {
   font-family: inherit;
@@ -83,12 +62,7 @@
   vertical-align: middle;
 }
 
-/* 5.2.0 makes the name cell a flex row holding the icon and the name, which is
-   what centres them against each other. Here the icon is a float beside the
-   div, so both are put back on one line and centred. */
-/* The margins carry what the flex wrapper contributes there — its own padding,
-   the icon's margin and the gap — so the glyph and the name land where 5.3.12
-   puts them: icon at 16.5px from the cell edge, name at 46.9px. */
+/* The icon is a float beside the div here; 5.2.0 makes the cell a flex row. */
 .stable-head ~ .stable-body td > .stable-icon {
   float: none;
   display: inline-block;
@@ -96,15 +70,8 @@
   vertical-align: middle;
 }
 
-/* The text sits in a div inside the cell, and upstream pins that div to 11px,
-   to `height: 16px !important` and to `margin: 0 2px !important`. The cell clips
-   at `overflow: hidden`, so the height cuts a descender off — the tail of a "g"
-   goes; the margin stands the whole row's text 1.5px left of where 5.3.12 puts
-   it. Only !important outranks !important.
-
-   5.3.12 uses three heights, and each is reproduced here: 19px for an ordinary
-   cell, 22px for the name, and 16px for the progress figure, which is the one
-   the shorter box was always right for. */
+/* Upstream pins this div with `height: 16px !important` and
+   `margin: 0 2px !important`. */
 .stable-head ~ .stable-body td > div {
   height: 19px !important;
   margin-inline: 3.5px !important;
@@ -116,9 +83,6 @@
   height: 16px !important;
 }
 
-/* The name is the one cell whose text is centred rather than resting on the top
-   of the content box: 5.3.12 centres it as a flex item, which lifts it 0.4px
-   against the 17.8px content box. A flex row of one reproduces that exactly. */
 .stable-head ~ .stable-body td > .stable-icon + div {
   height: 22px !important;
   display: inline-flex;
@@ -126,13 +90,12 @@
   vertical-align: middle;
 }
 
-/* The progress figure is pinned to 11px here; 5.2.0 lets it inherit. */
+/* Upstream pins the progress figure to 11px here. */
 .stable-head ~ .stable-body .meter-text {
   font-size: inherit;
 }
 
-/* The log's Clear button lives inside the tab row in these releases, and the
-   theme's own button padding stretches the row it sits in. */
+/* The log's Clear button sits inside the tab row in these releases. */
 #tabbar .Button {
   padding-block: 0;
   line-height: 20px;
@@ -140,16 +103,9 @@
 
 /* === The context menu === */
 
-/* 5.2.0 rebuilt `.CMenu`. The newer sheet gives the list a ridged border, a
-   radius and the theme's background, lays each item out as a flex row, and draws
-   the tick and the submenu arrow as pseudo-elements. This release paints the
-   list a fixed grey, floats its items at a fixed 150px, and marks the selected
-   item with a GIF. What follows is the newer sheet's own set of declarations
-   restated for the older shape — the item colours already come from the theme's
-   variables, which this release reads for the item but not for the list.
-
-   The menu is appended to the body rather than into the table, so these name the
-   release marker as a condition rather than reaching it through the markup. */
+/* 5.2.0 rebuilt `.CMenu`. Below it the list is a fixed gray, the items float at
+   150px and the tick is a GIF. The menu is appended to the body, so the rules
+   key on `body:has(.stable-head)`. */
 body:has(.stable-head) ul.CMenu {
   width: auto;
   padding: 0.25rem 0;
@@ -176,12 +132,8 @@ body:has(.stable-head) ul.CMenu li:last-child {
   border-bottom-right-radius: inherit;
 }
 
-/* The list is what paints the background from 5.2.0 on; here both the item and
-   the anchor paint it as well, and an opaque anchor squares off the radius the
-   first and last items inherit.
-
-   line-height comes from the list rather than the 16px this release pins, which
-   is what makes the item 28px rather than 26. */
+/* The item and the anchor paint the background here too, and an opaque anchor
+   squares off the radius. */
 body:has(.stable-head) ul.CMenu li a {
   display: flex;
   flex-direction: row;
@@ -193,10 +145,8 @@ body:has(.stable-head) ul.CMenu li a {
   background-color: transparent;
 }
 
-/* The tick and the submenu arrow are pseudo-elements from 5.2.0 on and GIF
-   backgrounds here. style.css already masks currentColor through both marks;
-   what is missing below 5.2.0 is the box each one draws in, and the background
-   that would otherwise show through it. */
+/* The tick and the submenu arrow are GIF backgrounds here. style.css masks
+   both marks; this adds the box each one draws in. */
 body:has(.stable-head) ul.CMenu li a::before,
 body:has(.stable-head) ul.CMenu li a::after {
   content: "";
@@ -226,15 +176,8 @@ body:has(.stable-head) ul.CMenu li hr {
 
 /* === The settings dialog === */
 
-/* Two things this release does that 5.2.0 stopped doing. `.dlg-window` writes a
-   literal black for its text where the newer sheet reads `--text-color`, and the
-   settings window and its pages take their background from
-   `--settings-background-color`, a name the newer sheet dropped — unfilled it
-   resolves to upstream's own near-white.
-
-   The variable is filled rather than the two backgrounds painted: it is the seam
-   upstream left for a theme, and the pages sit inside the window, so one
-   declaration reaches both. */
+/* `.dlg-window` writes a literal black here, and the settings window reads
+   `--settings-background-color`, a name 5.2.0 dropped. */
 body:has(.stable-head) .dlg-window {
   color: var(--text-color);
 }
@@ -243,25 +186,18 @@ body:has(.stable-head) #stg {
   --settings-background-color: var(--dialog-bg-color);
 }
 
-/* `legend` is a literal black here and `--text-header-color` from 5.2.0 on. */
+/* `legend` is a literal black here. */
 body:has(.stable-head) legend {
   color: var(--text-header-color);
 }
 
-/* The General page carries two settings 5.3.12 no longer has — the side panel's
-   minimum width and the list table's minimum height — and the two full rows they
-   take put its content 4px past the room it has. The room is what is left of the
-   pages area once the button row and the gap above it are taken out, so the gap
-   is where the 4px come from. It is a gutter of the dialog and nothing measures
-   against it; 5.3.12 leaves 29px there, this release 14, and 10 is enough for a
-   page whose content ends where this one's does. */
+/* The General page carries two settings later releases dropped, and needs 4px
+   of this gap. */
 body:has(.stable-head) #st_btns {
   margin-top: 10px;
 }
 
-/* The page list is a list of links in this release and a Bootstrap list group
-   from 5.2.0 on. The current page takes the pair upstream gives the active item
-   of that group, which is the same pair the context menu highlights with. */
+/* The page list is plain links here, a Bootstrap list group from 5.2.0. */
 body:has(.stable-head) #stg .lm li a {
   color: var(--text-color);
 }
@@ -271,16 +207,10 @@ body:has(.stable-head) #stg .lm li a.focus {
   color: var(--menu-highlight-color);
 }
 
-/* === The sidebar's separator === */
-
 /* === ruTorrent below 5.1.0 === */
 
-/* 5.1.0 moved this release's light literals into custom properties. Below it
-   they are written out, so every surface here stays pale whatever the theme
-   sets. Each rule states 5.1.0's own declaration against the selector this
-   release uses — those carry a tag name, which outranks a bare id.
-
-   `#side-panel` is the marker: it is in 5.0.0's markup and in none after it. */
+/* Below 5.1.0 the light colors are literals on selectors with a tag name,
+   which outrank a bare id. `#side-panel` is the marker: only 5.0.0 has it. */
 
 body:has(#side-panel) div#t {
   height: var(--navbar-height);
@@ -291,16 +221,14 @@ body:has(#side-panel) div#t {
   border-bottom: 1px solid var(--navbar-border-color);
 }
 
-/* Painted at every width here, where 5.1.0 paints it only while the collapsed
-   menu is open. The bar behind it carries the same colour, so the two agree. */
+/* Painted at every width here; 5.1.0 paints it only while the collapsed menu
+   is open. */
 body:has(#side-panel) #top-menu {
   background-color: var(--navbar-bg-color);
   border-bottom: 1px solid var(--navbar-border-color);
 }
 
-/* The radius is zeroed in this release's own 768px query and left alone from
-   5.1.0, so the toolbar's buttons come out square here only. 6px is the main
-   sheet's value for the same rule. */
+/* This release zeroes the radius in its own 768px query. */
 body:has(#side-panel) div#t .nav-link {
   border-radius: 6px;
   border-color: var(--navbar-item-border-color);
@@ -322,10 +250,8 @@ body:has(#side-panel) div#tdcont {
   border-color: var(--container-border-color);
 }
 
-/* The sidebar also stops at its last row here and leaves the space below it to
-   the page. 5.1.0 fills it with a column flex box and `flex: 1 1 auto` on the
-   list; this release has neither, and an extra `#side-panel` wrapper between
-   the two that has to carry the same growth for the box to reach the bottom. */
+/* 5.0.0 has no column flex box on the sidebar, and its extra `#side-panel`
+   wrapper has to grow as well. */
 body:has(#side-panel) #offcanvas-sidepanel,
 body:has(#side-panel) #side-panel {
   display: flex;
@@ -340,27 +266,19 @@ body:has(#side-panel) #CatList {
   flex: 1 1 auto;
 }
 
-/* The box is already 32px here and `background-size` comes from the main sheet,
-   so only the image and where it sits are missing. */
 body:has(#side-panel) #ind {
   background-image: var(--loading-indicator-icon);
   background-position: center;
 }
 
-/* The caret is this release's own background on the heading, at `2px 50%`, and
-   upstream holds 21px of left padding to clear it; from 5.1.0 it is a 20px
-   `::before` and the padding drops to a quarter of a rem. The main sheet's 3px
-   is right for that shape and drops the text onto the caret in this one. */
+/* The caret is a background at `2px 50%` here, and upstream holds 21px of
+   padding for it. */
 body:has(#side-panel) category-panel::part(heading) {
   padding-left: 21px;
 }
 
-/* The plugins button is a plain link on `theWebUI.showPluginsMenu()` here; from
-   5.1.0 it is a Bootstrap dropdown inside a `.btn-group`. The bar's three-zone
-   ordering keys on that group, so without this the button stays in the left
-   cluster with the actions. The separator in front of it goes for the reason
-   the one in front of the group goes: it divides nothing once the button has
-   moved. */
+/* The plugins button is a plain link here, a dropdown in a `.btn-group` from
+   5.1.0, and the bar's ordering keys on that group. */
 @media (min-width: 768px) {
   body:has(#side-panel) #top-menu .navbar-nav > #mnu_plugins {
     order: 3;
@@ -371,12 +289,8 @@ body:has(#side-panel) category-panel::part(heading) {
   }
 }
 
-/* Upstream writes the toolbar's interaction rules with three type selectors on
-   this release (`css/style.css:589`, inside its own 768px query) and with none
-   from 5.1.0, so the theme's hover fill and pink press lose the cascade here and
-   its pale `tb_bg.gif` paints instead. Same declarations, stated heavy enough to
-   land. The press keeps its padding restated for the reason the main sheet
-   gives: upstream's `:active` shrinks the button and shifts the whole row. */
+/* Upstream's toolbar rules carry three type selectors on this release, so the
+   theme's hover and press are restated heavier here. */
 body:has(#side-panel) div#t div.navbar-nav a.nav-link:hover {
   background-color: var(--dracula-selection);
   background-image: none;
@@ -387,18 +301,8 @@ body:has(#side-panel) div#t div.navbar-nav a.nav-link:active {
   background-color: var(--dracula-pink);
 }
 
-/* The settings dialog is content-sized on this release: `#stg-pages` carries a
-   fixed 550px and the window has no height of its own, where from 5.1.0 the
-   window is a column flex box its pages fill. The window is shown by writing
-   `display: block` inline, which no stylesheet rule outranks, so it cannot be
-   made a flex box from here — the pages take their own height instead and the
-   window follows them. The theme's height would leave an empty strip below the
-   buttons, so only its width applies.
-
-   General needs 595px and upstream's 550 gives it 484, which is the scrollbar.
-   Letting the block size to its content clears that; the cap is the height the
-   dialog is allowed anywhere, less the 44px its header and border take here, so
-   a page longer than General still scrolls rather than running off the screen. */
+/* The window is shown with an inline `display: block`, so it cannot be a flex
+   box here. The pages take their own height, capped to the dialog's maximum. */
 body:has(#side-panel) div#stg {
   height: auto;
 }

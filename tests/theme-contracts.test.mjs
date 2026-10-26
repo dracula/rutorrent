@@ -1,15 +1,10 @@
-// Four places where a rule and the script have to agree, and nothing on screen
-// would look broken if they stopped.
+// Places where a rule and the script have to agree.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { read, SHEETS } from "./theme-files.mjs";
 
-// --- The two state rows whose `icon` name upstream reversed -----------------
-//
-// `icon="inactive"` is the Stopped row from ruTorrent 5.2.2 and the Inactive
-// row below it, so keying either glyph to the attribute paints one half of the
-// supported range with the other row's icon. The ids are the core's state keys
-// (`js/category-list.js`) and its filtering depends on them.
+// --- The Stopped and Inactive rows ---
+// Upstream reversed their `icon` names at 5.2.2, so the glyphs key on the ids.
 
 test("the Stopped and Inactive rows take their icon from the id", () => {
 	const text = read("style.css");
@@ -34,14 +29,9 @@ test("the Stopped and Inactive rows take their icon from the id", () => {
 		);
 });
 
-// --- A palette fallback is the palette --------------------------------------
-//
-// `draculaPaletteColor` reads a custom property and takes its second argument
-// when that resolves to nothing, which is what happens whenever it is called
-// before the sheets are on the page. The favicon is drawn as init.js is read —
-// close enough to that edge that the ordering is not worth depending on — and a
-// fallback that had drifted from the palette would paint the wrong colour with
-// nothing on the page looking wrong.
+// --- A palette fallback is the palette ---
+// The favicon can draw before the sheets apply, so a fallback must match the
+// palette.
 
 test("every palette fallback in init.js is the value palette.css publishes", () => {
 	const palette = read("palette.css");
@@ -62,13 +52,9 @@ test("every palette fallback in init.js is the value palette.css publishes", () 
 	}
 });
 
-// --- The bundled monospace face is opted into, never defaulted to -----------
-//
-// A browser fetches a face when a rendered element resolves to it, and on a
-// phone one does: style.css carries both the JetBrains Mono faces and the log
-// panel's `font-family`, and both are live until the mobile plugin disables the
-// theme. Naming the face on bare :root is what makes that window cost 31,432
-// bytes the mobile interface never draws.
+// --- The bundled monospace face is opt-in ---
+// On a phone the log panel would fetch it before the mobile plugin disables
+// the theme.
 
 test("--font-mono names the bundled face only behind the desktop mark", () => {
 	const fonts = read("fonts.css");
@@ -94,19 +80,10 @@ test("--font-mono names the bundled face only behind the desktop mark", () => {
 	);
 });
 
-// --- No sheet gives the list table a width ----------------------------------
-//
-// From 5.2.0 a column drag computes the new width from the width the browser
-// rendered and stores it as that column's declaration (`js/stable.js:662`), so
-// the two have to stay equal. `table-layout: fixed` hands any slack out in
-// proportion to the declared widths, which turns a table given a width of its
-// own into a feedback loop: the column jumps hundreds of pixels for a pixel of
-// mouse movement and refuses to narrow once the row fills its pane. Nothing on
-// screen looks wrong until someone drags a border.
-//
-// Media blocks are cut before the scan. The phone lays the table out from its
-// content and has no border to drag, and the correction in init.js covers the
-// drag wherever a rendered width and a declared one come apart anyway.
+// --- No sheet gives the list table a width ---
+// A column drag stores the rendered width as the declared one, so a sized
+// table feeds the drag its own output. Media blocks are cut: the phone has no
+// border to drag.
 
 test("no rule sizes .stable table", () => {
 	for (const sheet of SHEETS) {

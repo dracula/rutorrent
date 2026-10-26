@@ -1,18 +1,7 @@
-// The Dracula specification, at a named point.
-//
-// Copied from github.com/dracula/draculatheme.com, content/spec.mdx, at commit
-// ab9840fc416836e1474b9a7d21522234af1eaddd (2026-08-14) — the same pin written
-// into the header of palette.css. Held here as well as there because a comment
-// states an intention and a test enforces one: a hex edited in the palette, for
-// whatever good reason at the time, fails against this.
-//
-// Raising the pin is deliberate work: fetch that file at the newer commit,
-// replace this table with what it says, and move the commit in both places.
-// Nothing here should ever be edited to make a failing palette pass.
-//
-// The ANSI palettes are not recorded. The specification assigns them to terminal
-// applications and nothing in this interface is one; thirty-two names no rule can
-// read would make the record harder to check, not more faithful.
+// The Dracula spec, copied from github.com/dracula/draculatheme.com
+// content/spec.mdx at the commit below, the same pin as in palette.css.
+// Raising the pin means replacing this table from the newer commit; never
+// edit it to make the palette pass.
 
 export const SPEC_COMMIT = "ab9840fc416836e1474b9a7d21522234af1eaddd";
 

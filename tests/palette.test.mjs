@@ -1,7 +1,4 @@
-// palette.css is the record of the specification and the only place a colour may
-// be written. A hex or an rgb() anywhere else is a copy that has stopped
-// following it: change Purple in the palette and the stray stays as it was,
-// silently, with nothing on screen looking broken.
+// palette.css is the only place a color may be written.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -14,20 +11,14 @@ import {
 } from "./theme-files.mjs";
 import { SPEC, SPEC_COMMIT } from "./dracula-spec.mjs";
 
-// --- The decimal copies of palette colours ----------------------------------
-//
-// Bootstrap's utilities take a bare `r, g, b` triple rather than a colour —
-// `.text-danger` resolves to `rgba(var(--bs-danger-rgb), var(--bs-text-opacity))`
-// — and CSS cannot derive one from a hex custom property. So each triple is a
-// second, decimal copy of a colour that palette.css already holds, and nothing
-// but this test keeps the two in step when a palette value moves.
+// --- Decimal copies of palette colors ---
+// Bootstrap's utilities take a bare `r, g, b`, so each triple copies a palette
+// color, and only this test keeps the two in step.
 
 const asTriple = (hex) =>
 	[0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ");
 
-// The pairing is by name: `--alucard-rgb-red` answers to `--alucard-red` and to
-// nothing else. `rgb` sits next to the namespace so the eye groups the copies
-// together rather than reading to the end of each name.
+// Paired by name: `--alucard-rgb-red` answers to `--alucard-red`.
 test("every --*-rgb-* triple still spells out the palette colour it stands for", () => {
 	const wrong = [];
 	for (const m of paletteText.matchAll(
@@ -47,7 +38,6 @@ test("every --*-rgb-* triple still spells out the palette colour it stands for",
 	assert.deepEqual(wrong, [], `\n${wrong.join("\n")}`);
 });
 
-// A triple anywhere but the palette is a copy nothing can hold to a colour.
 test("no sheet writes a triple of its own", () => {
 	const stray = [];
 	for (const { name, text } of css) {
@@ -69,8 +59,6 @@ test("no sheet writes a triple of its own", () => {
 test("every palette colour is the value the specification publishes", () => {
 	const wrong = [];
 	for (const [name, hex] of Object.entries(SPEC)) {
-		// paletteHex holds the six digits; the table keeps the `#` so it can be
-		// read against the specification page without translating.
 		const got = paletteHex.get(name);
 		if (got === undefined) wrong.push(`${name} is not in palette.css`);
 		else if (`#${got}` !== hex)
@@ -80,8 +68,6 @@ test("every palette colour is the value the specification publishes", () => {
 });
 
 test("the palette publishes nothing the specification does not", () => {
-	// A colour invented here and given a spec-shaped name would be taken for
-	// Dracula's by anyone reading the file, and by anyone porting it onward.
 	const extra = [...paletteHex.keys()].filter((n) => !(n in SPEC));
 	assert.deepEqual(
 		extra,
@@ -98,17 +84,12 @@ test("the pinned commit is stated in the palette as well as here", () => {
 	);
 });
 
-// --- Colours live in palette.css and nowhere else ---------------------------
-//
-// Comments are stripped first — they quote colours as documentation, and a
-// measurement written into a note is not a declaration. In CSS the selectors go
-// too: `#add` is an id to a pattern and a colour to nobody, and stripping the
-// text before each `{` removes every selector and at-rule prelude at once.
+// --- Colors live in palette.css and nowhere else ---
+// Comments and selectors are stripped first.
 
 const COLOUR_HEX =
 	/#(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{3})\b/g;
-// Only a literal: `rgba(var(--x-rgb), .5)` reads the palette and is the shape
-// Bootstrap's utilities force, so a digit after the paren is what marks a copy.
+// Only a literal: `rgba(var(--x-rgb), .5)` reads the palette.
 const COLOUR_FN = /\b(?:rgba?|hsla?)\(\s*[\d.]/g;
 
 function colourLiterals(name) {
@@ -125,30 +106,23 @@ function colourLiterals(name) {
 	].map((s) => s.trim());
 }
 
-// An SVG fill cannot read a custom property, so every glyph writes its colour
-// out. `%23` is what `#` becomes inside a data URI, which hides all of them from
-// COLOUR_HEX above — the one place most of the theme's colours live is the one
-// place that rule does not reach. These cannot be names, so the encoded check
-// asks the weaker question the shape allows: that each is a value the spec pins.
+// Inside a data URI `#` is `%23`, which `COLOUR_HEX` does not see, so each
+// encoded color must be a spec value.
 const ENCODED_HEX =
 	/%23(?:[0-9A-Fa-f]{8}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{3})\b/g;
 
-const encodedColours = (name) => read(name).match(ENCODED_HEX) || [];
+const encodedColours = (name) =>
+	withoutComments(read(name)).match(ENCODED_HEX) || [];
 
-// Each entry is one literal and the reason it cannot be a name. Removing the
-// literal removes the entry: the staleness checks refuse a reason that no longer
-// answers to anything.
+// One literal per entry, with the reason it cannot be a name.
 const COLOUR_EXEMPT = {
 	"init.js": [
-		// draculaSetFavicon runs at file scope so that upstream's icon is replaced
-		// before it is ever painted, which is earlier than any stylesheet — see the
-		// note there. Measured: the favicon is drawn from these two on every load.
+		// draculaSetFavicon draws before any stylesheet exists.
 		["#282A36", "favicon: drawn before a stylesheet exists"],
 		["#BD93F9", "favicon: drawn before a stylesheet exists"],
 	],
 	"mobile.css": [
-		// A mask reads alpha and discards hue, so this is the word "opaque"
-		// spelled as a colour. Naming a palette entry here would say the opposite.
+		// A mask reads alpha, so this is opacity.
 		["#000", "mask stop: a mask reads alpha, so this is opacity"],
 		["#000", "mask stop: a mask reads alpha, so this is opacity"],
 	],
@@ -156,15 +130,11 @@ const COLOUR_EXEMPT = {
 
 const ENCODED_EXEMPT = {
 	"style.css": [
-		// A mask reads alpha and discards hue, so this is the word "opaque"
-		// spelled as a colour, exactly as in mobile.css above.
-		["%23000", "mask stop: a mask reads alpha, so this is opacity"],
 		["%23000", "mask stop: a mask reads alpha, so this is opacity"],
 	],
 };
 
-// Consumes one allowance per literal found, so a second copy of an exempted
-// colour is still reported and an exemption cannot cover more than it names.
+// One allowance per literal, so a second copy is still reported.
 function unexplained(found, allowed) {
 	const left = [...allowed];
 	const stray = [];
@@ -213,8 +183,6 @@ test("every colour inside a data URI is a palette value", () => {
 	for (const name of FILES) {
 		const allowed = (ENCODED_EXEMPT[name] || []).map(([literal]) => literal);
 		for (const literal of unexplained(encodedColours(name), allowed))
-			// `%23` is three characters; what follows is the hex the spec would
-			// spell with a leading `#`.
 			if (!published.has("#" + literal.slice(3).toLowerCase()))
 				stray.push(`${name}: ${literal}`);
 	}
