@@ -13,12 +13,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # Not GITHUB_TOKEN: events it raises start no workflow run, so the release
-      # pull request would never get the check that main requires to merge.
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       # The asset is the theme folder alone. Built from the tag object, so no
       # untracked file can reach it.
