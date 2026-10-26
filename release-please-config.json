@@ -18,5 +18,5 @@
       ]
     }
   },
-  "pull-request-header": "## :robot: New release"
+  "pull-request-header": ":robot: New release"
 }
