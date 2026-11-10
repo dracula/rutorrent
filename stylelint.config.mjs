@@ -12,7 +12,6 @@
 // correctness-only set: every rule in it is a real error.
 export default {
 	extends: "stylelint-config-recommended",
-	plugins: ["stylelint-declaration-strict-value"],
 	rules: {
 		// Fires constantly and legitimately in an override theme: upstream's
 		// source order dictates this one, so a low-specificity selector routinely
@@ -32,20 +31,10 @@ export default {
 		],
 		"function-url-quotes": ["always", { except: ["empty"] }],
 
-		// The palette enforcer, and the reason the Dracula spec holds without a
-		// human sweep: any colour-ish declaration whose value is not a var()
-		// fails. It does not touch the :root blocks, the properties there being
-		// named --dracula-bg rather than color, so the palette definitions stay
-		// legal and every *use* of a colour is checked.
-		"scale-unlimited/declaration-strict-value": [
-			[
-				"/color$/",
-				"fill",
-				"stroke",
-				"background-color",
-				"border-color",
-				"outline-color",
-			],
+		// Every color outside the palette is a var(). Custom property
+		// declarations are skipped, so the palette itself stays legal.
+		"value-type-custom-property-required-list": [
+			["color"],
 			{
 				ignoreValues: [
 					"transparent",
@@ -56,7 +45,8 @@ export default {
 					"unset",
 					"revert",
 				],
-				disableFix: true,
+				// A mask reads alpha, so its stops are opacity.
+				ignoreProperties: { color: ["/^(-webkit-)?mask/"] },
 				severity: "warning",
 			},
 		],
