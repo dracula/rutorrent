@@ -141,8 +141,8 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
   --menu-border-color: var(--dracula-selection);
   --menu-disabled-color: var(--dracula-comment);
   --menu-disabled-background-color: var(--dracula-bg);
-  --menu-highlight-color: var(--dracula-bg);
-  --menu-highlight-background-color: var(--dracula-purple);
+  --menu-highlight-color: var(--dracula-fg);
+  --menu-highlight-background-color: color-mix(in srgb, var(--functional-purple) 50%, var(--dracula-bg-dark));
   --menu-active-color: var(--dracula-green);
   /* Upstream's menu marks are GIFs. These hold the shape only; the ink is
      painted through a mask further down. */
@@ -295,7 +295,7 @@ html[data-dracula-label-separator="missing"] panel-label[size]::part(size)::befo
 
 /* stylelint-disable-next-line no-duplicate-selectors */
 :root {
-  --selection-bg-color: color-mix(in srgb, var(--dracula-purple) 70%, var(--dracula-bg));
+  --selection-bg-color: color-mix(in srgb, var(--functional-purple) 50%, var(--dracula-bg));
 }
 
 /* Upstream groups these with `.Button`, so the whole list is matched. */
@@ -304,7 +304,7 @@ html[data-dracula-label-separator="missing"] panel-label[size]::part(size)::befo
    label's box. `min-width: fit-content` keeps a button as wide as its label. */
 button, input[type="button"], input[type="submit"], .Button {
   color: var(--dracula-fg);
-  background-color: var(--dracula-comment);
+  background-color: var(--dracula-selection);
   background-image: none;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -318,8 +318,7 @@ button:not([disabled]):hover,
 input[type="button"]:not([disabled]):hover,
 input[type="submit"]:not([disabled]):hover,
 .Button:not([disabled]):hover {
-  background-color: var(--dracula-purple);
-  color: var(--dracula-bg);
+  background-color: var(--selection-bg-color);
   filter: none;
 }
 
@@ -329,8 +328,7 @@ button:not([disabled]):active,
 input[type="button"]:not([disabled]):active,
 input[type="submit"]:not([disabled]):active,
 .Button:not([disabled]):active {
-  background-color: var(--dracula-pink);
-  color: var(--dracula-bg);
+  background-color: color-mix(in srgb, var(--functional-purple) 70%, var(--dracula-bg));
   filter: none;
 }
 
@@ -409,7 +407,7 @@ input[type="file"] {
 
 input[type="file"]::file-selector-button {
   color: var(--dracula-fg);
-  background-color: var(--dracula-comment);
+  background-color: var(--dracula-selection);
   border: 1px solid transparent;
   border-radius: 4px;
   margin-right: 8px;
@@ -419,8 +417,7 @@ input[type="file"]::file-selector-button {
 }
 
 input[type="file"]:not([disabled])::file-selector-button:hover {
-  background-color: var(--dracula-purple);
-  color: var(--dracula-bg);
+  background-color: var(--selection-bg-color);
 }
 
 /* === Checkboxes === */
@@ -665,7 +662,7 @@ div#msg {
   justify-content: center;
 }
 div#sc { border: 1px solid var(--dracula-selection); background-color: var(--dracula-bg); border-radius: 4px; }
-div#sc li.se_act div { background-color: var(--dracula-purple); color: var(--dracula-bg); border-radius: 3px; }
+div#sc li.se_act div { background-color: var(--menu-highlight-background-color); color: var(--menu-highlight-color); border-radius: 3px; }
 div#lng { background-color: var(--dracula-bg-dark); border: 1px solid var(--dracula-selection); border-radius: 4px; }
 
 /* === Selection === */
@@ -685,10 +682,6 @@ div#lng { background-color: var(--dracula-bg-dark); border: 1px solid var(--drac
 /* ruTorrent never sets `data-bs-theme`. */
 .navbar-toggler-icon {
   --bs-navbar-toggler-icon-bg: var(--icon-hamburger-fg);
-}
-
-.navbar-toggler:not([disabled]):hover .navbar-toggler-icon {
-  --bs-navbar-toggler-icon-bg: var(--icon-hamburger-bg);
 }
 
 /* Upstream's only hover is a brightness filter, which does nothing to a

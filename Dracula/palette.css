@@ -55,7 +55,8 @@
 
   --alucard-line-highlight: #e2deca;
 
-  /* Functional. Recorded only: the theme uses the variant accents. */
+  /* Functional. Purple tints the selection, menu highlights and buttons; the
+     others are recorded only. */
   --functional-red: #de5735;
   --functional-orange: #a39514;
   --functional-green: #089108;
