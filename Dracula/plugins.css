@@ -459,7 +459,7 @@ div.dlg-window div#dlgLabel-header {
 
 /* === Plugin Rule Editors === */
 
-/* extratio and rssurlrewrite load after style.css, so these live here. */
+/* extratio, rss and rssurlrewrite load after style.css, so these live here. */
 
 div#ratioRuleList,
 .lf_rur {
@@ -469,15 +469,35 @@ div#ratioRuleList,
 
 ul#rlsul > li input[type="text"],
 ul#rlsul > li input.TextboxNormal,
-.lf_rur input.TextboxNormal {
+.lf_rur input.TextboxNormal,
+#fltlist input.TextboxNormal {
   background-color: var(--dracula-bg-dark);
   border-color: var(--dracula-selection);
 }
 
 ul#rlsul > li input.TextboxFocus,
-.lf_rur input.TextboxFocus {
+.lf_rur input.TextboxFocus,
+#fltlist input.TextboxFocus {
   background-color: var(--dracula-bg-dark);
   border-color: var(--dracula-purple);
+}
+
+/* rss.css draws the filter names borderless at 11px bold. The row is flex,
+   as in the rules list, so the checkbox centers on the field. */
+#fltlist > li {
+  display: flex;
+}
+
+#fltlist input[type="text"] {
+  border-width: 1px;
+  border-style: solid;
+  font: inherit;
+}
+
+/* The column takes its width from its content, and 14px names would widen
+   it into the filter settings. */
+#fltlist {
+  contain: inline-size;
 }
 
 /* === Plugin Dialog Geometry === */
