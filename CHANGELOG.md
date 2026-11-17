@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.4](https://github.com/dracula/rutorrent/compare/v0.3.3...v0.3.4) (2026-11-17)
+
+
+### Bug Fixes
+
+* draw the RSS filter names like the rules list ([#26](https://github.com/dracula/rutorrent/issues/26)) ([dd4daa4](https://github.com/dracula/rutorrent/commit/dd4daa423b3119d8445d8a967b1675dc1ed78b61))
+* draw the search clear button in the palette ([#25](https://github.com/dracula/rutorrent/issues/25)) ([74b63c8](https://github.com/dracula/rutorrent/commit/74b63c899644ae4108f960c371d7e24973f1a359))
+* draw the selection in a deeper purple ([#28](https://github.com/dracula/rutorrent/issues/28)) ([747d8ad](https://github.com/dracula/rutorrent/commit/747d8ad406093c5f25ea055e5232f35bec8c12af))
+* let the search box shrink on ruTorrent 5.3.23 ([#23](https://github.com/dracula/rutorrent/issues/23)) ([179a2e5](https://github.com/dracula/rutorrent/commit/179a2e5d1ce13c0730a1f24c8cba88a0a8c5c152))
+* put the RSS Channel label next to its menu ([#27](https://github.com/dracula/rutorrent/issues/27)) ([58ce4d7](https://github.com/dracula/rutorrent/commit/58ce4d7864b1a393e26f15da2291f0656a162c34))
+
 ## [0.3.3](https://github.com/dracula/rutorrent/compare/v0.3.2...v0.3.3) (2026-10-26)
 
 
