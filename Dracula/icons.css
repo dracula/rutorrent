@@ -44,6 +44,10 @@
   --icon-hamburger-fg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23F8F8F2' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
   --icon-hamburger-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23282A36' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 
+  /* ruTorrent's search clear cross, not Phosphor. */
+  --icon-clear-fg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1 1l6 6M7 1L1 7' stroke='%23F8F8F2' stroke-width='1.5'/%3E%3C/svg%3E");
+  --icon-clear-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1 1l6 6M7 1L1 7' stroke='%23282A36' stroke-width='1.5'/%3E%3C/svg%3E");
+
   /* Category panel icons */
   /* https://phosphoricons.com/?q=caret-down */
   --icon-caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath d='M208,96l-80,80L48,96Z' opacity='0.2' fill='%23F8F8F2'/%3E%3Cpath d='M215.39,92.94A8,8,0,0,0,208,88H48a8,8,0,0,0-5.66,13.66l80,80a8,8,0,0,0,11.32,0l80-80A8,8,0,0,0,215.39,92.94ZM128,164.69,67.31,104H188.69Z' fill='%23F8F8F2'/%3E%3C/svg%3E");

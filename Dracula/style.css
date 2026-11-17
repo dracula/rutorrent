@@ -909,6 +909,32 @@ div#t div.TB_Separator {
   background-size: contain;
 }
 
+/* Upstream's `all: unset` on the id outranks the theme's button rules.
+   Auto margins and an odd size keep it on whole pixels in the 25px field. */
+#query_clear {
+  top: 0;
+  bottom: 0;
+  transform: none;
+  margin: auto 0;
+  width: 15px;
+  height: 15px;
+  background: var(--dracula-comment) var(--icon-clear-fg) no-repeat center / 9px;
+}
+
+#query_clear:hover {
+  background-color: var(--dracula-purple);
+  background-image: var(--icon-clear-bg);
+}
+
+#query_clear:focus-visible {
+  outline-color: var(--dracula-purple);
+}
+
+/* Upstream reserves room for the clear button while it is hidden. */
+#query:has(+ #query_clear[hidden]) {
+  padding-right: 4px;
+}
+
 /* === Toolbar Icons (Phosphor Duotone SVGs) === */
 
 div#t div#add { background: transparent var(--icon-add) no-repeat center center; background-size: 28px; }
