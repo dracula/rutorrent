@@ -515,6 +515,14 @@ ul#rlsul > li input.TextboxFocus,
   }
 }
 
+/* rss inserts the ratio and throttle menus, with their labels, after the
+   `#FLT_label` column as each plugin loads; either pair can come second. */
+@media (min-width: 768px) {
+  #dlgEditFilters div:has(> :is(#FLT_ratio, #FLT_throttle)) + div {
+    justify-content: flex-end;
+  }
+}
+
 /* 8rem is upstream's own textarea height below 576px. */
 @media (min-width: 576px) {
   #tcreate {
