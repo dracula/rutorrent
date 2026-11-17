@@ -787,13 +787,15 @@ div#t div.TB_Separator {
     width: 460px;
   }
 
-  /* Below that the field yields: `flex-basis` and an explicit `min-width`. */
+  /* Below that the field yields: `flex-basis` and an explicit `min-width`.
+     From ruTorrent 5.3.23 `#query_box` wraps it and is the flex item. */
   @media (max-width: 1199.98px) {
     #top-menu .navbar-nav > #rc {
       min-width: 0;
     }
 
-    #query {
+    #query,
+    #query_box {
       width: auto;
       flex-basis: 220px;
       min-width: 24px;
