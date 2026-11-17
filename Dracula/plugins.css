@@ -79,7 +79,7 @@
 }
 
 .rmenuitem.active {
-  color: var(--dracula-bg);
+  color: var(--dracula-fg);
   background-color: var(--selection-bg-color);
 }
 

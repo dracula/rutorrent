@@ -125,15 +125,31 @@ body.compact .stable thead td div {
   height: auto;
 }
 
+/* On selected and seedingtime rows a track marks the bar's full length.
+   6px is the cell padding, 0.25rem the margin upstream gives the bar. */
+.stable tbody tr:is(.selected, [data-seedingtime-highlight="1"]) td:has(> .meter-value) {
+  isolation: isolate;
+}
+
+.stable tbody tr:is(.selected, [data-seedingtime-highlight="1"]) td:has(> .meter-value)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(6px + 0.25rem);
+  z-index: -1;
+  width: calc(100% - 12px);
+  height: 16px;
+  margin: auto 0;
+  border-radius: 4px;
+  background-color: var(--dracula-bg-dark);
+}
+
 /* Selection instead of upstream's brightness filter, which barely moves a dark
    row. `:not(.selected)` levels it with the alternate-row rule. */
 .stable tbody tr:hover:not(.selected) td {
   background-color: var(--dracula-selection);
   filter: none;
-}
-
-.stable tbody tr.selected td {
-  color: var(--dracula-bg);
 }
 
 /* Upstream brightens a hovered selected row only from 5.2.0 to 5.3.15. */
@@ -150,17 +166,7 @@ body.compact .stable thead td div {
 }
 
 .stable tbody tr.selected td code {
-  color: var(--dracula-bg);
-}
-
-/* The percentage sits on the bar, not on the selection. */
-.stable tbody tr.selected td .meter-text {
   color: var(--dracula-fg);
-}
-
-/* At 0% upstream hides the bar inline, so the label sits on the selection. */
-.stable tbody tr.selected td:has(.meter-value[style*="hidden"]) .meter-text {
-  color: var(--dracula-bg);
 }
 
 /* Upstream sets `font: menu` on the column drag ghost. */

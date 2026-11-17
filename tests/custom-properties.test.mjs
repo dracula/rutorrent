@@ -60,23 +60,16 @@ const EXEMPT = new Map([
 		"--alucard-pink",
 		"palette record: Dark's pink has readers, Light's has none yet",
 	],
-	["--functional-red", "palette record: chrome colours, measured and not used"],
+	["--functional-red", "palette record: chrome colors, measured and not used"],
 	[
 		"--functional-orange",
-		"palette record: chrome colours, measured and not used",
+		"palette record: chrome colors, measured and not used",
 	],
 	[
 		"--functional-green",
-		"palette record: chrome colours, measured and not used",
+		"palette record: chrome colors, measured and not used",
 	],
-	[
-		"--functional-cyan",
-		"palette record: chrome colours, measured and not used",
-	],
-	[
-		"--functional-purple",
-		"palette record: chrome colours, measured and not used",
-	],
+	["--functional-cyan", "palette record: chrome colors, measured and not used"],
 ]);
 
 test("every name the theme owns and references is defined somewhere in it", () => {
