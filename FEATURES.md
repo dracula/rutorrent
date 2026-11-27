@@ -193,6 +193,7 @@ URL](./screenshots/mobile-add.png)
 ## Details
 
 - **Clicking the empty part of the torrent list clears the selection**, as Escape does inside the list.
+- **Every table aligns its columns by one rule**: sizes and speeds on the right, every other column on the left, each heading on the edge of its values.
 - **Status bar sections explain themselves on hover** — disk space, CPU, open
   connections, torrent counts, listening port.
 - **Dialogs are laid out for a landscape screen** rather than stacked into a

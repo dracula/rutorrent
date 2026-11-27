@@ -11,9 +11,9 @@ const IMPORTANT_BUDGET = {
 	// Seven are the file-type icons: `.stable-icon` clears the image from a
 	// later sheet.
 	"style.css": 42,
-	// The dragged heading's border, which upstream marks !important; the detail
-	// tabs' inline alignment; and below 5.2.0 the resize mark's inline height.
-	"stable.css": 3,
+	// The dragged heading's border, which upstream marks !important, and below
+	// 5.2.0 the resize mark's inline height.
+	"stable.css": 2,
 	// check_port's hidden segments carry Bootstrap's !important `d-lg-block`.
 	"plugins.css": 2,
 	// Two are a Bootstrap utility's; the third is the icon font the plugin sets

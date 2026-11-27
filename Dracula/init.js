@@ -8,7 +8,7 @@
  */
 
 /* global plugin, thePlugins, theWebUI, theUILang, theConverter, theContextMenu, theDialogManager, getSelection */
-/* global dStatus, askYesNo, RGBackground, dxSTable, rGraph, ALIGN_LEFT */
+/* global dStatus, askYesNo, RGBackground, dxSTable, rGraph, ALIGN_LEFT, ALIGN_RIGHT, TYPE_PROGRESS */
 /* global document, setTimeout, clearTimeout, requestAnimationFrame, MutationObserver, MouseEvent, Intl, $, window, getComputedStyle, Image, console */
 
 // Compared against the :root stamp in each sheet at startup.
@@ -3134,21 +3134,41 @@ var draculaColumns = {
 		dl:         { width: "110px" },
 		ul:         { width: "110px" },
 		eta:        { width: "80px" },
-		// Upstream marks these ALIGN_RIGHT, but a bracketed pair is not a magnitude.
-		peers:      { width: "80px", align: ALIGN_LEFT },
-		seeds:      { width: "80px", align: ALIGN_LEFT },
+		peers:      { width: "80px" },
+		seeds:      { width: "80px" },
 		downloaded: { width: "115px" },
 		uploaded:   { width: "115px" },
 		remaining:  { width: "105px" },
 		name:    { width: "320px" },
 		status:  { width: "115px" },
 		ratio:   { width: "70px" },
-		// Timestamps are TYPE_NUMBER, which dxSTable right-aligns like a magnitude.
-		created: { width: "160px", align: ALIGN_LEFT },
-		addtime: { text: "Added On", width: "160px", align: ALIGN_LEFT },
+		created: { width: "160px" },
+		addtime: { text: "Added On", width: "160px" },
 		tracker: { width: "140px" }
 	}
 };
+
+// Sizes and speeds end in a unit of one width, so their right edges line up
+// down the column. Every other column, its heading with it, reads from the left.
+var draculaRightAligned = {
+	trt: ["size", "downloaded", "uploaded", "dl", "ul", "remaining", "upload_target", "upload_remaining"],
+	fls: ["size", "done"],
+	prs: ["downloaded", "uploaded", "dl", "ul", "peerdl", "peerdownloaded"],
+	hst: ["size", "downloaded", "uploaded"]
+};
+// Search results and RSS items fill the torrent list with its columns.
+draculaRightAligned.teg = draculaRightAligned.rss = draculaRightAligned.trt;
+
+// Progress columns keep upstream's alignment: the bar fills the cell.
+function draculaAlignColumns(styles, aName)
+{
+	var right = draculaRightAligned[aName] || [];
+	for(var i = 0; i < styles.length; i++)
+	{
+		if(styles[i].type !== TYPE_PROGRESS)
+			styles[i].align = right.indexOf(styles[i].id) >= 0 ? ALIGN_RIGHT : ALIGN_LEFT;
+	}
+}
 
 // Upstream hardcodes the graph series colors. Resolved, because they reach a
 // canvas through flot's options. Hooked on rGraph, after both subclasses set
@@ -3969,8 +3989,6 @@ function draculaPatchColumns(styles, aName)
 			continue;
 		if(col.text)
 			styles[i].text = col.text;
-		if(col.align)
-			styles[i].align = col.align;
 		if(!col.width ||
 			draculaUserSizedColumn(saved, i, declared && declared[i]))
 			continue;
@@ -3989,6 +4007,8 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		return plugin.draculaTableCreate.call(this, ele, styles, aName);
 
 	draculaPatchColumns(styles, aName);
+	if(styles)
+		draculaAlignColumns(styles, aName);
 	plugin.draculaTableCreate.call(this, ele, styles, aName);
 
 	// Upstream's pair stands if the palette cannot be read.
