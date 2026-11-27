@@ -175,7 +175,7 @@ html { scrollbar-color: var(--dracula-comment) var(--dracula-bg-dark); }
 
   /* The theme's own. Read by the settings dialog, and below 5.1.0 by its pages
      block. */
-  --settings-max-height: min(720px, 90vh);
+  --settings-max-height: min(760px, 90vh);
 }
 
 /* === Loading Indicator: Three Dots === */
