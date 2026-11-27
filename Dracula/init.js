@@ -3213,32 +3213,57 @@ if(typeof rGraph !== "undefined")
 		trafic_uploaded_old: "Uploaded (earlier)"
 	};
 
-	plugin.draculaGraphCreate = rGraph.prototype.create;
-	rGraph.prototype.create = function(aOwner, webuiView)
+	// palette.css can land after the graph is created, so a series whose color
+	// is not there yet is tried again, as the progress bars are.
+	var draculaColorGraph = function(graph, attempt)
 	{
-		plugin.draculaGraphCreate.call(this, aOwner, webuiView);
 		var changed = false;
-		for(var i = 0; i < this.datasets.length; i++)
+		var missing = false;
+		for(var i = 0; i < graph.datasets.length; i++)
 		{
-			var d = this.datasets[i];
+			var d = graph.datasets[i];
 			var name = draculaSeriesNames[d.label];
-			var c = name ? draculaPaletteColor(name, null) : null;
-			if(c)
+			if(!name)
+				continue;
+			var c = draculaPaletteColor(name, null);
+			if(!c)
+				missing = true;
+			else if(d.color !== c)
 			{
 				d.color = c;
 				changed = true;
 			}
+		}
+		if(changed)
+			graph.draw(true);
+		if(missing)
+		{
+			attempt = (attempt || 0) + 1;
+			if(attempt < 8)
+				setTimeout(function() { draculaColorGraph(graph, attempt); }, 250 * attempt);
+		}
+	};
+
+	plugin.draculaGraphCreate = rGraph.prototype.create;
+	rGraph.prototype.create = function(aOwner, webuiView)
+	{
+		plugin.draculaGraphCreate.call(this, aOwner, webuiView);
+		var relabeled = false;
+		for(var i = 0; i < this.datasets.length; i++)
+		{
+			var d = this.datasets[i];
 			var t = draculaSeriesLabels[d.label];
 			if(t)
 			{
 				d.labelTranslation = t;
 				// create() has already copied the old text into the static map
 				rGraph.legendLabelTranslations[d.label] = t;
-				changed = true;
+				relabeled = true;
 			}
 		}
-		if(changed)
+		if(relabeled)
 			this.draw(true);
+		draculaColorGraph(this);
 	}
 }
 
