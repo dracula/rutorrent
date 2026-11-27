@@ -161,6 +161,7 @@ body.compact .stable thead td div {
 
 /* The release-group prefix of a torrent name, from ruTorrent 5.3.7. */
 .stable tbody td code {
+  font-family: var(--font-mono);
   color: var(--dracula-pink);
   background: transparent;
 }
