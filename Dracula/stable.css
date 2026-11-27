@@ -196,14 +196,6 @@ body.compact .stable thead td div {
   font-size: 12px;
 }
 
-/* === Detail Tab Alignment === */
-
-/* Upstream right-aligns numeric columns with inline styles. */
-#tdcont .stable thead td,
-#tdcont .stable tbody td {
-  text-align: left !important;
-}
-
 /* === Status Icons (Phosphor Duotone, Dracula colors) === */
 
 .stable-icon {
