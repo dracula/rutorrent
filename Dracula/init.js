@@ -1216,7 +1216,7 @@ var draculaKeyHelp = [
 	["Shift-" + draculaArrow.up + " " + draculaArrow.down, "Extend the selection"],
 	["Shift-Enter", "Select a range of filters"],
 	[draculaArrow.left + " " + draculaArrow.right, "In Files, leave or open a folder"],
-	["Escape", "Close the menu and go back"]
+	["Escape", "Close the menu and go back; in the list, clear the selection"]
 ];
 
 // For six of upstream's cells the element inside is the `<a>` carrying the
@@ -1941,6 +1941,8 @@ function draculaTableKeys(containerId, key, options)
 
 	var label = options.label;
 	var sideways = options.sideways;
+	// Escape and a press on the empty area clear the selection.
+	var clearable = Boolean(options.clearable);
 	var open = options.open || function(host, table, id)
 	{
 		if(typeof table.ondblclick === "function")
@@ -2038,17 +2040,69 @@ function draculaTableKeys(containerId, key, options)
 		scroller.removeAttribute("aria-activedescendant");
 	};
 
-	// Upstream arms Delete and Ctrl-A only after a mousedown on the table; focus
-	// arms them too. A mousedown also moves the cursor, since upstream selects on
-	// mousedown.
+	// As upstream's Ctrl-Z: `onselect` with nothing selected empties the details
+	// panel.
+	var clear = function(scroller, table, ev)
+	{
+		if(!table.selCount)
+			return false;
+		table.clearSelection();
+		if(typeof table.onselect === "function")
+			table.onselect(ev);
+		forget(scroller);
+		draculaSyncRowRoles(scroller, table);
+		return true;
+	};
+
+	// The empty area is the scroller itself, inside its client box: a press on a
+	// classic scrollbar lands on the scroller too. Firefox names the bar's part.
+	var onEmptyArea = function(scroller, ev)
+	{
+		if(ev.target !== scroller || ev.button !== 0 || ev.shiftKey || ev.ctrlKey || ev.metaKey || ev.altKey)
+			return false;
+		if(ev.originalTarget && ev.originalTarget !== scroller)
+			return false;
+		var box = scroller.getBoundingClientRect();
+		return ev.clientX - box.left - scroller.clientLeft < scroller.clientWidth &&
+			ev.clientY - box.top - scroller.clientTop < scroller.clientHeight;
+	};
+
+	// The press on the empty area, kept until its click.
+	var pressed = null;
+
+	// Upstream arms Delete and Ctrl-A only after a mousedown on the table; focus arms
+	// them too. Mousedown also moves the cursor, since upstream selects on mousedown.
 	container.addEventListener("mousedown", function(ev)
 	{
 		var scroller = host();
 		var row = ev.target && ev.target.closest ? ev.target.closest("tr[id]") : null;
-		if(!scroller || !row)
+		pressed = null;
+		if(!scroller)
 			return;
+		if(!row)
+		{
+			if(clearable && onEmptyArea(scroller, ev))
+				pressed = { x: ev.clientX, y: ev.clientY, left: scroller.scrollLeft, top: scroller.scrollTop };
+			return;
+		}
 		focused = row.id;
 		scroller.setAttribute("aria-activedescendant", row.id);
+	});
+
+	// Overlay scrollbars take no room, so a press on one is told from a click on the
+	// empty area by the scroll or the drag between press and release.
+	container.addEventListener("click", function(ev)
+	{
+		var press = pressed;
+		pressed = null;
+		var scroller = host();
+		var table = draculaTable(key);
+		if(!press || !scroller || !table || ev.target !== scroller)
+			return;
+		if(scroller.scrollLeft !== press.left || scroller.scrollTop !== press.top ||
+			Math.abs(ev.clientX - press.x) > 3 || Math.abs(ev.clientY - press.y) > 3)
+			return;
+		clear(scroller, table, ev);
 	});
 
 	container.addEventListener("focusin", function()
@@ -2126,6 +2180,18 @@ function draculaTableKeys(containerId, key, options)
 					return;
 				ev.preventDefault();
 				draculaRowMenu(scroller, table, ids[index]);
+				return;
+			// One layer per press: upstream's document handler closes a menu or dialog
+			// first and clears the search last, so the selection goes in between.
+			case "Escape":
+				if(!clearable || ev.ctrlKey || ev.metaKey || ev.shiftKey ||
+					theContextMenu.obj.is(":visible") || theDialogManager.visible.length)
+					return;
+				if(clear(scroller, table, ev))
+				{
+					ev.preventDefault();
+					ev.stopPropagation();
+				}
 				return;
 			default: return;
 		}
@@ -2547,7 +2613,8 @@ plugin.allDone = function()
 	// roll only while it shows.
 	draculaTableKeys("List", "trt", {
 		label: "Torrents",
-		sideways: draculaScrollColumn
+		sideways: draculaScrollColumn,
+		clearable: true
 	});
 	draculaTableKeys("FileList", "fls", {
 		label: "Files",
