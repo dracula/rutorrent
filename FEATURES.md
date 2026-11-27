@@ -14,16 +14,16 @@ file list when it is showing.** Tab moves between them, arrows move inside one,
 Home and End jump to its ends. Each region remembers where you were, so Tab
 returns you to the row you left rather than to the top.
 
-| Key                               | Does                           |
-| --------------------------------- | ------------------------------ |
-| `Tab`                             | Move between the regions       |
-| `← ↑ → ↓`                         | Move inside a region           |
-| `Enter`                           | Open or apply the focused item |
-| `Space`                           | Toggle selection, or activate  |
-| `Ctrl-Enter`, `Menu`, `Shift-F10` | Context menu, as a right click |
-| `Shift-↑ ↓`                       | Extend the selection           |
-| `Escape`                          | Close the menu and step back   |
-| `F1`                              | The full list, on screen       |
+| Key                               | Does                                                           |
+| --------------------------------- | -------------------------------------------------------------- |
+| `Tab`                             | Move between the regions                                       |
+| `← ↑ → ↓`                         | Move inside a region                                           |
+| `Enter`                           | Open or apply the focused item                                 |
+| `Space`                           | Toggle selection, or activate                                  |
+| `Ctrl-Enter`, `Menu`, `Shift-F10` | Context menu, as a right click                                 |
+| `Shift-↑ ↓`                       | Extend the selection                                           |
+| `Escape`                          | Close the menu and step back; in the list, clear the selection |
+| `F1`                              | The full list, on screen                                       |
 
 ![The F1 help screen, listing the commands on the left and the navigation keys
 on the right](./screenshots/keyboard-help.png)
@@ -192,6 +192,7 @@ URL](./screenshots/mobile-add.png)
 
 ## Details
 
+- **Clicking the empty part of the torrent list clears the selection**, as Escape does inside the list.
 - **Status bar sections explain themselves on hover** — disk space, CPU, open
   connections, torrent counts, listening port.
 - **Dialogs are laid out for a landscape screen** rather than stacked into a
