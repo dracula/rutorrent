@@ -96,9 +96,7 @@ red. Announce noise — a tracker that did not answer, a release the tracker che
 believes is gone — reads as a warning instead, because it is not the same class
 of event as a torrent that cannot write to disk.
 
-Status icons keep their contrast wherever the row goes. The quiet ones are
-painted through a mask in the row's own colour, so a selected row does not
-swallow them.
+Status icons keep their contrast wherever the row goes. The quiet ones are painted through a mask, in Comment on a plain row and in Purple on a selected one, so a selection does not swallow them.
 
 ![Five rows, one per state: seeding, downloading, stopped, an rTorrent error in
 red and announce noise in orange](./screenshots/torrent-states.png)

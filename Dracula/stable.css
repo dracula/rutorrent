@@ -246,8 +246,8 @@ body.compact .stable thead td div {
    of the error bit takes a class of its own. */
 .Status_Warning { background-image: var(--icon-warning); background-position: center; }
 
-/* Stopped and Paused paint the row's text color through a mask, so the mark
-   reads on a plain and on a selected row. */
+/* Stopped and Paused paint `color` through a mask: Comment on a plain row,
+   Purple on a selected one, which no other row icon uses. */
 .Status_Stopped,
 .Status_Paused {
   background-color: currentColor;
@@ -266,5 +266,5 @@ body.compact .stable thead td div {
 
 .stable tbody tr.selected .Status_Stopped,
 .stable tbody tr.selected .Status_Paused {
-  color: inherit;
+  color: var(--dracula-purple);
 }
