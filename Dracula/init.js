@@ -1015,6 +1015,27 @@ function draculaNameDialog(dlg)
 	dlg.setAttribute("aria-labelledby", header.id);
 }
 
+// The page starts below the browser's own bars, so dialogs are centered on the
+// browser window, where the eye measures them.
+function draculaLiftDialogs()
+{
+	if(!window.theDialogManager || typeof theDialogManager.center !== "function")
+		return;
+
+	var center = theDialogManager.center;
+	theDialogManager.center = function(id)
+	{
+		var result = center.apply(this, arguments);
+		var dlg = document.getElementById(id);
+		if(dlg && window.matchMedia("(min-width: 768px)").matches)
+		{
+			var lift = Math.max(0, (window.outerHeight - window.innerHeight) / 2);
+			dlg.style.top = Math.max(0, parseFloat(dlg.style.top) - lift) + "px";
+		}
+		return result;
+	};
+}
+
 function draculaWatchDialogs()
 {
 	if(!window.theDialogManager || typeof theDialogManager.show !== "function")
@@ -2695,6 +2716,7 @@ plugin.allDone = function()
 	draculaStatusBarKeys();
 	draculaWatchContextMenu();
 	draculaWatchDialogs();
+	draculaLiftDialogs();
 	draculaToolbarMenusToggle();
 	draculaFillKeyHelp();
 	draculaFixToolbarSeparators();
