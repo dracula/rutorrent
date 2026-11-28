@@ -388,10 +388,12 @@ select:focus {
   outline: none;
 }
 
+/* Chrome treats every focused list as keyboard focus, Firefox only one reached
+   from the keyboard; `:focus` gives the list Chrome's ring in both. */
 input:is([type="text"], [type="number"], [type="password"], [type="search"],
          [type="url"], [type="email"], [type="tel"], [type="date"], [type="time"]):focus-visible,
 textarea:focus-visible,
-select:focus-visible {
+select:focus {
   outline: 2px solid var(--dracula-purple);
   outline-offset: -2px;
 }
