@@ -550,6 +550,22 @@ test("draculaShownRows: keeps the rows the filter shows, in the list's order", (
 	assert.deepEqual([...theme.draculaShownRows(table)], ["b", "d"]);
 });
 
+test("draculaShownBefore: counts the shown rows ahead of a hidden one", () => {
+	const table = {
+		rowIDs: ["a", "b", "c", "d", "e"],
+		rowdata: {
+			a: { enabled: false },
+			b: { enabled: true },
+			c: { enabled: false },
+			d: { enabled: true },
+			e: { enabled: false },
+		},
+	};
+	assert.equal(theme.draculaShownBefore(table, "a"), 0);
+	assert.equal(theme.draculaShownBefore(table, "c"), 1);
+	assert.equal(theme.draculaShownBefore(table, "e"), 2);
+});
+
 test("draculaShownRows: a row with no data is not shown", () => {
 	const table = { rowIDs: ["a", "b"], rowdata: { b: { enabled: true } } };
 	assert.deepEqual([...theme.draculaShownRows(table)], ["b"]);

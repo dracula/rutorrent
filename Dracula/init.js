@@ -1820,6 +1820,15 @@ function draculaShownRows(table)
 	});
 }
 
+function draculaShownBefore(table, id)
+{
+	var count = 0;
+	for(var i = 0; i < table.rowIDs.length && table.rowIDs[i] !== id; i++)
+		if(table.rowdata[table.rowIDs[i]] && table.rowdata[table.rowIDs[i]].enabled)
+			count++;
+	return count;
+}
+
 // Opens through upstream's path with `which: 3`, as a right click does, so
 // `selectRow` keeps a multi-row selection. `theContextMenu.show` keeps the
 // menu inside the window.
@@ -2158,17 +2167,30 @@ function draculaTableKeys(containerId, key, options)
 
 		var ids = draculaShownRows(table);
 		var current = focused;
-		if(!current || ids.indexOf(current) < 0)
+		if(!current || table.rowIDs.indexOf(current) < 0)
 			current = (table.stSel && table.stSel.length) ? table.stSel[0] : null;
 		var index = (current && ids.indexOf(current) >= 0) ? ids.indexOf(current) : -1;
+		// Updates filter rows out and leave them selected, so the arrows go on from
+		// the row's place; filter switches clear the selection and start at the top.
+		var next = 0, previous = 0;
+		if(index >= 0)
+		{
+			next = index + 1;
+			previous = index - 1;
+		}
+		else if(current && table.rowSel[current])
+		{
+			next = draculaShownBefore(table, current);
+			previous = next - 1;
+		}
 		// A net for a future case that forgets to assign.
 		// eslint-disable-next-line no-useless-assignment
 		var target = null;
 
 		switch(ev.key)
 		{
-			case "ArrowDown": target = (index < 0) ? 0 : Math.min(index + 1, ids.length - 1); break;
-			case "ArrowUp":   target = (index < 0) ? 0 : Math.max(index - 1, 0); break;
+			case "ArrowDown": target = Math.min(next, ids.length - 1); break;
+			case "ArrowUp":   target = Math.max(previous, 0); break;
 			case "ArrowRight":
 			case "ArrowLeft":
 				ev.preventDefault();
