@@ -535,3 +535,26 @@ test("draculaMobileSeparatorAt: a bar without its spaces is not one", () => {
 	// A negative or absent start is the beginning of the string.
 	assert.equal(at("Seeding | Ratio 1.0", -5), at("Seeding | Ratio 1.0", 0));
 });
+
+test("draculaShownRows: keeps the rows the filter shows, in the list's order", () => {
+	const table = {
+		rowIDs: ["a", "b", "c", "d", "e"],
+		rowdata: {
+			a: { enabled: false },
+			b: { enabled: true },
+			c: { enabled: false },
+			d: { enabled: true },
+			e: { enabled: false },
+		},
+	};
+	assert.deepEqual([...theme.draculaShownRows(table)], ["b", "d"]);
+});
+
+test("draculaShownRows: a row with no data is not shown", () => {
+	const table = { rowIDs: ["a", "b"], rowdata: { b: { enabled: true } } };
+	assert.deepEqual([...theme.draculaShownRows(table)], ["b"]);
+	assert.deepEqual(
+		[...theme.draculaShownRows({ rowIDs: [], rowdata: {} })],
+		[],
+	);
+});
