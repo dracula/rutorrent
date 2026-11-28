@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.4.0](https://github.com/dracula/rutorrent/compare/v0.3.4...v0.4.0) (2026-11-28)
+
+
+### Features
+
+* clear the selection on Escape or empty space ([#30](https://github.com/dracula/rutorrent/issues/30)) ([07a4ef4](https://github.com/dracula/rutorrent/commit/07a4ef47d2843eb04e0c4f12e8034444a609cff0))
+
+
+### Bug Fixes
+
+* center dialogs on the browser window ([#36](https://github.com/dracula/rutorrent/issues/36)) ([cc40dcb](https://github.com/dracula/rutorrent/commit/cc40dcbcb27b3d641508593fef5540829b8c4229))
+* **css:** draw the list focus ring in Firefox too ([#40](https://github.com/dracula/rutorrent/issues/40)) ([74b8af9](https://github.com/dracula/rutorrent/commit/74b8af9da42d72d967025afe589f3783d210b5da))
+* **css:** fit the General settings in the dialog ([#35](https://github.com/dracula/rutorrent/issues/35)) ([5f2c72d](https://github.com/dracula/rutorrent/commit/5f2c72dd0ded3487ab4b92b8b46a8d17c3e7d3af))
+* **css:** one search field width in both browsers ([#33](https://github.com/dracula/rutorrent/issues/33)) ([f857144](https://github.com/dracula/rutorrent/commit/f857144dcca5d8cc7af81379c799850433083a3e))
+* **css:** set the release group in JetBrains Mono ([#34](https://github.com/dracula/rutorrent/issues/34)) ([c693b58](https://github.com/dracula/rutorrent/commit/c693b58886743b8c899456fd4d0f5c930db485fc))
+* draw the selected stopped icon in Purple ([#37](https://github.com/dracula/rutorrent/issues/37)) ([1975b10](https://github.com/dracula/rutorrent/commit/1975b100582fabbbd9cd2436a306c06786e53e0b))
+* right-align sizes and speeds, the rest left ([#32](https://github.com/dracula/rutorrent/issues/32)) ([27e2b01](https://github.com/dracula/rutorrent/commit/27e2b01e59be78181a8b4bd3424a1c68f585b940))
+* show the graph colors on a first visit ([#39](https://github.com/dracula/rutorrent/issues/39)) ([98bd5ef](https://github.com/dracula/rutorrent/commit/98bd5eff089a8bea2581bbe5ea7a3352f90251fd))
+
 ## [0.3.4](https://github.com/dracula/rutorrent/compare/v0.3.3...v0.3.4) (2026-11-17)
 
 
