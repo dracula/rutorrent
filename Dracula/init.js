@@ -1810,6 +1810,16 @@ function draculaTable(key)
 		? theWebUI.tables[key].obj : null;
 }
 
+// The sidebar filters clear `enabled` and leave the row in `rowIDs`; the
+// renderer draws only the enabled rows.
+function draculaShownRows(table)
+{
+	return table.rowIDs.filter(function(id)
+	{
+		return Boolean(table.rowdata[id] && table.rowdata[id].enabled);
+	});
+}
+
 // Opens through upstream's path with `which: 3`, as a right click does, so
 // `selectRow` keeps a multi-row selection. `theContextMenu.show` keeps the
 // menu inside the window.
@@ -1994,10 +2004,10 @@ function draculaTableKeys(containerId, key, options)
 
 	// Upstream's `TR_HEIGHT` is a content height, two pixels short of a padded
 	// row, so the row is asked where it is.
-	var bringIntoView = function(scroller, table, index)
+	var bringIntoView = function(scroller, table, id)
 	{
-		var id = table.rowIDs[index];
-		if(!id)
+		var index = draculaShownRows(table).indexOf(id);
+		if(index < 0)
 			return;
 
 		var nudge = function()
@@ -2051,7 +2061,7 @@ function draculaTableKeys(containerId, key, options)
 		}, { id: id });
 		focused = id;
 		scroller.setAttribute("aria-activedescendant", id);
-		bringIntoView(scroller, table, table.rowIDs.indexOf(id));
+		bringIntoView(scroller, table, id);
 		draculaSyncRowRoles(scroller, table);
 	};
 
@@ -2146,7 +2156,7 @@ function draculaTableKeys(containerId, key, options)
 		if(ev.altKey)
 			return;
 
-		var ids = table.rowIDs;
+		var ids = draculaShownRows(table);
 		var current = focused;
 		if(!current || ids.indexOf(current) < 0)
 			current = (table.stSel && table.stSel.length) ? table.stSel[0] : null;
@@ -2217,7 +2227,7 @@ function draculaTableKeys(containerId, key, options)
 			default: return;
 		}
 
-		if(target === null)
+		if(target === null || !ids[target])
 			return;
 		ev.preventDefault();
 		select(scroller, table, ids[target], ev, false);
