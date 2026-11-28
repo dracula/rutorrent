@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/dracula/rutorrent/compare/v0.4.0...v0.4.1) (2026-11-28)
+
+
+### Bug Fixes
+
+* keep the cursor's place when its row leaves ([#43](https://github.com/dracula/rutorrent/issues/43)) ([67e92db](https://github.com/dracula/rutorrent/commit/67e92db0cbf8db347e4c3d15a4cb16b82dbc898d))
+* keep the list keys on the rows a filter shows ([#41](https://github.com/dracula/rutorrent/issues/41)) ([64b5d63](https://github.com/dracula/rutorrent/commit/64b5d6373fe111d5616c60fcb4209cff7fde840d))
+
 ## [0.4.0](https://github.com/dracula/rutorrent/compare/v0.3.4...v0.4.0) (2026-11-28)
 
 
